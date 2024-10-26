@@ -1,0 +1,19 @@
+stages:
+  - deploy
+
+before_script:
+  # Ensure ssh-agent is available and setup the SSH key
+  - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
+  - eval $(ssh-agent -s)
+  - echo "$SSHKEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+
+deploy:
+  stage: deploy
+  script: |
+    echo "Login to machine was successful"
+    ssh $USERNAME@$HOST "cd ~/server/oas-next && sh .scripts/live.sh"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"

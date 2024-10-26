@@ -1,101 +1,111 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Shield, Mail, ArrowRight } from "lucide-react";
+import AnimatedHero from "@/components/AnimatedHero";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <main className="container mx-auto px-4 py-8">
+      <AnimatedHero gr="One Alias Service" />
+      <Separator className="my-8" />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <section className="mb-12">
+        <h2 className="text-3xl font-semibold mb-4">
+          Protect Your Privacy with Custom Email Aliases
+        </h2>
+        <p className="text-xl mb-6">
+          Create unique email aliases that forward to your personal address,
+          maintaining your privacy and control over your inbox.
+        </p>
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle>How It Works</CardTitle>
+            <CardDescription>
+              Simple and effective email management
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="mb-4">Example:</p>
+            <div className=" p-4 rounded-md">
+              <code>potato@1as.in</code> <ArrowRight className="inline mx-2" />{" "}
+              <code>you@gmail.com</code>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="grid md:grid-cols-2 gap-8 mb-12">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Shield className="mr-2" /> Privacy First
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              We prioritize your privacy. Your personal email remains hidden,
+              and you have full control over your aliases.
+            </p>
+          </CardContent>
+          <CardFooter className="gap-1">
+            <Link href="/legal/privacy">
+              <Button variant="outline">Privacy Policy</Button>
+            </Link>
+            <Link href="/legal/tos">
+              <Button variant="outline">Terms of Service</Button>
+            </Link>
+          </CardFooter>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Mail className="mr-2" /> Easy Management
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>
+              Create, edit, or delete aliases at any time. Our intuitive
+              dashboard puts you in control.
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Link href="/login">
+              <Button variant="secondary">Dashboard</Button>
+            </Link>
+          </CardFooter>
+        </Card>
+      </section>
+
+      <section className="text-center mb-12">
+        <Card>
+          <CardHeader>
+            <CardTitle>Ready to Take Control of Your Inbox?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-center gap-4  items-center">
+              <Link href="/signup">
+                <Button className="bg-green-500 hover:bg-green-700">
+                  Sign Up
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button className="bg-blue-500 hover:bg-blue-700">
+                  Sign In
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+    </main>
   );
 }

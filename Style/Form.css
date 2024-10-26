@@ -1,0 +1,29 @@
+input:invalid:not(:placeholder-shown) {
+    border: 1px solid red;
+    background-image: url(/checked_red.svg);
+    accent-color: red;
+    caret-color: red;
+}
+
+input:valid:not(:placeholder-shown) {
+    border: 1px solid green;
+    background-image: url(/checked_green.svg);
+    accent-color: green;
+    caret-color: green;
+}
+
+input:valid:not(:placeholder-shown),
+input:invalid:not(:placeholder-shown) {
+    background-size: 20px;
+    background-repeat: no-repeat;
+    background-position: calc(100% - 10px);
+}
+
+input:invalid:not(:placeholder-shown) + p {
+    color: red;
+}
+
+input:invalid ~ button[type="submit"] {
+    opacity: 0.6;
+    pointer-events: none;
+}

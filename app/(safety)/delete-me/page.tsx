@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Mail } from "lucide-react";
 import Link from "next/link";
 
-export function DeleteMe() {
+function DeleteMe() {
   return (
     <main className="m-4">
       <h1 className="text-3xl font-bold mb-4 text-center">Delete My Data</h1>
@@ -51,9 +51,5 @@ export function DeleteMe() {
     </main>
   );
 }
-
-export const runtime = "edge";
-export const revalidate = false;
-export const dynamic = "force-static";
 
 export default DeleteMe;

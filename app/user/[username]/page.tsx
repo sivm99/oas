@@ -1,5 +1,10 @@
-function DashBoard({ params }: { params: { username: string } }) {
-  console.log(params);
+import { log } from "console";
+
+type Params = Promise<{ username: string }>;
+
+async function DashBoard({ params }: { params: Params }) {
+  const { username } = await params;
+  log(username);
   return <></>;
 }
 

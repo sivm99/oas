@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import FormInput from "@/components/FormInput";
 import FormHero from "@/components/FormHero";
 import Link from "next/link";
+type Params = Promise<{ token: string }>;
 
 async function handlePasswordReset(formData: FormData, token: string) {
   "use server";
@@ -22,12 +23,7 @@ async function handlePasswordReset(formData: FormData, token: string) {
   console.log({ token, password, passwordConfirm });
 }
 
-export default function ResetPassword({
-  params,
-}: {
-  params: { token: string };
-}) {
-  const { token } = params;
+export default function ResetPassword({ params }: { params: Params }) {
   return (
     <main className="form_wrapper">
       <FormHero
@@ -54,7 +50,7 @@ export default function ResetPassword({
               className="form_container"
               action={async (formData) => {
                 "use server";
-
+                const { token } = await params;
                 await handlePasswordReset(formData, token);
               }}
             >

@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { FileText, Trash2 } from "lucide-react";
 import Link from "next/link";
 
-export function TermsOfService() {
+function TermsOfService() {
   return (
     <div className="m-4">
       <h1 className="text-3xl font-bold mb-4 text-center">Terms of Service</h1>
@@ -72,9 +72,5 @@ export function TermsOfService() {
     </div>
   );
 }
-
-export const runtime = "edge";
-export const revalidate = false;
-export const dynamic = "force-static";
 
 export default TermsOfService;

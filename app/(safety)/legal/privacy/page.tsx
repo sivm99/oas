@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator";
 import { FileText, Home } from "lucide-react";
 import Link from "next/link";
 
-export function PrivacyPolicy() {
+function PrivacyPolicy() {
   return (
     <main className="m-4">
       <h1 className="text-3xl font-bold mb-4 text-center">Privacy Policy</h1>
@@ -73,7 +73,5 @@ export function PrivacyPolicy() {
     </main>
   );
 }
-export const runtime = "edge";
-export const revalidate = false;
-export const dynamic = "force-static";
+
 export default PrivacyPolicy;

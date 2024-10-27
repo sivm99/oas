@@ -23,7 +23,7 @@ async function handlePasswordReset(formData: FormData, token: string) {
   console.log({ token, password, passwordConfirm });
 }
 
-export default function ResetPassword({ params }: { params: Params }) {
+export default async function ResetPassword({ params }: { params: Params }) {
   return (
     <main className="form_wrapper">
       <FormHero

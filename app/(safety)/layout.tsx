@@ -1,6 +1,6 @@
 import Footer from "@/components/Footer";
 
-export default function FormLayout({
+export default async function FormLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

@@ -90,4 +90,22 @@ body {
     .form_below_continue_social {
         @apply flex flex-col gap-4;
     }
+    .nav_wrapper {
+        @apply bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b;
+    }
+    .app_container {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+    .gradient_text {
+        @apply inline-block text-transparent bg-clip-text font-bold;
+    }
+    .animated_hero_container {
+        @apply flex items-center justify-center overflow-hidden;
+    }
+    .animated_hero_heading {
+        @apply text-5xl sm:text-6xl md:text-8xl font-extrabold text-center mb-4 sm:mb-6 md:mb-8 leading-tight;
+    }
+    .nav_menu {
+        @apply hidden group-hover:block absolute right-0 mt-2 w-48 bg-background border rounded-md shadow-lg p-4;
+    }
 }

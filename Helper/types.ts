@@ -51,6 +51,7 @@ type RequestResult = {
   data: ResponseObject | null;
   error: string | null;
   status: number;
+  cookies?: string;
 };
 
 export type {

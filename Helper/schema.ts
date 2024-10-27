@@ -17,7 +17,8 @@ const emailSchema = z
   .trim()
   .min(1, "Email is required")
   .email("Invalid email format")
-  .regex(EMAIL_REGEX, "Invalid email format");
+  .regex(EMAIL_REGEX, "Invalid email format")
+  .toLowerCase();
 
 const usernameSchema = z
   .string()
@@ -26,7 +27,8 @@ const usernameSchema = z
   .regex(
     USERNAME_REGEX,
     "Username must start with a letter and can only contain letters, numbers, dots, hyphens, and underscores",
-  );
+  )
+  .toLowerCase();
 
 const passwordSchema = z
   .string()
@@ -39,7 +41,8 @@ const aliasSchema = z
   .regex(
     ALIAS_SLUG_REGEX,
     "Alias can only contain letters, numbers, dots, hyphens, and plus signs",
-  );
+  )
+  .toLowerCase();
 
 const commentSchema = z
   .string()

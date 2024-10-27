@@ -12,7 +12,7 @@ import { Shield, Mail, ArrowRight } from "lucide-react";
 import AnimatedHero from "@/components/AnimatedHero";
 import Link from "next/link";
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="container mx-auto px-4 py-8">
       <AnimatedHero gr="One Alias Service" />

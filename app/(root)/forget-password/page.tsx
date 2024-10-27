@@ -21,7 +21,7 @@ async function handleLogin(formData: FormData) {
   console.log(email);
 }
 
-export default function ForgetPassword() {
+export default async function ForgetPassword() {
   return (
     <main className="form_wrapper">
       <FormHero

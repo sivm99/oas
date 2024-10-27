@@ -28,17 +28,28 @@ const createRequest = async (
       url,
       data,
     });
-    return { data: response.data, error: null, status: response.status };
+
+    // Extract cookies from response headers if present
+    const cookies = response.headers["set-cookie"]?.join("; ");
+
+    return {
+      data: response.data,
+      error: null,
+      status: response.status,
+      cookies: cookies,
+    };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ResponseObject>;
       if (axiosError.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
+        const cookies = axiosError.response.headers["set-cookie"]?.join("; ");
         return {
           data: axiosError.response.data,
           error: axiosError.response.data.message || "An error occurred",
           status: axiosError.response.status,
+          cookies: cookies,
         };
       } else if (axiosError.request) {
         // The request was made but no response was received

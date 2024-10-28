@@ -1,8 +1,10 @@
 "use server";
+import { createSession } from "@/app/auth/session";
 import { createRequest } from "@/Helper/request";
 import { loginSchema, registrationSchema } from "@/Helper/schema";
 import { isUserResponse } from "@/Helper/typeFunction";
 import { User } from "@/Helper/types";
+import { getCookieFromString } from "@/hooks/useSetCookie";
 import { log } from "console";
 
 // Define the state and response types
@@ -54,7 +56,6 @@ export async function handleAuth(
 
     // Validate response format
     if (!isUserResponse(response)) {
-      log("Invalid response format");
       return {
         success: false,
         message: "Invalid response format",
@@ -71,11 +72,21 @@ export async function handleAuth(
     }
 
     // Return successful response
+    if (!authResult.cookies) {
+      return {
+        success: false,
+        message: "An unexpected error occurred",
+      };
+    }
+    const token = getCookieFromString(authResult.cookies, "token");
+
+    await createSession(token || " ");
+
     return {
       success: true,
       message: response.message || `${isNew ? "Signup" : "Login"} successful`,
       user: response.data,
-      cookie: authResult.cookies || "",
+      cookie: token || "",
     };
   } catch (error) {
     log(error);

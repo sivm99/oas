@@ -12,12 +12,12 @@ import FormInput from "@/components/FormInput";
 import FormBelow from "@/components/FormBelow";
 import { useActionState } from "react";
 import useAppContext from "@/hooks/useAppContext";
-import { getCookieFromString, setCookie } from "@/hooks/useSetCookie";
 import { redirect } from "next/navigation";
 import { FormState, handleAuth } from "../actions";
+import { fetchDestinations, fetchRules } from "@/Helper/getData";
 
 export default function LoginForm() {
-  const { setUser, setError } = useAppContext();
+  const { setUser, setError, setRules, setDestinations } = useAppContext();
 
   const [r, performLogin, isPending] = useActionState(
     async (prev: FormState | null, formData: FormData): Promise<FormState> => {
@@ -30,25 +30,31 @@ export default function LoginForm() {
         };
       }
 
-      if (!r.cookie || !r.user) {
+      if (!r.user) {
         setError(r.message || `something went wrong`);
         return {
-          message: "missing cookie or user data",
+          message: "missing  user data",
           success: false,
         };
       }
 
-      const token = getCookieFromString(r.cookie, "token");
-      if (!token) {
-        setError("missing token in cookie");
-        return {
-          message: "missing token in cookie",
-          success: false,
-        };
-      }
-
-      setCookie("token", token);
       localStorage.setItem(`name`, r.user.name);
+      localStorage.setItem("token", r.cookie || "");
+
+      if (r.user.aliasCount > 0) {
+        const rulesResult = await fetchRules(r.cookie);
+        if (!rulesResult.error && rulesResult.rules) {
+          setRules(rulesResult.rules);
+        }
+      }
+
+      if (r.user.destinationCount > 0) {
+        const destinationsResult = await fetchDestinations(r.cookie);
+        if (!destinationsResult.error && destinationsResult.destinations) {
+          setDestinations(destinationsResult.destinations);
+        }
+      }
+
       setUser(r.user);
       redirect(`/user/${r.user.username}`);
       return r;

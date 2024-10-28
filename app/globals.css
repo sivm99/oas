@@ -108,4 +108,11 @@ body {
     .nav_menu {
         @apply hidden group-hover:block absolute right-0 mt-2 w-48 bg-background border rounded-md shadow-lg p-4;
     }
+
+    .dash_wrapper {
+        @apply flex flex-col items-center mx-auto min-h-screen p-2;
+    }
+    .dash_child {
+        @apply rounded-lg shadow-lg p-6 w-full;
+    }
 }

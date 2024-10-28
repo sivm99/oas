@@ -10,13 +10,12 @@ import {
 } from "@/components/ui/card";
 import FormInput from "@/components/FormInput";
 import FormBelow from "@/components/FormBelow";
-import { User } from "lucide-react";
 import Link from "next/link";
 import useAppContext from "@/hooks/useAppContext";
 import { FormState, handleAuth } from "../actions";
 import { useActionState } from "react";
-import { getCookieFromString, setCookie } from "@/hooks/useSetCookie";
 import { redirect } from "next/navigation";
+import { User } from "lucide-react";
 
 export default function SignupForm() {
   const { setUser, setError } = useAppContext();
@@ -32,25 +31,16 @@ export default function SignupForm() {
         };
       }
 
-      if (!r.cookie || !r.user) {
+      if (!r.user) {
         setError(r.message || `something went wrong`);
         return {
-          message: "missing cookie or user data",
+          message: "missing user data",
           success: false,
         };
       }
 
-      const token = getCookieFromString(r.cookie, "token");
-      if (!token) {
-        setError("missing token in cookie");
-        return {
-          message: "missing token in cookie",
-          success: false,
-        };
-      }
-
-      setCookie("token", token);
       localStorage.setItem(`name`, r.user.name);
+      localStorage.setItem("token", r.cookie || "");
       setUser(r.user);
       redirect(`/user/${r.user.username}`);
       return r;

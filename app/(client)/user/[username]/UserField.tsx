@@ -27,7 +27,8 @@ function UserField() {
     };
 
     fetchUser();
-  }, [user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     setAliasCount(rules.length);

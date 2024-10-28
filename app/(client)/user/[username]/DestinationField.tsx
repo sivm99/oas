@@ -17,6 +17,7 @@ function DestinationField() {
       setDestinations(r);
     };
     fetchLocalDestinations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

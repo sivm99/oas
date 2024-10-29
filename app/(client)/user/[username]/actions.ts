@@ -1,6 +1,6 @@
 "use server";
 
-import { createSession } from "@/app/auth/session";
+// import { createSession } from "@/app/auth/session";
 import { createRequest } from "@/Helper/request";
 import {
   isDestinationsResponse,
@@ -26,6 +26,7 @@ export type FetchDataState<T extends FetchData> = {
   message: string;
   data?: DataType<T>;
   code?: number;
+  newToken?: string;
 };
 
 export default async function fetchData<T extends FetchData>(
@@ -68,8 +69,8 @@ export default async function fetchData<T extends FetchData>(
       };
     }
 
-    const newToken = getCookieFromString(r?.cookies || "", "token");
-    await createSession(newToken || " ");
+    const newToken = getCookieFromString(r?.cookies || "", "token") || "";
+    // await createSession(newToken || " ");
 
     // Handle type-specific validation and responses
     switch (type) {
@@ -84,6 +85,7 @@ export default async function fetchData<T extends FetchData>(
           success: true,
           message: "User Fetched Successfully",
           data: dataResponse.data as DataType<T>,
+          newToken,
         };
 
       case "rules":
@@ -97,6 +99,7 @@ export default async function fetchData<T extends FetchData>(
           success: true,
           message: "Rules Fetched Successfully",
           data: dataResponse.data as DataType<T>,
+          newToken,
         };
 
       case "destinations":
@@ -110,6 +113,7 @@ export default async function fetchData<T extends FetchData>(
           success: true,
           message: "Destinations Fetched Successfully",
           data: dataResponse.data as DataType<T>,
+          newToken,
         };
     }
 

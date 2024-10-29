@@ -1,5 +1,5 @@
 "use server";
-import { createSession } from "@/app/auth/session";
+// import { createSession } from "@/app/auth/session";
 import { createRequest } from "@/Helper/request";
 import { loginSchema, registrationSchema } from "@/Helper/schema";
 import { isUserResponse } from "@/Helper/typeFunction";
@@ -80,7 +80,7 @@ export async function handleAuth(
     }
     const token = getCookieFromString(authResult.cookies, "token");
 
-    await createSession(token || " ");
+    // await createSession(token || " ");
 
     return {
       success: true,

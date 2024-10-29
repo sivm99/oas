@@ -41,14 +41,14 @@ export default function LoginForm() {
       localStorage.setItem(`name`, r.user.name);
       localStorage.setItem("token", r.cookie || "");
 
-      if (r.user.aliasCount > 0) {
+      if (r.user.aliasCount) {
         const rulesResult = await fetchRules(r.cookie);
         if (!rulesResult.error && rulesResult.rules) {
           setRules(rulesResult.rules);
         }
       }
 
-      if (r.user.destinationCount > 0) {
+      if (r.user.destinationCount) {
         const destinationsResult = await fetchDestinations(r.cookie);
         if (!destinationsResult.error && destinationsResult.destinations) {
           setDestinations(destinationsResult.destinations);

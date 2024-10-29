@@ -1,10 +1,8 @@
 "use client";
-import UserField from "./UserField";
-import DestinationField from "./DestinationField";
 import useAppContext from "@/hooks/useAppContext";
 import { useActionState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import RuleField from "./RuleField";
+
 import { fetchDestinations, fetchRules } from "@/Helper/getData";
 import { Destination, Rule } from "@/Helper/types";
 import {
@@ -13,6 +11,9 @@ import {
   getLocalToken,
   getLocalUser,
 } from "@/Helper/getLocalData";
+import UserField from "./User/UserField";
+import RuleFields from "./Rules/RuleField";
+import DestinationField from "./Destinations/DestinationField";
 
 type FormState = {
   success: boolean;
@@ -160,7 +161,7 @@ function DashBoard() {
         <UserField />
       </div>
       <div className="dash_child">
-        <RuleField />
+        <RuleFields />
       </div>
       <div className="dash_child">
         <DestinationField />

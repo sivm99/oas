@@ -4,6 +4,7 @@ import { getLocalRules } from "@/Helper/getLocalData";
 import useAppContext from "@/hooks/useAppContext";
 import { useEffect } from "react";
 import RulesCard from "./RuleCard";
+import NewRule from "./NewRule";
 
 function RuleFields() {
   const { rules, setRules } = useAppContext();
@@ -22,6 +23,7 @@ function RuleFields() {
   return (
     <section>
       <RulesCard rules={rules} />
+      <NewRule />
     </section>
   );
 }

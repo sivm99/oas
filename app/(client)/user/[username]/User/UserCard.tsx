@@ -29,6 +29,7 @@ import { User } from "@/Helper/types";
 import { Input } from "@/components/ui/input";
 import useAppContext from "@/hooks/useAppContext";
 import { createRequest } from "@/Helper/request";
+import { getLocalToken } from "@/Helper/getLocalData";
 
 const UserProfileCard = ({
   name,
@@ -42,9 +43,12 @@ const UserProfileCard = ({
   // const navigate = useNavigate();
   const { setHint, setError } = useAppContext();
   const handleVerifyEmail = async () => {
+    const token = await getLocalToken();
+    if (!token) setError("You have to Login Again for this action");
+
     const verifyEmailResult = await createRequest(
-      "GET",
       `/user/${username}/verify`,
+      token || " ",
     );
 
     if (!verifyEmailResult) {

@@ -63,11 +63,14 @@ function DashBoard() {
         }
 
         localRules = await getLocalRules();
-        if (localRules) {
+        if (localRules && localUser?.username === localRules[0].username) {
           setRules(localRules);
         }
         localDestinations = await getLocalDestinations();
-        if (localDestinations) {
+        if (
+          localDestinations &&
+          localUser?.username === localDestinations[0].username
+        ) {
           setDestinations(localDestinations);
         }
       } else {
@@ -89,11 +92,7 @@ function DashBoard() {
       let updatedRules: Rule[] | undefined;
       let updatedDestinations: Destination[] | undefined;
 
-      if (
-        localUser.aliasCount &&
-        localRules &&
-        localRules[0].username !== localUser.username
-      ) {
+      if (localUser.aliasCount && !localRules) {
         const rulesResult = await fetchRules(localToken);
 
         if (!rulesResult.error && rulesResult.rules) {
@@ -104,11 +103,7 @@ function DashBoard() {
         }
       }
 
-      if (
-        localUser.destinationCount &&
-        localDestinations &&
-        localDestinations[0].username !== localUser.username
-      ) {
+      if (localUser.destinationCount && !localDestinations) {
         const destinationsResult = await fetchDestinations(localToken);
 
         if (!destinationsResult.error && destinationsResult.destinations) {

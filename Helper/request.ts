@@ -6,6 +6,8 @@ import {
   ResponseObject,
 } from "@/Helper/types";
 
+console.log(`The backend  is ${process.env.BACKEND_HOST}`);
+
 const BASE_URL = `${process.env.BACKEND_HOST}/api/v2`;
 
 const instance = axios.create({

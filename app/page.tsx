@@ -78,7 +78,7 @@ export default async function Home() {
             </p>
           </CardContent>
           <CardFooter>
-            <Link href="/login">
+            <Link href="/user/dash">
               <Button variant="secondary">Dashboard</Button>
             </Link>
           </CardFooter>

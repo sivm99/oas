@@ -32,6 +32,7 @@ function DashBoard() {
     rules,
     destinations,
     setDestinations,
+    setError,
   } = useAppContext();
 
   const stateInitial = {
@@ -53,6 +54,7 @@ function DashBoard() {
         localUser = await getLocalUser();
         if (localUser) {
           setUser(localUser);
+          window.history.replaceState(null, "", `/user/${localUser.username}`);
         }
 
         localToken = await getLocalToken();
@@ -74,6 +76,7 @@ function DashBoard() {
       }
 
       if (!localUser || !localToken) {
+        setError("You Must be Logged in to access this Resource");
         return {
           success: false,
           rules: undefined,

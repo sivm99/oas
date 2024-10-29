@@ -9,7 +9,6 @@ import {
 } from "@/Helper/typeFunction";
 import { Destination, Rule, User } from "@/Helper/types";
 import { getCookieFromString } from "@/hooks/useSetCookie";
-import { cookies } from "next/headers";
 
 type FetchData = "user" | "rules" | "destinations";
 
@@ -33,18 +32,18 @@ export default async function fetchData<T extends FetchData>(
   type: T,
   localToken?: string,
 ): Promise<FetchDataState<T>> {
-  const t = (await cookies()).get("token");
+  // const t = (await cookies()).get("token");
 
-  if (!t?.value) {
-    return {
-      success: false,
-      message:
-        "Authentication Failure you are not Logged in You have to login again",
-      code: 401,
-    };
-  }
+  // if (!t?.value || !localToken) {
+  //   return {
+  //     success: false,
+  //     message:
+  //       "Authentication Failure you are not Logged in You have to login again get It",
+  //     code: 401,
+  //   };
+  // }
 
-  const token = t.value || localToken;
+  const token = localToken;
   let endpoint = "";
 
   if (type === "user") endpoint += "/user";

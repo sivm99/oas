@@ -14,6 +14,8 @@ interface AppContextState {
   setError: (error: string) => void;
   hint: string;
   setHint: (hint: string) => void;
+  token: string;
+  setToken: (token: string) => void;
 }
 
 export const AppContext = createContext<AppContextState | undefined>(undefined);
@@ -26,6 +28,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const [destinations, setDestinationsState] = useState<Destination[]>([]);
   const [error, setError] = useState<string>("");
   const [hint, setHint] = useState<string>("");
+  const [token, setTokenState] = useState<string>("");
 
   const setUser = (newUser: User | null) => {
     setUserState(newUser);
@@ -42,6 +45,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     localStorage.setItem("destinations", JSON.stringify(newDestinations));
   };
 
+  const setToken = (newToken: string) => {
+    setTokenState(newToken);
+    localStorage.setItem("token", newToken);
+  };
+
   const value: AppContextState = {
     user,
     setUser,
@@ -53,6 +61,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     setError,
     hint,
     setHint,
+    token,
+    setToken,
   };
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };

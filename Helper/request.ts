@@ -1,3 +1,5 @@
+"use server";
+
 import axios, { AxiosError } from "axios";
 import {
   DataObject,

@@ -14,10 +14,9 @@ import { useActionState } from "react";
 import useAppContext from "@/hooks/useAppContext";
 import { redirect } from "next/navigation";
 import { FormState, handleAuth } from "../actions";
-import { fetchDestinations, fetchRules } from "@/Helper/getData";
 
 export default function LoginForm() {
-  const { setUser, setError, setRules, setDestinations } = useAppContext();
+  const { setUser, setError, setToken } = useAppContext();
 
   const [r, performLogin, isPending] = useActionState(
     async (prev: FormState | null, formData: FormData): Promise<FormState> => {
@@ -39,22 +38,7 @@ export default function LoginForm() {
       }
 
       localStorage.setItem(`name`, r.user.name);
-      localStorage.setItem("token", r.cookie || "");
-
-      if (r.user.aliasCount) {
-        const rulesResult = await fetchRules(r.cookie);
-        if (!rulesResult.error && rulesResult.rules) {
-          setRules(rulesResult.rules);
-        }
-      }
-
-      if (r.user.destinationCount) {
-        const destinationsResult = await fetchDestinations(r.cookie);
-        if (!destinationsResult.error && destinationsResult.destinations) {
-          setDestinations(destinationsResult.destinations);
-        }
-      }
-
+      setToken(r.cookie || " ");
       setUser(r.user);
       redirect(`/user/${r.user.username}`);
       return r;

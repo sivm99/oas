@@ -2,23 +2,161 @@
 import UserField from "./UserField";
 import DestinationField from "./DestinationField";
 import useAppContext from "@/hooks/useAppContext";
-import { useEffect } from "react";
-import { redirect, useParams } from "next/navigation";
+import { useActionState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import RuleField from "./RuleField";
+import { fetchDestinations, fetchRules } from "@/Helper/getData";
+import { Destination, Rule } from "@/Helper/types";
+import {
+  getLocalDestinations,
+  getLocalRules,
+  getLocalToken,
+  getLocalUser,
+} from "@/Helper/getLocalData";
+
+type FormState = {
+  success: boolean;
+  rules?: Rule[];
+  destinations?: Destination[];
+  token?: string;
+};
 
 function DashBoard() {
   const params = useParams<{ username: string }>();
+  const {
+    user,
+    setUser,
+    token,
+    setRules,
+    setToken,
+    rules,
+    destinations,
+    setDestinations,
+  } = useAppContext();
 
-  const { user } = useAppContext();
-  const { username } = params;
+  const stateInitial = {
+    success: false,
+    rules,
+    destinations,
+    token,
+  };
+  const {} = params;
 
+  const [state, fetchData] = useActionState(
+    async (p: FormState, formData: FormData) => {
+      let localUser;
+      let localToken;
+      let localRules;
+      let localDestinations;
+      console.log(formData.getAll("a"));
+      if (!user || !token || !p.token) {
+        localUser = await getLocalUser();
+        if (localUser) {
+          setUser(localUser);
+        }
+
+        localToken = await getLocalToken();
+        if (localToken) {
+          setToken(localToken);
+        }
+
+        localRules = await getLocalRules();
+        if (localRules) {
+          setRules(localRules);
+        }
+        localDestinations = await getLocalDestinations();
+        if (localDestinations) {
+          setDestinations(localDestinations);
+        }
+      } else {
+        localUser = user;
+        localToken = token;
+      }
+
+      if (!localUser || !localToken) {
+        return {
+          success: false,
+          rules: undefined,
+          destinations: undefined,
+          token: undefined,
+        };
+      }
+
+      let newToken: string | undefined;
+      let updatedRules: Rule[] | undefined;
+      let updatedDestinations: Destination[] | undefined;
+
+      if (
+        localUser.aliasCount &&
+        localRules &&
+        localRules[0].username !== localUser.username
+      ) {
+        const rulesResult = await fetchRules(localToken);
+
+        if (!rulesResult.error && rulesResult.rules) {
+          updatedRules = rulesResult.rules;
+          if (rulesResult.newToken) {
+            newToken = rulesResult.newToken;
+          }
+        }
+      }
+
+      if (
+        localUser.destinationCount &&
+        localDestinations &&
+        localDestinations[0].username !== localUser.username
+      ) {
+        const destinationsResult = await fetchDestinations(localToken);
+
+        if (!destinationsResult.error && destinationsResult.destinations) {
+          updatedDestinations = destinationsResult.destinations;
+          if (destinationsResult.newToken) {
+            newToken = destinationsResult.newToken;
+          }
+        }
+      }
+
+      if (updatedRules) {
+        setRules(updatedRules);
+      }
+      if (updatedDestinations) {
+        setDestinations(updatedDestinations);
+      }
+      if (newToken) {
+        setToken(newToken);
+      }
+
+      return {
+        success: true,
+        rules: updatedRules,
+        destinations: updatedDestinations,
+        token: newToken,
+      };
+    },
+    stateInitial,
+  );
+
+  // useEffect(() => {
+  //   console.log("URL rewrite useEffect");
+  //   if (user?.username != username) {
+  //     redirect(`/user/${user?.username}`);
+  //   }
+  // }, []);
   useEffect(() => {
-    if (user?.username != username) {
-      redirect(`/user/${user?.username}`);
-    }
-  }, [user, username]);
+    console.log("DashBoard Use Effect for fetching Rules from API was called");
 
-  return (
+    const init = async () => {
+      const hiddenForm = document.getElementById(
+        "hiddenForm",
+      ) as HTMLFormElement;
+      if (hiddenForm) {
+        hiddenForm.requestSubmit();
+      }
+    };
+
+    init();
+  }, []);
+  return state.success ? (
     <main className="dash_wrapper">
       <div className="dash_child">
         <UserField />
@@ -30,6 +168,24 @@ function DashBoard() {
         <DestinationField />
       </div>
     </main>
+  ) : (
+    <>
+      <form
+        style={{
+          width: "0",
+          height: "0",
+          position: "absolute",
+          visibility: "hidden",
+        }}
+        id="hiddenForm"
+        action={fetchData}
+      >
+        <input type="text" id="hiddenInput" />
+        <button type="submit" id="hiddenSubmit">
+          Submit
+        </button>
+      </form>
+    </>
   );
 }
 

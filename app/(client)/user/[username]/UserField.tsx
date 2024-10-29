@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import useAppContext from "@/hooks/useAppContext";
 
 import UserProfileCard from "./UserCard";
-import { redirect } from "next/navigation";
-import { getLocalUser } from "@/Helper/getLocalData";
+// import { redirect } from "next/navigation";
+import { User } from "@/Helper/types";
 
 function UserField() {
   const { user, setUser, rules, destinations } = useAppContext();
@@ -16,13 +16,13 @@ function UserField() {
     console.log("fetch user useEffect was called");
     const fetchUser = async () => {
       if (!user) {
-        const parsedUser = await getLocalUser();
-        if (!parsedUser) {
-          redirect("/login");
+        const userLocal = localStorage.getItem("user");
+        if (userLocal) {
+          const parsedUser = JSON.parse(userLocal) as User;
+          setUser(parsedUser);
+        } else {
+          return;
         }
-        setUser(parsedUser);
-      } else {
-        redirect("/login");
       }
     };
 

@@ -155,19 +155,7 @@ function DashBoard() {
 
     init();
   }, []);
-  return state.success ? (
-    <main className="dash_wrapper">
-      <div className="dash_child">
-        <UserField />
-      </div>
-      <div className="dash_child">
-        <RuleFields />
-      </div>
-      <div className="dash_child">
-        <DestinationField />
-      </div>
-    </main>
-  ) : (
+  return (
     <>
       <form
         style={{
@@ -184,6 +172,19 @@ function DashBoard() {
           Submit
         </button>
       </form>
+      {state.success && (
+        <main className="dash_wrapper">
+          <div className="dash_child">
+            <UserField />
+          </div>
+          <div className="dash_child">
+            <RuleFields />
+          </div>
+          <div className="dash_child">
+            <DestinationField />
+          </div>
+        </main>
+      )}
     </>
   );
 }

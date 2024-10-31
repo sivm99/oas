@@ -1,3 +1,4 @@
+"use client";
 import { Rule } from "@/Helper/types";
 import {
   Card,
@@ -6,243 +7,276 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import {
-  AlertTriangle,
-  Copy,
-  Mail,
-  Pencil,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { Copy, Mail, MoreVertical, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { Label } from "@/components/ui/label";
+import useAppContext from "@/hooks/useAppContext";
 
+import { cn } from "@/lib/utils";
+import { RuleDialog } from "./RuleDialog";
+import { createRequest } from "@/Helper/request";
+import { getLocalToken } from "@/Helper/getLocalData";
+// Separate RuleCard Component
+const RuleCard = ({ rule }: { rule: Rule }) => {
+  const { setHint, token, setToken, setError, rules, setRules } =
+    useAppContext();
+  const [showDelete, setShowDelete] = useState(false);
+  const [showToggle, setShowToggle] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+
+  if (!token) {
+    getLocalToken().then((localToken) => {
+      if (localToken) {
+        setToken(localToken);
+      }
+    });
+  }
+
+  return (
+    <Card className={cn(!rule.active && "opacity-60")}>
+      {showEdit && (
+        <RuleDialog
+          rule={rule}
+          type="edit"
+          onAction={async (rule) => {
+            const ruleResult = await createRequest(
+              "PATCH",
+              "/mail/rules/:ruleId",
+              { ruleId: rule.ruleId },
+              token,
+              rule,
+            );
+
+            if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
+              setError(
+                ruleResult.error ||
+                  "Rule cant Be update try Again after some time",
+              );
+              setShowEdit(false);
+              return;
+            }
+
+            const updatedRule = ruleResult.data.data as Rule;
+            if (updatedRule) {
+              setRules(
+                rules.map((rule) => {
+                  if (rule.ruleId === updatedRule.ruleId) {
+                    return updatedRule;
+                  }
+                  return rule;
+                }),
+              );
+            }
+            if (ruleResult.cookies) {
+              setToken(ruleResult.cookies);
+            }
+            setShowEdit(false);
+            return;
+          }}
+          onCancel={() => setShowEdit(false)}
+        />
+      )}
+      {showToggle && (
+        <RuleDialog
+          rule={rule}
+          type="toggle"
+          onAction={async (rule) => {
+            const ruleResult = await createRequest(
+              "PATCH",
+              "/mail/rules/:ruleId/toggle",
+              { ruleId: rule.ruleId },
+              token,
+            );
+
+            if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
+              setError(
+                ruleResult.error ||
+                  "Rule cant Be update try Again after some time",
+              );
+              setShowToggle(false);
+              return;
+            }
+
+            const updatedRule = ruleResult.data.data as Rule;
+            if (updatedRule) {
+              setRules(
+                rules.map((rule) => {
+                  if (rule.ruleId === updatedRule.ruleId) {
+                    return updatedRule;
+                  }
+                  return rule;
+                }),
+              );
+            }
+            if (ruleResult.cookies) {
+              setToken(ruleResult.cookies);
+            }
+            setShowToggle(false);
+            return;
+          }}
+          onCancel={() => setShowToggle(false)}
+        />
+      )}
+      {showDelete && (
+        <RuleDialog
+          rule={rule}
+          type="delete"
+          onAction={async (rule) => {
+            const ruleResult = await createRequest(
+              "DELETE",
+              "/mail/rules/:ruleId",
+              { ruleId: rule.ruleId },
+              token,
+            );
+            if (ruleResult.error || ruleResult.status !== 204) {
+              setError(
+                ruleResult.error ||
+                  "Rule cant Be update try Again after some time",
+              );
+              setShowDelete(false);
+              return;
+            }
+            setRules(
+              rules.filter((prevRule) => prevRule.ruleId !== rule.ruleId),
+            );
+
+            if (ruleResult.cookies) {
+              setToken(ruleResult.cookies);
+            }
+            setShowDelete(false);
+            return;
+          }}
+          onCancel={() => setShowDelete(false)}
+        />
+      )}
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div>
+          <CardTitle className="text-lg font-bold">
+            {rule.name || "Unnamed Rule"}
+          </CardTitle>
+          <CardDescription>{rule.comment || "No description"}</CardDescription>
+        </div>
+        <div className="flex items-center">
+          <Button
+            title={`Copy ${rule.aliasEmail}`}
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              navigator.clipboard.writeText(rule.aliasEmail);
+              setHint(
+                <>
+                  Alias email <b>{rule.aliasEmail}</b> has been copied to your
+                  clipboard.
+                </>,
+              );
+            }}
+          >
+            <Copy size={20} />
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" title="options">
+                <MoreVertical size={20} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onSelect={() => setShowToggle(!showToggle)}>
+                {rule.active ? "Disable Rule" : "Enable Rule"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={() => setShowEdit(!showEdit)}>
+                Edit Rule
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive"
+                onSelect={() => setShowDelete(!showDelete)}
+              >
+                Delete Rule
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              From:<strong> {rule.aliasEmail}</strong>
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">
+              To: {rule.destinationEmail}
+            </span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+// Search Component
+const SearchRules = ({ onSearch }: { onSearch: (value: string) => void }) => (
+  <div className="relative">
+    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+    <Input
+      type="text"
+      placeholder="Search by alias email..."
+      className="pl-10 w-full"
+      onChange={(e) => onSearch(e.target.value)}
+    />
+  </div>
+);
+
+// Empty State Component
+const EmptyState = () => (
+  <Card>
+    <CardContent className="flex flex-col items-center justify-center p-6 space-y-4">
+      <Mail className="h-6 w-6 text-muted-foreground" />
+      <CardTitle className="text-lg font-medium text-center">
+        No Rules Yet
+      </CardTitle>
+      <CardDescription className="text-center">
+        Create your first email forwarding rule to get started
+      </CardDescription>
+    </CardContent>
+  </Card>
+);
+
+// Main Component
 function RulesCard({ rules }: { rules: Rule[] }) {
   const [filteredRules, setFilteredRules] = useState(rules);
 
-  // Initialize filteredRules with rules on mount
   useEffect(() => {
+    console.log("Search Rules effect is called");
     setFilteredRules(rules);
   }, [rules]);
 
+  const handleSearch = (searchValue: string) => {
+    const filtered = rules.filter((rule) =>
+      rule.aliasEmail.toLowerCase().includes(searchValue.toLowerCase()),
+    );
+    setFilteredRules(filtered);
+  };
+
   return (
     <div className="grid gap-4">
-      {rules.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center p-6 space-y-4">
-            <Mail className="h-12 w-12 text-muted-foreground" />
-            <CardTitle className="text-lg font-medium text-center">
-              No Rules Yet
-            </CardTitle>
-            <CardDescription className="text-center">
-              Create your first email forwarding rule to get started
-            </CardDescription>
-          </CardContent>
-        </Card>
-      ) : null}
+      {rules.length === 0 ? <EmptyState /> : null}
       <div className="space-y-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Search by alias email..."
-            className="pl-10 w-full"
-            onChange={(e) => {
-              const searchValue = e.target.value.toLowerCase();
-              const filteredRules = rules.filter((rule) =>
-                rule.aliasEmail.toLowerCase().includes(searchValue),
-              );
-              setFilteredRules(filteredRules);
-            }}
-          />
-        </div>
+        <SearchRules onSearch={handleSearch} />
         {filteredRules.map((rule) => (
-          <Card key={rule.ruleId}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div>
-                <CardTitle className="text-lg font-bold">
-                  {rule.name || "Unnamed Rule"}
-                </CardTitle>
-                <CardDescription>
-                  {rule.comment || "No description"}
-                </CardDescription>
-              </div>
-              <div className="flex items-center space-x-4">
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Switch
-                      checked={rule.active}
-                      className={rule.active ? "bg-green-500" : "bg-red-500"}
-                    />
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        {rule.active ? "Disable" : "Enable"} Rule for{" "}
-                        {rule.aliasEmail}?
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {rule.active
-                          ? `Every email received to ${rule.aliasEmail} will be rejected and not reach ${rule.destinationEmail}`
-                          : `Enable email forwarding to ${rule.destinationEmail}?`}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={async () => {}}>
-                        Confirm
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        navigator.clipboard.writeText(rule.aliasEmail);
-                      }}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Success!</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Alias email {rule.aliasEmail} has been copied to your
-                        clipboard.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogAction>OK</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="ghost" size="icon">
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Edit Rule</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Update the rule details below:
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input
-                          id="name"
-                          defaultValue={rule.name}
-                          onChange={(e) =>
-                            console.log("name updated", e.target.value)
-                          }
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="comment">Comment</Label>
-                        <Input
-                          id="comment"
-                          defaultValue={rule.comment}
-                          onChange={(e) =>
-                            console.log("comment updated", e.target.value)
-                          }
-                        />
-                      </div>
-                    </div>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={async () => {
-                          console.log({
-                            ruleId: rule.ruleId,
-                            name: rule.name,
-                            comment: rule.comment,
-                          });
-                        }}
-                      >
-                        Update
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="sm:max-w-[425px]">
-                    <AlertDialogHeader>
-                      <div className="flex flex-col space-y-2 text-center sm:text-left">
-                        <AlertDialogTitle className="text-destructive flex items-center gap-2">
-                          <AlertTriangle className="h-5 w-5" />
-                          Delete Rule?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete the email forwarding rule.
-                        </AlertDialogDescription>
-                      </div>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={async () => console.log(rule.ruleId)}
-                      >
-                        Delete
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
-                    From: {rule.aliasEmail}
-                  </span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm text-muted-foreground">
-                    To: {rule.destinationEmail}
-                  </span>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  Created by: {rule.username}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <RuleCard key={rule.ruleId} rule={rule} />
         ))}
       </div>
     </div>

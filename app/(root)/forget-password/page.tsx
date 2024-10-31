@@ -11,14 +11,37 @@ import { Separator } from "@/components/ui/separator";
 import FormInput from "@/components/FormInput";
 import FormHero from "@/components/FormHero";
 import Link from "next/link";
+import { emailSchema } from "@/Helper/schema";
+import { createRequest } from "@/Helper/request";
 
-async function handleLogin(formData: FormData) {
+async function handleReset(formData: FormData) {
   "use server";
-  // Add your server-side login logic here
-  const email = formData.get("email");
+  console.log("handleReset called with formData:", formData);
 
-  // Handle authentication
-  console.log(email);
+  const email = formData.get("email");
+  console.log("Extracted email:", email);
+
+  if (typeof email !== "string") {
+    console.error("Email is not a string:", email);
+    return;
+  }
+
+  const formValue = emailSchema.safeParse(email);
+  console.log("Validation result:", formValue);
+
+  if (!formValue.success) {
+    console.error("Email validation failed:", formValue.error);
+    return;
+  }
+
+  try {
+    console.log("Sending request to /auth/forget-password with email:", formValue.data);
+    const r = await createRequest("POST", "/auth/forget-password", { email: formValue.data });
+    console.log("Request sent successfully");
+    console.log("Response:", r);
+  } catch (error) {
+    console.error("Error sending request:", error);
+  }
 }
 
 export default async function ForgetPassword() {
@@ -44,7 +67,7 @@ export default async function ForgetPassword() {
             <CardDescription>One Alias Account</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="form_container" action={handleLogin}>
+            <form className="form_container" action={handleReset}>
               <FormInput
                 name="email"
                 type="email"

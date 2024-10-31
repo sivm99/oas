@@ -1,5 +1,4 @@
 "use server";
-
 import axios, { AxiosError } from "axios";
 import {
   DataObject,
@@ -7,41 +6,60 @@ import {
   RequestResult,
   ResponseObject,
 } from "@/Helper/types";
-
-console.log(`The backend  is ${process.env.BACKEND_HOST}`);
+import { getCookieFromString } from "@/hooks/useSetCookie";
 
 const BASE_URL = `${process.env.BACKEND_HOST}/api/v2`;
 
 const instance = axios.create({
   withCredentials: true,
   baseURL: BASE_URL,
-  // headers: {
-  //   "Content-Type": "application/json",
-  //   Accept: "application/json",
-  // },
 });
 
+export type UrlEndpoints =
+  | "/"
+  | "/auth/forget-password"
+  | "/auth/github"
+  | "/auth/google"
+  | "/auth/login"
+  | "/auth/register"
+  | "/auth/reset-password/:token"
+  | "/auth/signup"
+  | "/mail/destinations"
+  | "/mail/destinations/:destinationID"
+  | "/mail/destinations/:destinationID/verify"
+  | "/mail/rules"
+  | "/mail/rules/:ruleId"
+  | "/mail/rules/:ruleId/toggle"
+  | "/user"
+  | "/user/:username"
+  | "/user/:username/logout"
+  | "/user/:username/update-password"
+  | "/user/:username/verify"
+  | "/user/:username/verify/:token";
+
+const resolveEndpoint = (
+  endpoint: UrlEndpoints,
+  params: Record<string, string | number> = {},
+): string => {
+  return endpoint.replace(/:([a-zA-Z]+)/g, (_, key) => {
+    if (params[key] === undefined) {
+      throw new Error(`Missing parameter: ${key}`);
+    }
+    return encodeURIComponent(String(params[key]));
+  });
+};
+
 const createRequest = async (
-  urlOrMethod: string | HttpMethod,
-  tokenOrData?: string | DataObject,
+  method: HttpMethod,
+  endpoint: UrlEndpoints,
+  params: Record<string, string | number> = {},
+  token?: string,
   data?: DataObject,
 ): Promise<RequestResult> => {
   console.log("create request to api was called");
-  try {
-    let method: HttpMethod = "GET";
-    let url: string;
-    let requestData: DataObject | undefined;
-    let token: string | undefined;
 
-    // Determine if first param is URL or method
-    if (typeof urlOrMethod === "string" && !urlOrMethod.includes("/")) {
-      method = urlOrMethod as HttpMethod;
-      url = tokenOrData as string;
-      requestData = data;
-    } else {
-      url = urlOrMethod as string;
-      token = tokenOrData as string;
-    }
+  try {
+    const resolvedUrl = resolveEndpoint(endpoint, params);
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -54,8 +72,8 @@ const createRequest = async (
 
     const response = await instance.request<ResponseObject>({
       method,
-      url,
-      data: requestData,
+      url: resolvedUrl,
+      data,
       headers,
     });
 
@@ -63,7 +81,10 @@ const createRequest = async (
       data: response.data,
       error: null,
       status: response.status,
-      cookies: response.headers["set-cookie"]?.join("; "),
+      cookies: getCookieFromString(
+        response.headers["set-cookie"]?.join("; ") || "",
+        "token",
+      ),
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -73,7 +94,7 @@ const createRequest = async (
           data: axiosError.response.data,
           error: axiosError.response.data.message || "An error occurred",
           status: axiosError.response.status,
-          cookies: axiosError.response.headers["set-cookie"]?.join("; "),
+          // cookies: getCookieFromString(response.headers["set-cookie"]?.join("; "), "token"),
         };
       }
       return {

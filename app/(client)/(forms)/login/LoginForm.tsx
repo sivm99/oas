@@ -66,6 +66,7 @@ export default function LoginForm() {
             name="password"
             type="password"
             label="Password"
+            autoComplete="current-password"
             required
             placeholder="Enter your password"
             minLength={8}

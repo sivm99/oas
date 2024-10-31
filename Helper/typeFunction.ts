@@ -9,7 +9,12 @@ function isUserResponse(
     "data" in response &&
     typeof response.data === "object" &&
     response.data !== null &&
-    "name" in response.data
+    "username" in response.data &&
+    "name" in response.data &&
+    "email" in response.data &&
+    "emailVerified" in response.data &&
+    "aliasCount" in response.data &&
+    "destinationCount" in response.data
   );
 }
 

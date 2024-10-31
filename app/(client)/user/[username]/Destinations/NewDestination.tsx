@@ -22,12 +22,21 @@ import {
 import { createRequest } from "@/Helper/request";
 import { Destination, ResponseObject } from "@/Helper/types";
 import useAppContext from "@/hooks/useAppContext";
+import { getLocalToken } from "@/Helper/getLocalData";
+import { getCookieFromString } from "@/hooks/useSetCookie";
 
 const domains = ["1as.in", "20032003.xyz", "n3y.in"];
 
 function NewDestination() {
-  const { user, destinations, setDestinations, setError, setHint } =
-    useAppContext();
+  const {
+    user,
+    destinations,
+    setDestinations,
+    setError,
+    setHint,
+    setToken,
+    token,
+  } = useAppContext();
   const [destinationEmail, setDestinationEmail] = useState("");
   const [selectedDomain, setSelectedDomain] = useState(domains[0]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -41,19 +50,28 @@ function NewDestination() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const localToken = await getLocalToken();
+    if (localToken) {
+      setToken(localToken);
+    }
+
     if (!destinationEmail || !selectedDomain) {
       console.error("Email and domain are required");
       return;
     }
 
     try {
+      if (!token) {
+        setError("You are not logged in");
+        return;
+      }
+
       const destinationResult = await createRequest(
         "POST",
         "/mail/destinations",
-        {
-          destinationEmail,
-          domain: selectedDomain,
-        },
+        {},
+        token,
+        { destinationEmail, domain: selectedDomain }
       );
 
       if (!destinationResult || !destinationResult.data) {
@@ -65,6 +83,14 @@ function NewDestination() {
         destinationResult.data as ResponseObject<Destination>;
 
       if (newDestination.status === "success" && newDestination.data) {
+        if (destinationResult.cookies) {
+
+            const newToken = getCookieFromString(destinationResult.cookies, "token");
+
+            if (newToken) {
+            setToken(newToken);
+            }
+        }
         if (!destinations) {
           setDestinations([newDestination.data]);
         } else {

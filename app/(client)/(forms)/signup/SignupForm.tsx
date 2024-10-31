@@ -18,7 +18,7 @@ import { redirect } from "next/navigation";
 import { User } from "lucide-react";
 
 export default function SignupForm() {
-  const { setUser, setError } = useAppContext();
+  const { setUser, setError, setHint, setToken } = useAppContext();
 
   const [r, performSignup, isPending] = useActionState(
     async (prev: FormState | null, formData: FormData): Promise<FormState> => {
@@ -42,11 +42,21 @@ export default function SignupForm() {
       localStorage.setItem(`name`, r.user.name);
       localStorage.setItem("token", r.cookie || "");
       setUser(r.user);
-      redirect(`/user/${r.user.username}`);
-      return r;
+      return {
+        success: true,
+        user: r.user,
+        cookie: r.cookie,
+        message: r.message,
+      };
     },
-    null,
+    null
   );
+
+  if (r?.success) {
+    setHint(r.message || "Signup successful");
+    setToken(r.cookie || " ");
+    redirect("/user/dash");
+  }
 
   return (
     <Card className="form_card_container">
@@ -88,6 +98,7 @@ export default function SignupForm() {
             type="password"
             label="Password"
             required
+            autoComplete="new-password"
             placeholder="Create a password"
             minLength={8}
             maxLength={16}
@@ -97,6 +108,7 @@ export default function SignupForm() {
             type="password"
             label="Confirm Password"
             required
+            autoComplete="new-password"
             placeholder="Confirm your password"
             minLength={8}
             maxLength={16}
@@ -113,7 +125,6 @@ export default function SignupForm() {
             </Button>
           </Link>
         </div>
-        {r?.message}
         <FormBelow />
       </CardContent>
     </Card>

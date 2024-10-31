@@ -12,7 +12,7 @@ const nameSchema = z
   .min(1, "Name is required")
   .max(64, "Name must be at most 64 characters");
 
-const emailSchema = z
+export const emailSchema = z
   .string()
   .trim()
   .min(1, "Email is required")

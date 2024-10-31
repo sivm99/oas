@@ -1,7 +1,7 @@
 "use server";
 
 // import { createSession } from "@/app/auth/session";
-import { createRequest } from "@/Helper/request";
+import { createRequest, UrlEndpoints } from "@/Helper/request";
 import {
   isDestinationsResponse,
   isRulesResponse,
@@ -44,14 +44,14 @@ export default async function fetchData<T extends FetchData>(
   // }
 
   const token = localToken;
-  let endpoint = "";
+  let endpoint: UrlEndpoints = "" as UrlEndpoints;
 
-  if (type === "user") endpoint += "/user";
-  if (type === "rules") endpoint += "/mail/rules";
-  if (type === "destinations") endpoint += "/mail/destinations";
+  if (type === "user") endpoint = "/user" as UrlEndpoints;
+  if (type === "rules") endpoint = "/mail/rules" as UrlEndpoints;
+  if (type === "destinations") endpoint = "/mail/destinations" as UrlEndpoints;
 
   try {
-    const r = await createRequest(endpoint, token);
+    const r = await createRequest("GET",endpoint, {}, token);
 
     if (r.error || !r.data) {
       return {

@@ -37,7 +37,7 @@ function Popup({ error = false }: PopupProps) {
             className={`flex items-center gap-2 ${error ? "text-destructive" : "text-primary"}`}
           >
             {error ? <AlertCircle size={20} /> : <InfoIcon size={20} />}
-            {error ? "Error Occurred" : "Helpful Hint"}
+            {error ? "Error Occurred" : "Notice"}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground break-words whitespace-pre-wrap max-h-[60vh] overflow-y-auto">
             {message}

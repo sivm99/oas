@@ -10,10 +10,10 @@ interface AppContextState {
   setUser: (user: User | null) => void;
   setRules: (rules: Rule[]) => void;
   setDestinations: (destinations: Destination[]) => void;
-  error: string;
-  setError: (error: string) => void;
-  hint: string;
-  setHint: (hint: string) => void;
+  error: ReactNode;
+  setError: (error: ReactNode) => void;
+  hint: ReactNode;
+  setHint: (hint: ReactNode) => void;
   token: string;
   setToken: (token: string) => void;
 }
@@ -26,8 +26,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const [user, setUserState] = useState<User | null>(null);
   const [rules, setRulesState] = useState<Rule[]>([]);
   const [destinations, setDestinationsState] = useState<Destination[]>([]);
-  const [error, setError] = useState<string>("");
-  const [hint, setHint] = useState<string>("");
+  const [error, setError] = useState<ReactNode>("");
+  const [hint, setHint] = useState<ReactNode>("");
   const [token, setTokenState] = useState<string>("");
 
   const setUser = (newUser: User | null) => {

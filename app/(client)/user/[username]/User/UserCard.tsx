@@ -18,7 +18,6 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -30,6 +29,7 @@ import { Input } from "@/components/ui/input";
 import useAppContext from "@/hooks/useAppContext";
 import { createRequest } from "@/Helper/request";
 import { getLocalToken } from "@/Helper/getLocalData";
+import { isUserResponse } from "@/Helper/typeFunction";
 
 const UserProfileCard = ({
   name,
@@ -41,14 +41,27 @@ const UserProfileCard = ({
   destinationCount,
 }: User) => {
   // const navigate = useNavigate();
-  const { setHint, setError } = useAppContext();
+  const { setHint, setError, setUser, token, setToken } = useAppContext();
+
+  if (!token) {
+    getLocalToken().then((localToken) => {
+      if (localToken) {
+        setToken(localToken);
+      }
+    });
+  }
+
   const handleVerifyEmail = async () => {
-    const token = await getLocalToken();
-    if (!token) setError("You have to Login Again for this action");
+    if (!token) {
+      setError("You have to Login Again for this action");
+      return;
+    }
 
     const verifyEmailResult = await createRequest(
-      `/user/${username}/verify`,
-      token || " ",
+      "GET",
+      `/user/:username/verify`,
+      { username },
+      token,
     );
 
     if (!verifyEmailResult) {
@@ -58,6 +71,12 @@ const UserProfileCard = ({
 
     if (verifyEmailResult.status === 200 && verifyEmailResult.data) {
       setHint(verifyEmailResult.data.message);
+      if (isUserResponse(verifyEmailResult.data)) {
+        setUser(verifyEmailResult.data.data);
+        if (verifyEmailResult.cookies) {
+          setToken(verifyEmailResult.cookies);
+        }
+      }
     } else if (verifyEmailResult.error) {
       setError(verifyEmailResult.error);
     } else {
@@ -84,29 +103,88 @@ const UserProfileCard = ({
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
-              <div className="grid gap-4 py-4">
+              <form
+                className="grid gap-4 py-4"
+                action={async (f) => {
+                  if (!token) {
+                    setError("You Must Be logged in for Changing Your Details");
+                    return;
+                  }
+                  const newName = f.get("newName") as string;
+                  const newUsername = f.get("newUsername") as string;
+                  const uRegex = /^[a-zA-Z][a-zA-Z0-9._-]{3,15}$/;
+                  if (!uRegex.test(newUsername)) {
+                    setError(
+                      "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens. Length must be 4-16 characters.",
+                    );
+                    return;
+                  }
+
+                  const userResponse = await createRequest(
+                    "PATCH",
+                    "/user/:username",
+                    { username },
+                    token,
+                    {
+                      name: newName,
+                      username: newUsername,
+                    },
+                  );
+
+                  if (
+                    userResponse.error ||
+                    !userResponse.data ||
+                    !userResponse.data.data
+                  ) {
+                    setError(
+                      userResponse.error || "User Details cant be updated",
+                    );
+                    return;
+                  }
+
+                  const updatedUser = userResponse.data.data as User;
+                  setUser(updatedUser);
+                  if (userResponse.cookies) {
+                    setToken(userResponse.cookies);
+                  }
+                  return;
+                }}
+              >
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
+                  <Label htmlFor="newName" className="text-right">
                     Name
                   </Label>
                   <Input
-                    id="name"
+                    id="newName"
+                    name="newName"
                     placeholder="New Name"
+                    minLength={4}
+                    defaultValue={name}
                     className="col-span-3"
+                    required
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
                     Username
                   </Label>
-                  <Input id="username" className="col-span-3" />
+                  <Input
+                    id="newUsername"
+                    name="newUsername"
+                    title="4-16 characters, starting with a letter, and containing only letters, numbers, dots, underscores, or hyphens."
+                    className="col-span-3"
+                    placeholder="cool-boi"
+                    minLength={4}
+                    // pattern="^[a-zA-Z][a-zA-Z0-9._-]*$"
+                    maxLength={16}
+                    required
+                  />
                 </div>
-              </div>
-
-              <AlertDialogFooter>
+                <AlertDialogAction type="submit">
+                  Save Changes
+                </AlertDialogAction>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Save Changes</AlertDialogAction>
-              </AlertDialogFooter>
+              </form>
             </AlertDialogContent>
           </AlertDialog>
         </div>

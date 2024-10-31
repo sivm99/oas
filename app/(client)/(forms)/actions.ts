@@ -4,7 +4,6 @@ import { createRequest } from "@/Helper/request";
 import { loginSchema, registrationSchema } from "@/Helper/schema";
 import { isUserResponse } from "@/Helper/typeFunction";
 import { User } from "@/Helper/types";
-import { getCookieFromString } from "@/hooks/useSetCookie";
 import { log } from "console";
 
 // Define the state and response types
@@ -42,7 +41,13 @@ export async function handleAuth(
 
   try {
     const endpoint = isNew ? "/auth/signup" : "/auth/login";
-    const authResult = await createRequest("POST", endpoint, formValues.data);
+    const authResult = await createRequest(
+      "POST",
+      endpoint,
+      {},
+      "",
+      formValues.data,
+    );
 
     if (authResult.error || !authResult.data) {
       log(authResult.error || "Unknown error occurred");
@@ -78,7 +83,6 @@ export async function handleAuth(
         message: "An unexpected error occurred",
       };
     }
-    const token = getCookieFromString(authResult.cookies, "token");
 
     // await createSession(token || " ");
 
@@ -86,7 +90,7 @@ export async function handleAuth(
       success: true,
       message: response.message || `${isNew ? "Signup" : "Login"} successful`,
       user: response.data,
-      cookie: token || "",
+      cookie: authResult.cookies || "",
     };
   } catch (error) {
     log(error);

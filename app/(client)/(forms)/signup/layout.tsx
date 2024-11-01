@@ -12,6 +12,9 @@ export const metadata: Metadata = {
     "register",
     "email protection",
   ],
+  openGraph: {
+    images: ["https://n.1as.in/api/og?a=signup"],
+  },
 };
 
 export default async function FormLayout({

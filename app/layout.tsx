@@ -35,6 +35,9 @@ export const metadata: Metadata = {
   robots: "index, follow",
   // manifest: "/manifest.json",
   applicationName: "One Alias Service",
+  openGraph: {
+    images: ["https://n.1as.in/api/og?a=root"],
+  },
   icons: {
     icon: [
       {

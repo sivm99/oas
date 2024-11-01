@@ -1,4 +1,3 @@
-import Logo from "@/components/assets/Logo";
 import { ImageResponse } from "next/og";
 import { ReactElement } from "react";
 

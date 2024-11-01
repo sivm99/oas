@@ -1,4 +1,4 @@
-import TermsOfService from "@/app/(safety)/legal/tos/page";
+import Logo from "@/components/assets/Logo";
 import { ImageResponse } from "next/og";
 import { ReactElement } from "react";
 
@@ -38,7 +38,7 @@ const elements = {
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       <h1 style={{ color: "white", fontSize: "48px", marginBottom: "20px" }}>
-        Home
+        One Alias Service
       </h1>
       <p style={{ color: "white", fontSize: "24px" }}></p>
     </div>
@@ -53,7 +53,16 @@ const elements = {
       <p style={{ color: "white", fontSize: "24px" }}>Protecting Your Data</p>
     </div>
   ),
-  tos: <TermsOfService />,
+  tos: (
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <h1 style={{ color: "white", fontSize: "48px", marginBottom: "20px" }}>
+        Terms of Service
+      </h1>
+      <p style={{ color: "white", fontSize: "24px" }}>Our Commitment to You</p>
+    </div>
+  ),
   login: (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}

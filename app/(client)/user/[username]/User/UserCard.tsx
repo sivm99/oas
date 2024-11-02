@@ -111,11 +111,18 @@ const UserProfileCard = ({
                     return;
                   }
                   const newName = f.get("newName") as string;
-                  const newUsername = f.get("newUsername") as string;
-                  const uRegex = /^[a-zA-Z][a-zA-Z0-9._-]{3,15}$/;
-                  if (!uRegex.test(newUsername)) {
+                  const newUsername = f.get("new-username") as string;
+                  console.log({ newName, newUsername });
+                  const uRegex = /^[a-zA-Z][a-zA-Z0-9._-]{3,}$/;
+                  if (!newUsername || !uRegex.test(newUsername.toLowerCase())) {
                     setError(
-                      "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens. Length must be 4-16 characters.",
+                      "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens. Length must be at least 4 characters.",
+                    );
+                    return;
+                  }
+                  if (newUsername.length < 4 || newUsername.length > 16) {
+                    setError(
+                      "Username length must be between 4-16 characters.",
                     );
                     return;
                   }
@@ -165,12 +172,12 @@ const UserProfileCard = ({
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
+                  <Label htmlFor="new-username" className="text-right">
                     Username
                   </Label>
                   <Input
-                    id="newUsername"
-                    name="newUsername"
+                    id="new-username"
+                    name="new-username"
                     title="4-16 characters, starting with a letter, and containing only letters, numbers, dots, underscores, or hyphens."
                     className="col-span-3"
                     placeholder="cool-boi"

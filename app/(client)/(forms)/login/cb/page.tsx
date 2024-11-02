@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import useAppContext from "@/hooks/useAppContext";
 import { fetchUser } from "@/Helper/getData";
 import { Loader2 } from "lucide-react";
 
-export default function LoginCallback() {
+function LoginCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { setToken, setUser, setError } = useAppContext();
@@ -57,5 +57,19 @@ export default function LoginCallback() {
     <div className="h-screen w-screen flex items-center justify-center">
       <Loader2 className="h-8 w-8 animate-spin" />
     </div>
+  );
+}
+
+export default function LoginCallback() {
+  return (
+    <Suspense
+      fallback={
+        <div className="h-screen w-screen flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      }
+    >
+      <LoginCallbackContent />
+    </Suspense>
   );
 }

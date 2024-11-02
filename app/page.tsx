@@ -79,7 +79,12 @@ export default async function Home() {
           </CardContent>
           <CardFooter>
             <Link href="/user/dash">
-              <Button variant="secondary">Dashboard</Button>
+              <Button
+                variant="secondary"
+                className="border-2 border-transparent animate-border-glow"
+              >
+                Dashboard
+              </Button>
             </Link>
           </CardFooter>
         </Card>

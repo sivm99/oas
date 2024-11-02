@@ -32,7 +32,10 @@ function DeleteMe() {
       </p>
       <div className="flex w-fit gap-2 m-2">
         <Link href="/">
-          <Button variant={`outline`}>
+          <Button
+            variant={`outline`}
+            className="border-2 border-transparent animate-border-glow"
+          >
             <ArrowLeft className="mr-2" />
             Go Back to Home
           </Button>

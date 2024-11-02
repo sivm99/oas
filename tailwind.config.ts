@@ -56,6 +56,16 @@ const config: Config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      animation: {
+        "border-glow": "borderGlow 5s ease-in-out infinite",
+      },
+      keyframes: {
+        borderGlow: {
+          "0%, 100%": { borderColor: "#ff6ec4" },
+          "33%": { borderColor: "#7873f5" },
+          "66%": { borderColor: "#42d392" },
+        },
+      },
     },
   },
   // eslint-disable-next-line @typescript-eslint/no-require-imports

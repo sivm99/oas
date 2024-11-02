@@ -233,7 +233,7 @@ const SearchRules = ({ onSearch }: { onSearch: (value: string) => void }) => (
     <Input
       type="text"
       placeholder="Search by alias email..."
-      className="pl-10 w-full"
+      className="pl-10 w-full border-2 border-transparent animate-border-glow rounded-lg "
       onChange={(e) => onSearch(e.target.value)}
     />
   </div>

@@ -203,7 +203,7 @@ const UserProfileCard = ({
               <img
                 src={avatar}
                 alt={" "}
-                className="w-20 h-20 rounded-full border-4 border-white shadow-lg"
+                className="w-20 h-20 rounded-full border-4 border-transparent animate-border-glow shadow-lg"
               />
             ) : (
               <div className="w-20 h-20 rounded-full border-4 border-ring shadow-lg  flex items-center justify-center  text-2xl font-bold">

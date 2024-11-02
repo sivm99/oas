@@ -114,7 +114,7 @@ const UserProfileCard = ({
                   const newUsername = f.get("new-username") as string;
                   console.log({ newName, newUsername });
                   const uRegex = /^[a-zA-Z][a-zA-Z0-9._-]{3,}$/;
-                  if (!newUsername || !uRegex.test(newUsername.toLowerCase())) {
+                  if (newUsername && !uRegex.test(newUsername.toLowerCase())) {
                     setError(
                       "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens. Length must be at least 4 characters.",
                     );

@@ -36,7 +36,7 @@ function UserField() {
   }, [rules, destinations]);
 
   return (
-    <section className="p-4 ">
+    <section>
       {user && (
         <UserProfileCard
           {...user}

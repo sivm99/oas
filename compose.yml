@@ -6,13 +6,13 @@ services:
     container_name: oas-next
     environment:
       - NODE_ENV=PRODUCTION
-    ports:
-      - "127.0.0.1:6800:3000"
-      - "[::1]:6800:3000"
     restart: unless-stopped
     networks:
       - oas
+      - npm-network
 
 networks:
   oas:
+    external: true
+  npm-network:
     external: true

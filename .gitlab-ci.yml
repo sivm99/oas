@@ -1,19 +1,33 @@
 stages:
   - deploy
 
+variables:
+  TSFILE: "tailscale_1.28.0_amd64.tgz"
+
 before_script:
-  # Ensure ssh-agent is available and setup the SSH key
-  - "which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )"
-  - eval $(ssh-agent -s)
-  - echo "$SSHKEY" | tr -d '\r' | ssh-add -
-  - mkdir -p ~/.ssh
-  - chmod 700 ~/.ssh
-  - ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+  # Install required dependencies
+  - apt-get update -qq && apt-get install -y iptables wget
+
+  # Install Tailscale
+  - cd /usr/local/bin
+  - wget https://pkgs.tailscale.com/stable/${TSFILE} -P /tmp
+  - tar xzf /tmp/${TSFILE} --strip-components=1
+  - rm /tmp/${TSFILE}
+
+  # Configure and start Tailscale
+  - mkdir -p /var/run/tailscale
+  - update-alternatives --set iptables /usr/sbin/iptables-legacy
+  - tailscaled --state="mem:" &
+  - sleep 3 # Give tailscaled time to start
+  - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)"
+  - tailscale status
 
 deploy:
   stage: deploy
   script: |
     echo "Login to machine was successful"
-    ssh $USERNAME@$HOST "cd ~/server/oas-next && sh .scripts/live.sh"
+    ssh -o "StrictHostKeyChecking no" ubuntu@sora "
+    cd ~/server/oas-next && sh .scripts/live.sh
+    "
   rules:
     - if: $CI_COMMIT_BRANCH == "main"

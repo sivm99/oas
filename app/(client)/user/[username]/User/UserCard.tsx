@@ -118,12 +118,12 @@ const UserProfileCard = ({
                     setError(
                       "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens. Length must be at least 4 characters.",
                     );
-                    return;
-                  }
-                  if (newUsername.length < 4 || newUsername.length > 16) {
-                    setError(
-                      "Username length must be between 4-16 characters.",
-                    );
+                    if (newUsername.length < 4 || newUsername.length > 16) {
+                      setError(
+                        "Username length must be between 4-16 characters.",
+                      );
+                      return;
+                    }
                     return;
                   }
 
@@ -184,7 +184,6 @@ const UserProfileCard = ({
                     minLength={4}
                     // pattern="^[a-zA-Z][a-zA-Z0-9._-]*$"
                     maxLength={16}
-                    required
                   />
                 </div>
                 <AlertDialogAction type="submit">

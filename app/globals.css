@@ -106,7 +106,7 @@ body {
         @apply text-5xl sm:text-6xl md:text-8xl font-extrabold text-center mb-4 sm:mb-6 md:mb-8 leading-tight;
     }
     .nav_menu {
-        @apply hidden group-hover:block absolute right-0 mt-2 w-48 bg-background border rounded-md shadow-lg p-4;
+        @apply w-48 bg-background border rounded-md shadow-lg p-4 mt-2;
     }
 
     .dash_wrapper {

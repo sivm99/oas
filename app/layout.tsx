@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { NavbarServer } from "@/components/Navbar";
+import { NavbarClient } from "@/components/Navbar";
 
 const Inter = localFont({
   src: "./fonts/Inter-Regular.ttf",
@@ -91,7 +91,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NavbarServer />
+          <NavbarClient />
           <section className="app_container">{children}</section>
         </ThemeProvider>
       </body>

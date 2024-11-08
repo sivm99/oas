@@ -1,64 +1,74 @@
-// UserNavContent.tsx - Client Component
-"use client";
-
 import { Button } from "@/components/ui/button";
-import { User as UserIcon } from "lucide-react";
+import { Menu, User as UserIcon } from "lucide-react";
 import Link from "next/link";
 import { ModeToggle } from "../mode-toggle";
 import SignOutButton from "./SignOutButton";
-import { User } from "@/Helper/types";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 
-interface UserNavContentProps {
-  user?: User;
-  isMobile?: boolean;
+export interface UserNavContentProps {
+  name?: string | null;
 }
 
-export function UserNavContent({
-  user,
-  isMobile = false,
-}: UserNavContentProps) {
-  if (isMobile) {
-    return (
-      <div className="flex flex-col space-y-4">
+export default function UserNavContent({ name }: UserNavContentProps) {
+  return (
+    <>
+      <div className="hidden md:flex items-center space-x-4">
         <ModeToggle />
-        {user ? (
+        {name ? (
           <>
             <Link href={`/user/dash`}>
-              <Button variant="outline" className="w-full">
-                <UserIcon size={20} className="mr-2" />
-                Profile
+              <Button variant="outline">
+                <UserIcon size={20} />
               </Button>
             </Link>
             <SignOutButton />
           </>
         ) : (
           <Link href="/login">
-            <Button variant="default" className="w-full">
-              Login
-            </Button>
+            <Button variant="default">Login</Button>
           </Link>
         )}
       </div>
-    );
-  }
-
-  return (
-    <div className="hidden md:flex items-center space-x-4">
-      <ModeToggle />
-      {user ? (
-        <>
-          <Link href={`/user/dash`}>
-            <Button variant="outline">
-              <UserIcon size={20} />
+      <div className="md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="ghost">
+              <Menu className="h-6 w-6" />
             </Button>
-          </Link>
-          <SignOutButton />
-        </>
-      ) : (
-        <Link href="/login">
-          <Button variant="default">Login</Button>
-        </Link>
-      )}
-    </div>
+          </SheetTrigger>
+          <SheetContent side="right" className=" sm:w-2/3 md:w-1/2 lg:w-1/3">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col space-y-4 mt-4">
+              <ModeToggle />
+              {name ? (
+                <>
+                  <Link href={`/user/dash`}>
+                    <Button variant="outline" className="w-full justify-start">
+                      <UserIcon size={20} className="mr-2" />
+                      Profile
+                    </Button>
+                  </Link>
+                  <SignOutButton />
+                </>
+              ) : (
+                <Link href="/login" className="w-full">
+                  <Button variant="default" className="w-full">
+                    Login
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </>
   );
 }

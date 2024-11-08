@@ -272,13 +272,16 @@ function RulesCard({ rules }: { rules: Rule[] }) {
 
   return (
     <div className="grid gap-4">
-      {rules.length === 0 ? <EmptyState /> : null}
-      <div className="space-y-4">
-        <SearchRules onSearch={handleSearch} />
-        {filteredRules.map((rule) => (
-          <RuleCard key={rule.ruleId} rule={rule} />
-        ))}
-      </div>
+      {rules.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <div className="space-y-4">
+          <SearchRules onSearch={handleSearch} />
+          {filteredRules.map((rule) => (
+            <RuleCard key={rule.ruleId} rule={rule} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

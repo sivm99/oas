@@ -114,17 +114,21 @@ const UserProfileCard = ({
                   const newUsername = f.get("new-username") as string;
                   console.log({ newName, newUsername });
                   const uRegex = /^[a-zA-Z][a-zA-Z0-9._-]{3,}$/;
-                  if (newUsername && !uRegex.test(newUsername.toLowerCase())) {
-                    setError(
-                      "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens. Length must be at least 4 characters.",
-                    );
+
+                  if (newUsername) {
                     if (newUsername.length < 4 || newUsername.length > 16) {
                       setError(
                         "Username length must be between 4-16 characters.",
                       );
                       return;
                     }
-                    return;
+
+                    if (!uRegex.test(newUsername.toLowerCase())) {
+                      setError(
+                        "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens.",
+                      );
+                      return;
+                    }
                   }
 
                   const userResponse = await createRequest(
@@ -166,9 +170,8 @@ const UserProfileCard = ({
                     name="newName"
                     placeholder="New Name"
                     minLength={4}
-                    defaultValue={name}
+                    // defaultValue={name}
                     className="col-span-3"
-                    required
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -183,6 +186,7 @@ const UserProfileCard = ({
                     placeholder="cool-boi"
                     minLength={4}
                     // pattern="^[a-zA-Z][a-zA-Z0-9._-]*$"
+                    pattern="^[a-zA-Z]\S*$"
                     maxLength={16}
                   />
                 </div>
@@ -202,10 +206,10 @@ const UserProfileCard = ({
               <img
                 src={avatar}
                 alt={" "}
-                className="w-20 h-20 rounded-full border-4 border-transparent animate-border-glow shadow-lg"
+                className="w-12 h-12 sm:w-20 sm:h-20 rounded-full border-2 sm:border-4 border-transparent animate-border-glow shadow-lg"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full border-4 border-ring shadow-lg  flex items-center justify-center  text-2xl font-bold">
+              <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-full border-2 sm:border-4 border-ring shadow-lg flex items-center justify-center text-xl sm:text-2xl font-bold">
                 {name
                   .split(" ")
                   .map((n) => n[0])
@@ -213,7 +217,7 @@ const UserProfileCard = ({
                   .toUpperCase()}
               </div>
             )}
-            <span className="absolute bottom-0 right-0 w-5 h-5 border-2 border-white rounded-full bg-green-500" />
+            <span className="absolute bottom-0 right-0 w-3 h-3 sm:w-5 sm:h-5 border-2 border-white rounded-full bg-green-500" />
           </div>
           <div className="space-y-1">
             <h2 className="text-2xl font-bold">{name}</h2>
@@ -241,21 +245,18 @@ const UserProfileCard = ({
             <div className="flex items-center gap-2">
               {emailVerified ? (
                 <Badge
-                  // color="hsl(var(--primary))"
-                  variant="outline"
+                  variant="secondary"
                   className="flex items-center gap-1 border-green-500"
                 >
                   <CheckCircle size={20} className="text-green-500" />
-                  Verified
                 </Badge>
               ) : (
                 <div className="flex items-center gap-2">
                   <Badge
-                    variant="destructive"
+                    variant="secondary"
                     className="flex items-center gap-1"
                   >
                     <XCircle size={20} className="text-red-600" />
-                    Unverified
                   </Badge>
                   <Button
                     variant="outline"
@@ -264,7 +265,7 @@ const UserProfileCard = ({
                     className="flex items-center gap-1"
                   >
                     <Mail className="h-3 w-3" />
-                    Verify Now
+                    Verify
                   </Button>
                 </div>
               )}
@@ -273,23 +274,27 @@ const UserProfileCard = ({
         </div>
 
         {/* Stats Section */}
-        <div className="flex justify-between items-center mt-6 gap-4">
-          <div className="flex items-center space-x-4 p-4  rounded-lg shadow-ring shadow-sm w-full">
-            <Forward size={20} className="text-primary" />
-            <div>
-              <Label className="text-sm text-muted-foreground">Rules</Label>
-              <p className="text-2xl font-semibold">{aliasCount}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+          {aliasCount > 0 && (
+            <div className="flex items-center justify-between p-2 rounded-md border">
+              <div className="flex items-center gap-2">
+                <Forward size={16} className="text-primary" />
+                <Label className="text-sm text-muted-foreground">Rules</Label>
+              </div>
+              <p className="text-lg font-medium">{aliasCount}</p>
             </div>
-          </div>
-          <div className="flex items-center space-x-4 p-4 rounded-lg shadow-ring shadow-sm w-full">
-            <Inbox size={20} className="text-primary" />
-            <div>
-              <Label className="text-sm text-muted-foreground">
-                Destinations
-              </Label>
-              <p className="text-2xl font-semibold">{destinationCount}</p>
+          )}
+          {destinationCount > 0 && (
+            <div className="flex items-center justify-between p-2 rounded-md border">
+              <div className="flex items-center gap-2">
+                <Inbox size={16} className="text-primary" />
+                <Label className="text-sm text-muted-foreground">
+                  Destinations
+                </Label>
+              </div>
+              <p className="text-lg font-medium">{destinationCount}</p>
             </div>
-          </div>
+          )}
         </div>
       </CardContent>
     </Card>

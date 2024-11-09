@@ -44,96 +44,92 @@ function DashBoard() {
   };
   const {} = params;
 
-  const [state, fetchData] = useActionState(
-    async (p: FormState, formData: FormData) => {
-      let localUser;
-      let localToken;
-      let localRules;
-      let localDestinations;
-      console.log(formData.getAll("a"));
-      if (!user || !token || !p.token) {
-        localUser = await getLocalUser();
-        if (localUser) {
-          setUser(localUser);
-          window.history.replaceState(null, "", `/user/${localUser.username}`);
-        }
-
-        localToken = await getLocalToken();
-        if (localToken) {
-          setToken(localToken);
-        }
-
-        localRules = await getLocalRules();
-        if (localRules && localUser?.username === localRules[0].username) {
-          setRules(localRules);
-        }
-        localDestinations = await getLocalDestinations();
-        if (
-          localDestinations &&
-          localUser?.username === localDestinations[0].username
-        ) {
-          setDestinations(localDestinations);
-        }
-      } else {
-        localUser = user;
-        localToken = token;
+  const [state, fetchData] = useActionState(async (p: FormState) => {
+    let localUser;
+    let localToken;
+    let localRules;
+    let localDestinations;
+    if (!user || !token || !p.token) {
+      localUser = await getLocalUser();
+      if (localUser) {
+        setUser(localUser);
+        window.history.replaceState(null, "", `/user/${localUser.username}`);
       }
 
-      if (!localUser || !localToken) {
-        setError("You Must be Logged in to access this Resource");
-        return {
-          success: false,
-          rules: undefined,
-          destinations: undefined,
-          token: undefined,
-        };
+      localToken = await getLocalToken();
+      if (localToken) {
+        setToken(localToken);
       }
 
-      let newToken: string | undefined;
-      let updatedRules: Rule[] | undefined;
-      let updatedDestinations: Destination[] | undefined;
-
-      if (localUser.aliasCount && !localRules) {
-        const rulesResult = await fetchRules(localToken);
-
-        if (!rulesResult.error && rulesResult.rules) {
-          updatedRules = rulesResult.rules;
-          if (rulesResult.newToken) {
-            newToken = rulesResult.newToken;
-          }
-        }
+      localRules = await getLocalRules(user?.username);
+      if (localRules && localUser?.username === localRules[0].username) {
+        setRules(localRules);
       }
-
-      if (localUser.destinationCount && !localDestinations) {
-        const destinationsResult = await fetchDestinations(localToken);
-
-        if (!destinationsResult.error && destinationsResult.destinations) {
-          updatedDestinations = destinationsResult.destinations;
-          if (destinationsResult.newToken) {
-            newToken = destinationsResult.newToken;
-          }
-        }
+      localDestinations = await getLocalDestinations(user?.username);
+      if (
+        localDestinations &&
+        localUser?.username === localDestinations[0].username
+      ) {
+        setDestinations(localDestinations);
       }
+    } else {
+      localUser = user;
+      localToken = token;
+    }
 
-      if (updatedRules) {
-        setRules(updatedRules);
-      }
-      if (updatedDestinations) {
-        setDestinations(updatedDestinations);
-      }
-      if (newToken) {
-        setToken(newToken);
-      }
-
+    if (!localUser || !localToken) {
+      setError("You Must be Logged in to access this Resource");
       return {
-        success: true,
-        rules: updatedRules,
-        destinations: updatedDestinations,
-        token: newToken,
+        success: false,
+        rules: undefined,
+        destinations: undefined,
+        token: undefined,
       };
-    },
-    stateInitial,
-  );
+    }
+
+    let newToken: string | undefined;
+    let updatedRules: Rule[] | undefined;
+    let updatedDestinations: Destination[] | undefined;
+
+    if (localUser.aliasCount && !localRules) {
+      const rulesResult = await fetchRules(localToken);
+
+      if (!rulesResult.error && rulesResult.rules) {
+        updatedRules = rulesResult.rules;
+        if (rulesResult.newToken) {
+          newToken = rulesResult.newToken;
+        }
+      }
+    }
+
+    if (localUser.destinationCount && !localDestinations) {
+      const destinationsResult = await fetchDestinations(localToken);
+
+      if (!destinationsResult.error && destinationsResult.destinations) {
+        updatedDestinations = destinationsResult.destinations;
+        if (destinationsResult.newToken) {
+          newToken = destinationsResult.newToken;
+        }
+      }
+    }
+
+    if (updatedRules) {
+      setRules(updatedRules);
+    }
+    if (updatedDestinations) {
+      setDestinations(updatedDestinations);
+    }
+    if (newToken) {
+      setToken(newToken);
+    }
+
+    return {
+      success: true,
+      rules: updatedRules,
+      destinations: updatedDestinations,
+      token: newToken,
+    };
+  }, stateInitial);
 
   // useEffect(() => {
   //   console.log("URL rewrite useEffect");

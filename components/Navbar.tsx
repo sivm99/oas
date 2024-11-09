@@ -22,7 +22,7 @@ export function NavbarClient() {
             </Link>
           </div>
           {/* Desktop Navigation */}
-          <UserNavContent name={null} />
+          <UserNavContent name={"shivam"} />
           {/* Mobile Navigation */}
         </div>
       </div>

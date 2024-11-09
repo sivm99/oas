@@ -18,7 +18,7 @@ import { redirect } from "next/navigation";
 import { User } from "lucide-react";
 
 export default function SignupForm() {
-  const { setUser, setError, setHint, setToken } = useAppContext();
+  const { setUser, setError, setToken } = useAppContext();
 
   const [r, performSignup, isPending] = useActionState(
     async (prev: FormState | null, formData: FormData): Promise<FormState> => {
@@ -49,11 +49,10 @@ export default function SignupForm() {
         message: r.message,
       };
     },
-    null
+    null,
   );
 
   if (r?.success) {
-    setHint(r.message || "Signup successful");
     setToken(r.cookie || " ");
     redirect("/user/dash");
   }

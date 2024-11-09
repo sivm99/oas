@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { RuleDialog } from "./RuleDialog";
 import { createRequest } from "@/Helper/request";
 import { getLocalToken } from "@/Helper/getLocalData";
+import { db } from "@/Helper/dbService";
 // Separate RuleCard Component
 const RuleCard = ({ rule }: { rule: Rule }) => {
   const { setHint, token, setToken, setError, rules, setRules } =
@@ -147,6 +148,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
             setRules(
               rules.filter((prevRule) => prevRule.ruleId !== rule.ruleId),
             );
+            db.deleteRuleById(rule.ruleId);
 
             if (ruleResult.cookies) {
               setToken(ruleResult.cookies);
@@ -235,6 +237,7 @@ const SearchRules = ({ onSearch }: { onSearch: (value: string) => void }) => (
       placeholder="Search by alias email..."
       className="pl-10 w-full border-2 border-transparent animate-border-glow rounded-lg "
       onChange={(e) => onSearch(e.target.value)}
+      autoComplete="off"
     />
   </div>
 );

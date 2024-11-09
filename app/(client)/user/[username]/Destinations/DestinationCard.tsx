@@ -54,7 +54,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
       "/mail/destinations/:destinationID",
       { destinationID: destination.destinationID },
       token,
-      { password }
+      { password },
     );
 
     if (res.error || !res.data) {
@@ -65,8 +65,8 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
     if (res.status === 204) {
       setDestinations(
         destinations.filter(
-          (d) => d.destinationID !== destination.destinationID
-        )
+          (d) => d.destinationID !== destination.destinationID,
+        ),
       );
       setHint("Destination deleted successfully");
     }
@@ -84,7 +84,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
         "Deleting destination:",
         selectedDestination.destinationID,
         "with password:",
-        password
+        password,
       );
     }
     setShowDeleteDialog(false);
@@ -106,7 +106,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
       "/mail/destinations/:destinationID/verify",
       { destinationID: destination.destinationID },
       token,
-      {}
+      {},
     );
 
     if (res.error || !res.data) {
@@ -131,7 +131,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
           return verifiedDestination.data;
         }
         return d;
-      })
+      }),
     );
   };
 

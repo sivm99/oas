@@ -1,6 +1,6 @@
 "use client";
 
-import { eraseCookie } from "@/hooks/useSetCookie";
+import { db } from "@/Helper/dbService";
 import { Button } from "../ui/button";
 
 export default function LogoutButton() {
@@ -11,7 +11,7 @@ export default function LogoutButton() {
       className="w-full"
       onClick={() => {
         localStorage.clear();
-        eraseCookie("token");
+        db.clearAll();
         window.location.href = "/";
       }}
     >

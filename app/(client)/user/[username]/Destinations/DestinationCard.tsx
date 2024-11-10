@@ -10,20 +10,23 @@ import {
 } from "@/components/ui/card";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  // DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { Destination, ResponseObject } from "@/Helper/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, Globe, Mail, ShieldCheck, Trash2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import {
+  CheckCircle2,
+  Globe,
+  Mail,
+  MoreVertical,
+  ShieldCheck,
+} from "lucide-react";
 import useAppContext from "@/hooks/useAppContext";
 import { createRequest } from "@/Helper/request";
 import { getCookieFromString } from "@/hooks/useSetCookie";
@@ -32,66 +35,8 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
   const { token, setToken, setError, setHint, setDestinations } =
     useAppContext();
 
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [selectedDestination, setSelectedDestination] =
-    useState<Destination | null>(null);
-  const [password, setPassword] = useState("");
-
-  const handleDelete = async (destination: Destination) => {
-    setSelectedDestination(destination);
-    setShowDeleteDialog(true);
-
-    if (!token) {
-      const localToken = localStorage.getItem("token");
-      if (!localToken) {
-        setError("Login Expired , Please Login Again");
-        return;
-      }
-      setToken(localToken);
-    }
-    const res = await createRequest(
-      "DELETE",
-      "/mail/destinations/:destinationID",
-      { destinationID: destination.destinationID },
-      token,
-      { password },
-    );
-
-    if (res.error || !res.data) {
-      setError(res.error || "Failed to delete destination");
-      return;
-    }
-
-    if (res.status === 204) {
-      setDestinations(
-        destinations.filter(
-          (d) => d.destinationID !== destination.destinationID,
-        ),
-      );
-      setHint("Destination deleted successfully");
-    }
-    const newToken = res.cookies
-      ? getCookieFromString(res.cookies, "token")
-      : null;
-
-    setToken(newToken || token);
-    return;
-  };
-
-  const confirmDelete = () => {
-    if (selectedDestination) {
-      console.log(
-        "Deleting destination:",
-        selectedDestination.destinationID,
-        "with password:",
-        password,
-      );
-    }
-    setShowDeleteDialog(false);
-    setPassword("");
-    setSelectedDestination(null);
-  };
-
+  const [showDelete, setShowDelete] = useState(false);
+  const [showNew, setShowNew] = useState(false);
   const verifyDestination = async (destination: Destination) => {
     if (!token) {
       const localToken = localStorage.getItem("token");
@@ -136,89 +81,68 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {destinations.map((destination) => (
-          <Card key={destination.destinationID} className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Mail className="w-5 h-5 mr-2" />
-                  <span className="truncate p-1">
-                    {destination.destinationEmail}
-                  </span>
-                </div>
-                {destination.verified && (
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
-                )}
-              </CardTitle>
-              <CardDescription className="flex items-center">
-                <Globe className="w-4 h-4 mr-2" />
-                {destination.domain}
-              </CardDescription>
-            </CardHeader>
-
-            {/* <CardContent> */}
-            {/* Empty content since email moved to title */}
-            {/* </CardContent> */}
-
-            <CardFooter className="flex justify-between">
-              {!destination.verified && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    verifyDestination(destination);
-                  }}
-                >
-                  <ShieldCheck className="w-4 h-4 mr-2" />
-                  Verify
-                </Button>
+    <section>
+      {destinations.map((destination) => (
+        <Card key={destination.destinationID} className="shadow-lg">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Mail className="w-5 h-5 mr-2" />
+                <span className="truncate p-1">
+                  {destination.destinationEmail}
+                </span>
+              </div>
+              {destination.verified && (
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
               )}
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => handleDelete(destination)}
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Delete
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
+            </CardTitle>
+            <CardDescription className="flex items-center">
+              <Globe className="w-4 h-4 mr-2" />
+              {destination.domain}
+            </CardDescription>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" title="options">
+                  <MoreVertical size={20} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onSelect={() => setShowNew(!showNew)}>
+                  New Destination
+                </DropdownMenuItem>
 
-      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm Deletion</DialogTitle>
-            <DialogDescription>
-              Please enter your password to confirm deletion
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              autoComplete="current-password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowDeleteDialog(false)}
-            >
-              Cancel
-            </Button>
-            <Button variant="destructive" onClick={confirmDelete}>
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-destructive"
+                  onSelect={() => setShowDelete(!showDelete)}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </CardHeader>
+
+          {/* <CardContent> */}
+          {/* Empty content since email moved to title */}
+          {/* </CardContent> */}
+
+          <CardFooter className="flex justify-between">
+            {!destination.verified && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  verifyDestination(destination);
+                }}
+              >
+                <ShieldCheck className="w-4 h-4 mr-2" />
+                Verify
+              </Button>
+            )}
+          </CardFooter>
+        </Card>
+      ))}
+    </section>
   );
 }
 

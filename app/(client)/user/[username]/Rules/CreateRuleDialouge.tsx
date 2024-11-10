@@ -1,0 +1,233 @@
+import FormInput from "@/components/FormInput";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Destination } from "@/Helper/types";
+import { cn } from "@/lib/utils";
+import { Mail } from "lucide-react";
+import { useEffect, useState } from "react";
+
+interface UserDialogProps {
+  destinations: Destination[];
+  onAction: (f: FormData) => void;
+  onCancel?: () => void;
+}
+
+export const CreateRuleDialog = ({
+  onAction,
+  onCancel,
+  destinations,
+}: UserDialogProps) => {
+  const [open, setOpen] = useState(true);
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" && window.innerWidth >= 768,
+  );
+
+  useEffect(() => {
+    function handleResize() {
+      setIsDesktop(window.innerWidth >= 768);
+    }
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
+
+  const DialogForm = ({ className }: { className?: string }) => (
+    <form action={onAction} className={cn("space-y-4 my-4", className)}>
+      <div className="flex flex-col sm:flex-row gap-2">
+        <FormInput
+          type="text"
+          name="alias"
+          id="alias"
+          label="Cool Email"
+          icon={Mail}
+          placeholder="space-king"
+          autoComplete="off"
+          required
+          className="flex-1"
+          pattern="^\S*$"
+          title="No spaces allowed"
+          maxLength={20}
+        />
+        <div className="mb-1 mt-3">
+          <label htmlFor="domain" className="block text-sm font-medium mb-3 ">
+            Domain<span className="text-red-500 ml-1">*</span>
+          </label>
+          <Select name="domain" required>
+            <SelectTrigger className="w-full flex-1 sm:flex-none sm:w-auto">
+              <SelectValue placeholder="Domain" />
+            </SelectTrigger>
+            <SelectContent>
+              {destinations.map((dest) => (
+                <SelectItem
+                  key={dest.destinationID}
+                  value={`@${dest.domain}`}
+                  id="domain"
+                >
+                  @{dest.domain}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <div className="mb-">
+        <label
+          className="block text-sm font-medium mb-2"
+          htmlFor="destinationEmail"
+        >
+          Destination Email <span className="text-red-500 ml-1">*</span>
+        </label>
+        <Select
+          name="destinationEmail"
+          defaultValue={destinations[0].destinationEmail}
+          required
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select destination email" />
+          </SelectTrigger>
+          <SelectContent id="destinationEmail">
+            {destinations.map((dest) => (
+              <SelectItem
+                key={dest.destinationID}
+                value={dest.destinationEmail}
+              >
+                {dest.destinationEmail}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="m-0">
+        <FormInput
+          type="text"
+          id="rule-name"
+          name="rule-name"
+          label="Rule Name (Optional)"
+          maxLength={50}
+          placeholder="My adobe scan Id"
+        />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2" htmlFor="comment">
+          Rule Description (Optional)
+        </label>
+        <Textarea
+          id="comment"
+          name="comment"
+          placeholder="This Address is for Facebook"
+          maxLength={200}
+        />
+      </div>
+
+      {isDesktop && (
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button type="submit">Save New Rule</Button>
+        </DialogFooter>
+      )}
+      {!isDesktop && (
+        <Button type="submit" className="w-full">
+          Save New Rule
+        </Button>
+      )}
+    </form>
+  );
+
+  // Render Desktop Dialog
+  if (isDesktop) {
+    return (
+      <Dialog
+        open={open}
+        onOpenChange={(newOpen) => {
+          setOpen(newOpen);
+          if (!newOpen && onCancel) {
+            onCancel();
+          }
+        }}
+      >
+        <DialogTrigger asChild>
+          {/* <Button variant={triggerVariant}>
+            {triggerText || config.title}
+          </Button> */}
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Create New Email Forwarding Rule</DialogTitle>
+            <DialogDescription>
+              All the emails sent to your created email address will be
+              forwarded to you
+            </DialogDescription>
+          </DialogHeader>
+          <DialogForm />
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  // Render Mobile Version
+  return (
+    <Drawer
+      open={open}
+      onOpenChange={(newOpen) => {
+        setOpen(newOpen);
+        if (!newOpen && onCancel) {
+          onCancel();
+        }
+      }}
+    >
+      <DrawerTrigger asChild>
+        {/* <Button variant={triggerVariant}>{triggerText || config.title}</Button> */}
+      </DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Create New Email Forwarding Rule</DrawerTitle>
+          <DrawerDescription>
+            All the emails sent to your created email address will be forwarded
+            to you
+          </DrawerDescription>
+        </DrawerHeader>
+        <DialogForm className="px-4" />
+        <DrawerFooter className="pt-2">
+          <DrawerClose asChild>
+            <Button variant="outline" onClick={onCancel}>
+              Cancel
+            </Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  );
+};

@@ -235,7 +235,7 @@ const SearchRules = ({ onSearch }: { onSearch: (value: string) => void }) => (
     <Input
       type="text"
       placeholder="Search by alias email..."
-      className="pl-10 w-full border-2 border-transparent animate-border-glow rounded-lg "
+      className="pl-10 w-full rounded-lg "
       onChange={(e) => onSearch(e.target.value)}
       autoComplete="off"
     />
@@ -278,7 +278,7 @@ function RulesCard({ rules }: { rules: Rule[] }) {
       {rules.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 mt-4">
           <SearchRules onSearch={handleSearch} />
           {filteredRules.map((rule) => (
             <RuleCard key={rule.ruleId} rule={rule} />

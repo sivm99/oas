@@ -1,22 +1,13 @@
 "use client";
 
-import FormInput from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { getLocalToken } from "@/Helper/getLocalData";
 import { createRequest } from "@/Helper/request";
 import { Rule } from "@/Helper/types";
 import useAppContext from "@/hooks/useAppContext";
-import { Mail } from "lucide-react";
 import { useState } from "react";
+import { CreateRuleDialog } from "./CreateRuleDialouge";
 
 function NewRule() {
   const { destinations, token, setToken, setError, setRules, rules } =
@@ -31,11 +22,12 @@ function NewRule() {
   }
 
   return (
-    <div className="w-full max-w-full my-4 mx-auto">
-      {!showForm && (
+    <div className="w-full max-w-full  mx-auto">
+      {!showForm && destinations.length > 0 && (
         <Button
+          variant="outline"
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2"
+          className="flex w-full items-center gap-2 border-transparent animate-border-glow border-2"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -51,13 +43,14 @@ function NewRule() {
           >
             <path d="M12 5v14M5 12h14" />
           </svg>
-          Create Rule
+          Create New Rule
         </Button>
       )}
 
       {showForm && (
-        <form
-          action={async (formData) => {
+        <CreateRuleDialog
+          destinations={destinations}
+          onAction={async (formData) => {
             const alias = formData.get("alias") as string;
             const domain = formData.get("domain") as string;
             const destinationEmail = formData.get("destinationEmail") as string;
@@ -99,110 +92,8 @@ function NewRule() {
 
             setShowForm(false);
           }}
-          className="space-y-4 my-4"
-        >
-          {/* <label htmlFor="alias" className="text-sm font-medium">
-            Cool Email<span className="text-red-500 ml-1">*</span>
-          </label> */}
-          <div className="flex flex-col sm:flex-row gap-2">
-            <FormInput
-              type="text"
-              name="alias"
-              id="alias"
-              label="Cool Email"
-              icon={Mail}
-              placeholder="space-king"
-              autoComplete="off"
-              required
-              className="flex-1"
-              pattern="^\S*$"
-              title="No spaces allowed"
-              maxLength={20}
-            />
-            <div className="mb-1 mt-3">
-              <label
-                htmlFor="domain"
-                className="block text-sm font-medium mb-3 "
-              >
-                Domain<span className="text-red-500 ml-1">*</span>
-              </label>
-              <Select name="domain" required>
-                <SelectTrigger className="w-full flex-1 sm:flex-none sm:w-auto">
-                  <SelectValue placeholder="Domain" />
-                </SelectTrigger>
-                <SelectContent>
-                  {destinations.map((dest) => (
-                    <SelectItem
-                      key={dest.destinationID}
-                      value={`@${dest.domain}`}
-                      id="domain"
-                    >
-                      @{dest.domain}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <div className="mb-">
-            <label
-              className="block text-sm font-medium mb-2"
-              htmlFor="destinationEmail"
-            >
-              Destination Email <span className="text-red-500 ml-1">*</span>
-            </label>
-            <Select name="destinationEmail" required>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select destination email" />
-              </SelectTrigger>
-              <SelectContent id="destinationEmail">
-                {destinations.map((dest) => (
-                  <SelectItem
-                    key={dest.destinationID}
-                    value={dest.destinationEmail}
-                  >
-                    {dest.destinationEmail}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="m-0">
-            <FormInput
-              type="text"
-              id="rule-name"
-              name="rule-name"
-              label="Rule Name (Optional)"
-              maxLength={50}
-              placeholder="My adobe scan Id"
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-medium mb-2" htmlFor="comment">
-              Rule Description (Optional)
-            </label>
-            <Textarea
-              id="comment"
-              name="comment"
-              placeholder="This Address is for Facebook"
-              maxLength={200}
-            />
-          </div>
-          <div className="flex gap-2 w-1/2 ">
-            <Button type="submit" className="w-full">
-              Save Rule
-            </Button>
-            <Button
-              className="w-full"
-              variant={"outline"}
-              onClick={() => {
-                setShowForm((s) => !s);
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
-        </form>
+          onCancel={() => setShowForm(false)}
+        />
       )}
     </div>
   );

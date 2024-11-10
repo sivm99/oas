@@ -22,8 +22,8 @@ function RuleFields() {
 
   return (
     <section>
-      <RulesCard rules={rules} />
       <NewRule />
+      <RulesCard rules={rules} />
     </section>
   );
 }

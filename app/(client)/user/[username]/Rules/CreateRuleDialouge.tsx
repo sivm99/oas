@@ -61,37 +61,36 @@ export const CreateRuleDialog = ({
   }, []);
 
   const DialogForm = ({ className }: { className?: string }) => (
-    <form action={onAction} className={cn("space-y-4 my-4", className)}>
-      <div className="flex flex-col sm:flex-row gap-2">
+    <form
+      action={onAction}
+      className={cn("space-y-6 my-4 overflow-y-auto", className)}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <FormInput
           type="text"
           name="alias"
           id="alias"
-          label="Cool Email"
+          label="New Alias"
           icon={Mail}
           placeholder="space-king"
           autoComplete="off"
           required
-          className="flex-1"
-          pattern="^\S*$"
+          pattern="^[^@\s]*$"
           title="No spaces allowed"
           maxLength={20}
         />
-        <div className="mb-1 mt-3">
-          <label htmlFor="domain" className="block text-sm font-medium mb-3 ">
-            Domain<span className="text-red-500 ml-1">*</span>
-          </label>
-          <Select name="domain" required>
-            <SelectTrigger className="w-full flex-1 sm:flex-none sm:w-auto">
+        <div className={cn(isDesktop ? "mt-6" : "mt-0")}>
+          <Select
+            name="domain"
+            required
+            defaultValue={`@${destinations[0].domain}`}
+          >
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Domain" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="popper">
               {destinations.map((dest) => (
-                <SelectItem
-                  key={dest.destinationID}
-                  value={`@${dest.domain}`}
-                  id="domain"
-                >
+                <SelectItem key={dest.destinationID} value={`@${dest.domain}`}>
                   @{dest.domain}
                 </SelectItem>
               ))}
@@ -99,12 +98,35 @@ export const CreateRuleDialog = ({
           </Select>
         </div>
       </div>
-      <div className="mb-">
+
+      <div className="relative z-0">
+        <FormInput
+          type="text"
+          id="rule-name"
+          name="rule-name"
+          label="Rule Name (Optional)"
+          maxLength={50}
+          placeholder="My adobe scan Id"
+        />
+      </div>
+
+      <div className="relative z-0">
+        <label className="block text-sm font-medium mb-2" htmlFor="comment">
+          Rule Description (Optional)
+        </label>
+        <Textarea
+          id="comment"
+          name="comment"
+          placeholder="This Address is for Facebook"
+          maxLength={200}
+        />
+      </div>
+      <div className="relative z-0">
         <label
           className="block text-sm font-medium mb-2"
           htmlFor="destinationEmail"
         >
-          Destination Email <span className="text-red-500 ml-1">*</span>
+          Forwards To <span className="text-red-500 ml-1">*</span>
         </label>
         <Select
           name="destinationEmail"
@@ -114,7 +136,7 @@ export const CreateRuleDialog = ({
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select destination email" />
           </SelectTrigger>
-          <SelectContent id="destinationEmail">
+          <SelectContent position="popper">
             {destinations.map((dest) => (
               <SelectItem
                 key={dest.destinationID}
@@ -126,29 +148,8 @@ export const CreateRuleDialog = ({
           </SelectContent>
         </Select>
       </div>
-      <div className="m-0">
-        <FormInput
-          type="text"
-          id="rule-name"
-          name="rule-name"
-          label="Rule Name (Optional)"
-          maxLength={50}
-          placeholder="My adobe scan Id"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-2" htmlFor="comment">
-          Rule Description (Optional)
-        </label>
-        <Textarea
-          id="comment"
-          name="comment"
-          placeholder="This Address is for Facebook"
-          maxLength={200}
-        />
-      </div>
 
-      {isDesktop && (
+      {isDesktop ? (
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline" onClick={onCancel}>
@@ -157,8 +158,7 @@ export const CreateRuleDialog = ({
           </DialogClose>
           <Button type="submit">Save New Rule</Button>
         </DialogFooter>
-      )}
-      {!isDesktop && (
+      ) : (
         <Button type="submit" className="w-full">
           Save New Rule
         </Button>

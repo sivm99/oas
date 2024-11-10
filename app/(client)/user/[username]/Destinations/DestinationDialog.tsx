@@ -44,7 +44,7 @@ interface UserDialogProps {
 
 export const DestinationDialog = ({
   userEmail,
-  destination,
+  // destination,
   type,
   cardTitle,
   cardDesc,
@@ -67,29 +67,21 @@ export const DestinationDialog = ({
     }
   }, []);
 
-  const ShowForm = ({ destination }: { destination?: Destination }) => {
+  const ShowForm = () => {
     if (type == "delete")
       return (
         <>
           <FormInput
-            name="password"
+            name="current-password"
             type="password"
             required
-            id="password"
+            id="current-password"
             placeholder="••••••••"
             autoComplete="current-password"
             label="Current Password"
             minLength={8}
             maxLength={16}
           />
-          <input
-            type="text"
-            hidden
-            aria-hidden="true"
-            name="destinationID"
-            id="destinationID"
-            value={destination?.destinationID}
-          />{" "}
         </>
       );
     if (type == "create")
@@ -107,7 +99,12 @@ export const DestinationDialog = ({
               label="Primary Email"
             />
           </div>
-
+          <label
+            className="block text-sm font-medium"
+            htmlFor="destination-domain"
+          >
+            Domain <span className="text-red-500 ml-1">*</span>
+          </label>
           <Select name="destination-domain" defaultValue={domains[0]} required>
             <SelectTrigger>
               <SelectValue placeholder="Select domain" />
@@ -127,7 +124,7 @@ export const DestinationDialog = ({
 
   const DialogForm = ({ className }: { className?: string }) => (
     <form action={onAction} className={cn("grid gap-4 py-4", className)}>
-      <ShowForm destination={destination} />
+      <ShowForm />
       {isDesktop && (
         <DialogFooter>
           <DialogClose asChild>

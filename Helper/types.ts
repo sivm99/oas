@@ -9,7 +9,7 @@ type User = {
 };
 
 type Rule = {
-  ruleId: string;
+  ruleId: number;
   username: string;
   aliasEmail: string;
   destinationEmail: string;
@@ -19,7 +19,7 @@ type Rule = {
 };
 
 type Destination = {
-  destinationID: string;
+  destinationID: number;
   username: string;
   destinationEmail: string;
   domain: string;

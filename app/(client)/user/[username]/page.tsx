@@ -14,6 +14,7 @@ import {
 import UserField from "./User/UserField";
 import RuleFields from "./Rules/RuleField";
 import DestinationField from "./Destinations/DestinationField";
+import { Separator } from "@/components/ui/separator";
 
 type FormState = {
   success: boolean;
@@ -131,12 +132,6 @@ function DashBoard() {
     };
   }, stateInitial);
 
-  // useEffect(() => {
-  //   console.log("URL rewrite useEffect");
-  //   if (user?.username != username) {
-  //     redirect(`/user/${user?.username}`);
-  //   }
-  // }, []);
   useEffect(() => {
     console.log("DashBoard Use Effect for fetching Rules from API was called");
 
@@ -173,9 +168,12 @@ function DashBoard() {
           <div className="dash_child">
             <UserField />
           </div>
+          {/* <Separator className="w-1/2" /> */}
+          <Separator className="w-1/2" />
           <div className="dash_child">
             <RuleFields />
           </div>
+          <Separator className="w-1/2" />
           <div className="dash_child">
             <DestinationField />
           </div>

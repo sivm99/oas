@@ -2,8 +2,7 @@
 
 import {
   Card,
-  // CardContent,
-  CardDescription,
+  CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -30,6 +29,9 @@ import {
 import useAppContext from "@/hooks/useAppContext";
 import { createRequest } from "@/Helper/request";
 import { getCookieFromString } from "@/hooks/useSetCookie";
+import { getLocalToken } from "@/Helper/getLocalData";
+import { DestinationDialog } from "./DestinationDialog";
+import { db } from "@/Helper/dbService";
 
 function DestinationsCard({ destinations }: { destinations: Destination[] }) {
   const { token, setToken, setError, setHint, setDestinations } =
@@ -80,10 +82,131 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
     );
   };
 
+  const newDestination = async (f: FormData) => {
+    const localToken = await getLocalToken();
+    if (localToken) {
+      setToken(localToken);
+    }
+    const destinationEmail = f.get("destination-email") as string;
+    const selectedDomain = f.get("destination-domain") as string;
+    if (!destinationEmail || !selectedDomain) {
+      setError("Email and domain are required");
+      return;
+    }
+
+    try {
+      if (!token) {
+        setError("You are not logged in");
+        return;
+      }
+
+      const destinationResult = await createRequest(
+        "POST",
+        "/mail/destinations",
+        {},
+        token,
+        { destinationEmail, domain: selectedDomain },
+      );
+
+      if (!destinationResult || !destinationResult.data) {
+        setError(destinationResult.error || "Failed to create destination");
+        return;
+      }
+
+      const newDestination =
+        destinationResult.data as ResponseObject<Destination>;
+
+      if (newDestination.status === "success" && newDestination.data) {
+        if (destinationResult.cookies) {
+          const newToken = getCookieFromString(
+            destinationResult.cookies,
+            "token",
+          );
+
+          if (newToken) {
+            setToken(newToken);
+          }
+        }
+        if (!destinations) {
+          setDestinations([newDestination.data]);
+        } else {
+          setDestinations([...destinations, newDestination.data]);
+        }
+        setHint(`${newDestination.message}`);
+        setShowNew(false);
+      } else {
+        setError(newDestination.message);
+      }
+    } catch (error) {
+      console.error(error);
+      setError("Failed to create destination");
+    }
+  };
+
   return (
     <section>
       {destinations.map((destination) => (
         <Card key={destination.destinationID} className="shadow-lg">
+          {showNew && (
+            <DestinationDialog
+              type="create"
+              onCancel={() => setShowNew(false)}
+              cardTitle="Add New Destination"
+              cardDesc="Great news! Your mail will be forwarded to this address once it's verified. You'll be able to create exciting new Rules for your selected Domain - it's that simple!"
+              onAction={newDestination}
+            />
+          )}
+          {showDelete && (
+            <DestinationDialog
+              type="delete"
+              onCancel={() => setShowDelete(false)}
+              cardTitle={`Delete ${destination.destinationEmail} From One Alias Service`}
+              cardDesc={`Warning: All rules associated with ${destination.destinationEmail} will be permanently disabled and no further email forwarding will occur. Furthermore, this destination will be blocked from any future rule creation, rendering it completely inoperable.`}
+              onAction={async (f) => {
+                const password = f.get("current-password") as string;
+                if (!password || password.length < 8) {
+                  setError("Password is required");
+                  return;
+                }
+                if (!token) {
+                  setError("You must be logged in perform this action");
+                  setShowDelete(false);
+                  return;
+                }
+
+                const deleteResponse = await createRequest(
+                  "DELETE",
+                  "/mail/destinations/:destinationID",
+                  {
+                    destinationID: destination.destinationID,
+                  },
+                  token,
+                  {
+                    password,
+                  },
+                );
+
+                if (deleteResponse.error || deleteResponse.status !== 204) {
+                  setError(
+                    deleteResponse.error || "Some Unknown Error Occurred",
+                  );
+                  setShowDelete(false);
+                  return;
+                }
+
+                setDestinations(
+                  destinations.filter(
+                    (p) => destination.destinationID !== p.destinationID,
+                  ),
+                );
+
+                db.deleteDestinationById(destination.destinationID);
+                setShowDelete(false);
+                return;
+              }}
+            />
+          )}
+
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center">
@@ -96,10 +219,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                 <CheckCircle2 className="w-5 h-5 text-green-500" />
               )}
             </CardTitle>
-            <CardDescription className="flex items-center">
-              <Globe className="w-4 h-4 mr-2" />
-              {destination.domain}
-            </CardDescription>
+
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" title="options">
@@ -121,10 +241,12 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
               </DropdownMenuContent>
             </DropdownMenu>
           </CardHeader>
-
-          {/* <CardContent> */}
-          {/* Empty content since email moved to title */}
-          {/* </CardContent> */}
+          <CardContent>
+            <div className="space-x-2 flex items-center gap-2">
+              <Globe size={20} className="text-purple-300" />
+              {destination.domain}
+            </div>
+          </CardContent>
 
           <CardFooter className="flex justify-between">
             {!destination.verified && (

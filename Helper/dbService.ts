@@ -71,7 +71,7 @@ class DatabaseService {
     );
   }
 
-  async deleteRuleById(ruleId: string) {
+  async deleteRuleById(ruleId: number) {
     const store = this.getStore("rules", "readwrite");
     return new Promise<void>((resolve, reject) => {
       const request = store.delete(ruleId);
@@ -111,6 +111,15 @@ class DatabaseService {
         });
       }),
     );
+  }
+
+  async deleteDestinationById(destinationID: number) {
+    const store = this.getStore("rules", "readwrite");
+    return new Promise<void>((resolve, reject) => {
+      const request = store.delete(destinationID);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(request.error);
+    });
   }
 
   async getDestinations(username?: string): Promise<Destination[]> {

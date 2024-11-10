@@ -22,7 +22,7 @@ function NewDestination() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleSubmit = async (f: FormData) => {
+  const newDestination = async (f: FormData) => {
     const localToken = await getLocalToken();
     if (localToken) {
       setToken(localToken);
@@ -101,8 +101,8 @@ function NewDestination() {
           userEmail={user?.email}
           onCancel={() => setIsDialogOpen(false)}
           cardTitle="Add New Destination"
-          cardDesc="Mail will be forwarded to this address, it is required to have it verified"
-          onAction={handleSubmit}
+          cardDesc="Great news! Your mail will be forwarded to this address once it's verified. You'll be able to create exciting new Rules for your selected Domain - it's that simple!"
+          onAction={newDestination}
         />
       )}
     </section>

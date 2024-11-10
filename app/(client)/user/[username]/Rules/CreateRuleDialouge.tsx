@@ -76,7 +76,7 @@ export const CreateRuleDialog = ({
           autoComplete="off"
           required
           pattern="^[^@\s]*$"
-          title="No spaces allowed"
+          title="No spaces,@ allowed"
           maxLength={20}
         />
         <div className={cn(isDesktop ? "mt-6" : "mt-0")}>
@@ -191,7 +191,7 @@ export const CreateRuleDialog = ({
               forwarded to you
             </DialogDescription>
           </DialogHeader>
-          <DialogForm />
+          <DialogForm className="px-1" />
         </DialogContent>
       </Dialog>
     );

@@ -22,15 +22,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { UploadButton } from "@/utils/uploadthing";
 import { useEffect, useState } from "react";
 
 interface UserDialogProps {
   onAction: (f: FormData) => void;
   onCancel?: () => void;
+  type?: "pic" | "basic";
 }
 
-export const UserDialog = ({ onAction, onCancel }: UserDialogProps) => {
+export const UserDialog = ({ onAction, onCancel, type }: UserDialogProps) => {
   const [open, setOpen] = useState(true);
+  const [avatar, setAvatar] = useState("");
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== "undefined" && window.innerWidth >= 768,
   );
@@ -48,33 +51,62 @@ export const UserDialog = ({ onAction, onCancel }: UserDialogProps) => {
 
   const DialogForm = ({ className }: { className?: string }) => (
     <form action={onAction} className={cn("grid gap-4 py-4", className)}>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="newName">New Name</Label>
-        <Input
-          id="newName"
-          name="newName"
-          placeholder="New Name"
-          minLength={4}
-          // defaultValue={name}
-          className="col-span-3"
-        />
-      </div>
-      <div className="grid grid-cols-4 items-center gap-4">
-        <Label htmlFor="new-username" className=" whitespace-nowrap">
-          New Username
-        </Label>
-        <Input
-          id="new-username"
-          name="new-username"
-          title="4-16 characters, starting with a letter, and containing only letters, numbers, dots, underscores, or hyphens."
-          className="col-span-3"
-          placeholder="flying-selfie"
-          minLength={4}
-          // pattern="^[a-zA-Z][a-zA-Z0-9._-]*$"
-          pattern="^[a-zA-Z]\S*$"
-          maxLength={16}
-        />
-      </div>
+      {type === "basic" && (
+        <>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="newName">New Name</Label>
+            <Input
+              id="newName"
+              name="newName"
+              placeholder="New Name"
+              minLength={4}
+              // defaultValue={name}
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="new-username" className=" whitespace-nowrap">
+              New Username
+            </Label>
+            <Input
+              id="new-username"
+              name="new-username"
+              title="4-16 characters, starting with a letter, and containing only letters, numbers, dots, underscores, or hyphens."
+              className="col-span-3"
+              placeholder="flying-selfie"
+              minLength={4}
+              // pattern="^[a-zA-Z][a-zA-Z0-9._-]*$"
+              pattern="^[a-zA-Z]\S*$"
+              maxLength={16}
+            />
+          </div>
+        </>
+      )}
+      {type === "pic" && (
+        <>
+          <input
+            type="text"
+            hidden
+            defaultValue={avatar}
+            id="avatar-url"
+            name="avatar-url"
+            required
+            minLength={1}
+          />
+          <UploadButton
+            endpoint="imageUploader"
+            onClientUploadComplete={(res) => {
+              if (!res?.[0]) return;
+              setAvatar(res[0].url);
+            }}
+            onUploadError={(error: Error) => {
+              // Do something with the error.
+              alert(`ERROR! ${error.message}`);
+            }}
+          />{" "}
+        </>
+      )}
+
       {isDesktop && (
         <DialogFooter>
           <DialogClose asChild>
@@ -82,10 +114,10 @@ export const UserDialog = ({ onAction, onCancel }: UserDialogProps) => {
               Cancel
             </Button>
           </DialogClose>
-          <Button type="submit">Update Details</Button>
+          <Button type="submit">Update Profile</Button>
         </DialogFooter>
       )}
-      {!isDesktop && <Button type="submit">Update Details</Button>}
+      {!isDesktop && <Button type="submit">Update Profile</Button>}
     </form>
   );
 
@@ -108,9 +140,11 @@ export const UserDialog = ({ onAction, onCancel }: UserDialogProps) => {
         </DialogTrigger>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Update Your Details</DialogTitle>
+            <DialogTitle>Update Your Profile</DialogTitle>
             <DialogDescription>
-              Enter Name or Userame or both and that will be instantly updated
+              {type === "basic"
+                ? " Enter Name or Userame or both and that will be instantly updated"
+                : "Upload PNG/JPEG/SVG"}
             </DialogDescription>
           </DialogHeader>
           <DialogForm />
@@ -135,9 +169,11 @@ export const UserDialog = ({ onAction, onCancel }: UserDialogProps) => {
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Update Your Details</DrawerTitle>
+          <DrawerTitle>Update Your Profile</DrawerTitle>
           <DrawerDescription>
-            Enter Name or Username or Both and that will be instantly updated
+            {type === "basic"
+              ? " Enter Name or Userame or both and that will be instantly updated"
+              : "Upload PNG/JPEG/SVG"}
           </DrawerDescription>
         </DrawerHeader>
         <DialogForm className="px-4" />

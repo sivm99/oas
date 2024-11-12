@@ -4,13 +4,13 @@ import {
   Forward,
   Inbox,
   Mail,
-  Pencil,
+  MoreVertical,
   XCircle,
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // import { useNavigate } from "react-router-dom";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,13 @@ import { getLocalToken } from "@/Helper/getLocalData";
 import { isUserResponse } from "@/Helper/typeFunction";
 import { useState } from "react";
 import { UserDialog } from "./UserDialog";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 const UserProfileCard = ({
   name,
   username,
@@ -35,7 +41,7 @@ const UserProfileCard = ({
   const { setHint, setError, setUser, token, setToken } = useAppContext();
 
   const [showUpdate, setShowUpdate] = useState(false);
-
+  const [showAvatar, setShowAvatar] = useState(false);
   if (!token) {
     getLocalToken().then((localToken) => {
       if (localToken) {
@@ -82,6 +88,7 @@ const UserProfileCard = ({
       {/* Header Section */}
       {showUpdate && (
         <UserDialog
+          type="basic"
           onAction={async (f) => {
             if (!token) {
               setError("You Must Be logged in for Changing Your Details");
@@ -137,32 +144,86 @@ const UserProfileCard = ({
           onCancel={() => setShowUpdate(false)}
         />
       )}
-      <CardHeader className="relative pb-0">
-        <div className="absolute right-4 top-8 flex gap-2">
+
+      {showAvatar && (
+        <UserDialog
+          type="pic"
+          onAction={async (f) => {
+            if (!token) {
+              setError("You Must Be logged in for Changing Your Details");
+              return;
+            }
+            const avatar = f.get("avatar-url") as string;
+            const userResponse = await createRequest(
+              "PATCH",
+              "/user/:username",
+              { username },
+              token,
+              {
+                avatar,
+              },
+            );
+
+            if (
+              userResponse.error ||
+              !userResponse.data ||
+              !userResponse.data.data
+            ) {
+              setError(userResponse.error || "User Details cant be updated");
+              return;
+            }
+
+            const updatedUser = userResponse.data.data as User;
+            setUser(updatedUser);
+            if (userResponse.cookies) {
+              setToken(userResponse.cookies);
+            }
+            setShowAvatar(false);
+            return;
+          }}
+          onCancel={() => setShowAvatar(false)}
+        />
+      )}
+
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        {/* <div className="absolute right-4 top-8 flex gap-2">
           <Button onClick={() => setShowUpdate(!showUpdate)} variant="outline">
             <Pencil size={20} />
           </Button>
-        </div>
+        </div> */}
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3">
           <div className="relative">
             {avatar ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={avatar}
-                alt={" "}
-                className="w-12 h-12 sm:w-20 sm:h-20 rounded-full border-2 sm:border-4 border-transparent animate-border-glow shadow-lg"
-              />
+              <Avatar className="border-2 border-transparent animate-border-glow">
+                <AvatarImage src={avatar} className="p-[.9]" />
+                <AvatarFallback>
+                  {name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()}{" "}
+                </AvatarFallback>
+              </Avatar>
             ) : (
-              <div className="w-12 h-12 sm:w-20 sm:h-20 rounded-full border-2 sm:border-4 border-transparent animate-border-glow shadow-lg flex items-center justify-center text-xl sm:text-2xl font-bold">
-                {name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .toUpperCase()}
-              </div>
+              <Avatar className="">
+                <AvatarImage
+                  src="https://utfs.io/f/zC13qIHNKdXyq2ELyxDKfF6roNkB8A1wCqxzTpVhO9i2RjHW"
+                  className="p-[.9]"
+                />
+                <AvatarFallback>
+                  {name
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((n) => n[0])
+                    .join("")
+                    .toUpperCase()}{" "}
+                </AvatarFallback>
+              </Avatar>
             )}
-            <span className="absolute bottom-0 right-0 w-3 h-3 sm:w-5 sm:h-5 border-2 border-white rounded-full bg-green-500" />
+            {/* <span className="absolute bottom-0 right-0 w-3 h-3 sm:w-5 sm:h-5 border-2 border-white rounded-full bg-green-500" /> */}
           </div>
           <div className="space-y-1">
             <h2 className="text-2xl font-bold">{name}</h2>
@@ -172,9 +233,24 @@ const UserProfileCard = ({
             </p>
           </div>
         </div>
-        {/* <Button onClick={() => setShowUpdate(!showUpdate)} variant="outline">
-          <Pencil size={20} />
-        </Button> */}
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" title="options">
+              <MoreVertical size={20} />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onSelect={() => setShowUpdate(!showUpdate)}>
+              New Name
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => setShowAvatar(!showAvatar)}>
+              Update Avatar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
 
       <CardContent className="mt-6 space-y-6">

@@ -3,7 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { NavbarClient } from "@/components/Navbar";
-
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
 const Inter = localFont({
   src: "./fonts/Inter-Regular.ttf",
   variable: "--font-inter",
@@ -85,6 +87,15 @@ export default async function RootLayout({
         className={`font-sans ${Inter.variable} ${InterItalic.variable} antialiased`}
         suppressHydrationWarning
       >
+        <NextSSRPlugin
+          /**
+           * The `extractRouterConfig` will extract **only** the route configs
+           * from the router to prevent additional information from being
+           * leaked to the client. The data passed to the client is the same
+           * as if you were to fetch `/api/uploadthing` directly.
+           */
+          routerConfig={extractRouterConfig(ourFileRouter)}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

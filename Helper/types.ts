@@ -45,6 +45,7 @@ type DataObject = {
   destinationEmail?: string;
   domain?: string;
   comment?: string;
+  avatar?: string;
 };
 
 type RequestResult = {

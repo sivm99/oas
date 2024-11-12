@@ -31,6 +31,9 @@ class DatabaseService {
             keyPath: "ruleId",
           });
           rulesStore.createIndex("username", "username", { unique: false });
+          rulesStore.createIndex("destinationEmail", "destinationEmail", {
+            unique: false,
+          });
         }
 
         if (!db.objectStoreNames.contains("destinations")) {
@@ -99,6 +102,50 @@ class DatabaseService {
     });
   }
 
+  // async toggleRuleInactiveByDestinationEmail(destinationEmail: string) {
+  //   const store = this.getStore("rules", "readwrite");
+
+  //   // First, we need to create the index if it doesn't exist
+  //   if (!store.indexNames.contains("destinationEmail")) {
+  //     throw new Error("destinationEmail index does not exist");
+  //   }
+
+  //   const index = store.index("destinationEmail");
+
+  //   return new Promise<void>((resolve, reject) => {
+  //     const request = index.getAll(destinationEmail);
+
+  //     request.onerror = () => reject(request.error);
+  //     request.onsuccess = async () => {
+  //       const rules: Rule[] = request.result;
+
+  //       if (rules.length === 0) {
+  //         reject(new Error("No rules found for this destination email"));
+  //         return;
+  //       }
+
+  //       try {
+  //         // Update each rule's active status
+  //         await Promise.all(
+  //           rules.map((rule) => {
+  //             return new Promise<void>((resolveUpdate, rejectUpdate) => {
+  //               const updatedRule = { ...rule, active: !rule.active };
+  //               const updateRequest = store.put(updatedRule);
+
+  //               updateRequest.onsuccess = () => resolveUpdate();
+  //               updateRequest.onerror = () => rejectUpdate(updateRequest.error);
+  //             });
+  //           }),
+  //         );
+
+  //         resolve();
+  //       } catch (error) {
+  //         reject(error);
+  //       }
+  //     };
+  //   });
+  // }
+
   // Destinations operations
   async saveDestinations(destinations: Destination[]) {
     const store = this.getStore("destinations", "readwrite");
@@ -113,13 +160,68 @@ class DatabaseService {
     );
   }
 
-  async deleteDestinationById(destinationID: number) {
-    const store = this.getStore("rules", "readwrite");
-    return new Promise<void>((resolve, reject) => {
-      const request = store.delete(destinationID);
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(request.error);
-    });
+  async deleteDestinationById(destinationID: number, username: string) {
+    if (!this.db) throw new Error("Database not initialized");
+
+    try {
+      // Create a single transaction for both stores
+      const tx = this.db.transaction(["destinations", "users"], "readwrite");
+      const store = tx.objectStore("destinations");
+      const userStore = tx.objectStore("users");
+
+      return new Promise<void>((resolve, reject) => {
+        // Delete destination
+        const deleteRequest = store.delete(destinationID);
+
+        deleteRequest.onerror = () => {
+          reject(new Error("Failed to delete destination"));
+        };
+
+        deleteRequest.onsuccess = () => {
+          // After successful deletion, update user's destination count
+          const userRequest = userStore.get(username);
+
+          userRequest.onerror = () => {
+            reject(new Error("Failed to fetch user data"));
+          };
+
+          userRequest.onsuccess = () => {
+            const user = userRequest.result;
+            if (!user) {
+              reject(new Error("User not found"));
+              return;
+            }
+
+            const updatedUser = {
+              ...user,
+              destinationCount: Math.max(0, user.destinationCount - 1),
+            };
+
+            const updateUserRequest = userStore.put(updatedUser);
+
+            updateUserRequest.onerror = () => {
+              reject(new Error("Failed to update user destination count"));
+            };
+
+            updateUserRequest.onsuccess = () => {
+              resolve();
+            };
+          };
+        };
+
+        // Handle transaction errors
+        tx.onerror = () => {
+          reject(new Error("Transaction failed"));
+        };
+
+        tx.oncomplete = () => {
+          // Transaction completed successfully
+          resolve();
+        };
+      });
+    } catch (error) {
+      throw new Error(`Failed to delete destination: ${error}`);
+    }
   }
 
   async getDestinations(username?: string): Promise<Destination[]> {

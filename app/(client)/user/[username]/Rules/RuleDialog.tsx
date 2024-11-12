@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -15,7 +14,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -24,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Rule } from "@/Helper/types";
+import { AlertTriangle } from "lucide-react";
 
 // Define the types for the rule and dialog props
 
@@ -82,8 +81,42 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
       ],
     },
     delete: {
-      title: "Delete Rule",
-      description: `Are you sure you want to delete ${rule.name || rule.aliasEmail}? This action is permanent and cat be reverted`,
+      title: <p className="text-destructive mb-3"> Delete Rule </p>,
+      description: (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-destructive">
+            <AlertTriangle size={20} />
+            <span className="font-semibold">Warning: Destructive Action</span>
+          </div>
+
+          <div className="space-y-2">
+            <p>
+              You are about to permanently delete:
+              <span className="mx-2 px-3 py-1 bg-destructive/10 rounded-md font-mono text-destructive">
+                {rule.name || rule.aliasEmail}
+              </span>
+            </p>
+
+            <p className="text-muted-foreground">
+              <strong className="text-destructive">
+                This action cannot be undone
+              </strong>{" "}
+              and poses significant security risks. Once deleted, this alias may
+              be claimed by others, potentially exposing sensitive
+              communications.
+            </p>
+
+            <p className="text-sm text-muted-foreground bg-warning/10 p-3 rounded-md border border-warning/20">
+              💡 Consider disabling the rule instead if you may need it in the
+              future.
+            </p>
+          </div>
+
+          <p className="font-medium text-foreground">
+            Are you absolutely certain you wish to proceed?
+          </p>
+        </div>
+      ),
       actionText: "Confirm Delete",
       fields: [],
     },
@@ -175,7 +208,7 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{config.title}</DialogTitle>
-            <DialogDescription>{config.description}</DialogDescription>
+            {config.description}
           </DialogHeader>
           <DialogForm />
         </DialogContent>
@@ -200,7 +233,7 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>{config.title}</DrawerTitle>
-          <DrawerDescription>{config.description}</DrawerDescription>
+          {config.description}
         </DrawerHeader>
         <DialogForm className="px-4" />
         <DrawerFooter className="pt-2">

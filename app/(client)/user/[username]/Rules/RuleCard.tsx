@@ -244,7 +244,7 @@ const SearchRules = ({ onSearch }: { onSearch: (value: string) => void }) => (
 
 // Empty State Component
 const EmptyState = () => (
-  <Card>
+  <Card className="mt-4">
     <CardContent className="flex flex-col items-center justify-center p-6 space-y-4">
       <Mail className="h-6 w-6 text-muted-foreground" />
       <CardTitle className="text-lg font-medium text-center">

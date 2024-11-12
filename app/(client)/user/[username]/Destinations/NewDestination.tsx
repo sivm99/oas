@@ -85,7 +85,7 @@ function NewDestination() {
 
   return (
     <section className="mt-4">
-      {user?.destinationCount == 0 && (
+      {destinations.length === 0 && (
         <Button
           variant="outline"
           onClick={() => setIsDialogOpen(!isDialogOpen)}

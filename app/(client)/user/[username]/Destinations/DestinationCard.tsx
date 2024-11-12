@@ -193,15 +193,24 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                   setShowDelete(false);
                   return;
                 }
-
+                await db.deleteDestinationById(
+                  destination.destinationID,
+                  destination.username,
+                );
                 setDestinations(
                   destinations.filter(
                     (p) => destination.destinationID !== p.destinationID,
                   ),
                 );
-
-                db.deleteDestinationById(destination.destinationID);
+                // try {
+                //   await db.toggleRuleInactiveByDestinationEmail(
+                //     destination.destinationEmail,
+                //   );
+                // } catch (error) {
+                //   console.error(error);
+                // }
                 setShowDelete(false);
+                window.location.reload();
                 return;
               }}
             />

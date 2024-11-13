@@ -81,14 +81,13 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
       ],
     },
     delete: {
-      title: <p className="text-destructive mb-3"> Delete Rule </p>,
+      title: (
+        <p className="text-destructive mb-3">
+          <AlertTriangle size={20} /> Delete Rule{" "}
+        </p>
+      ),
       description: (
         <div className="space-y-4">
-          <div className="flex items-center gap-2 text-destructive">
-            <AlertTriangle size={20} />
-            <span className="font-semibold">Warning: Destructive Action</span>
-          </div>
-
           <div className="space-y-2">
             <p>
               You are about to permanently delete:

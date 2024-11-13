@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Menu, User as UserIcon } from "lucide-react";
-import Link from "next/link";
+import { Menu } from "lucide-react";
 import { ModeToggle } from "../mode-toggle";
-import SignOutButton from "./SignOutButton";
 import {
   Sheet,
   SheetContent,
@@ -10,30 +8,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
+import LogoutButton from "./LogoutButton";
 
 export interface UserNavContentProps {
   name?: string | null;
 }
 
-export default function UserNavContent({ name }: UserNavContentProps) {
+export default function UserNavContent() {
   return (
     <>
-      <div className="hidden md:flex items-center space-x-4">
+      <div className="hidden  md:flex items-center space-x-2">
         <ModeToggle />
-        {name ? (
-          <>
-            <Link href={`/user/dash`}>
-              <Button variant="outline">
-                <UserIcon size={20} />
-              </Button>
-            </Link>
-            <SignOutButton />
-          </>
-        ) : (
-          <Link href="/login">
-            <Button variant="default">Login</Button>
-          </Link>
-        )}
+        <LogoutButton />
       </div>
       <div className="md:hidden">
         <Sheet>
@@ -44,27 +30,11 @@ export default function UserNavContent({ name }: UserNavContentProps) {
           </SheetTrigger>
           <SheetContent side="right" className=" sm:w-2/3 md:w-1/2 lg:w-1/3">
             <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
+              <SheetTitle>One Alias Service</SheetTitle>
             </SheetHeader>
             <div className="flex flex-col space-y-4 mt-4">
               <ModeToggle />
-              {name ? (
-                <>
-                  <Link href={`/user/dash`}>
-                    <Button variant="outline" className="w-full justify-start">
-                      <UserIcon size={20} className="mr-2" />
-                      Profile
-                    </Button>
-                  </Link>
-                  <SignOutButton />
-                </>
-              ) : (
-                <Link href="/login" className="w-full">
-                  <Button variant="default" className="w-full">
-                    Login
-                  </Button>
-                </Link>
-              )}
+              <LogoutButton />
             </div>
           </SheetContent>
         </Sheet>

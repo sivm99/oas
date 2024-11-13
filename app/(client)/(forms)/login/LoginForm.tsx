@@ -12,7 +12,7 @@ import FormInput from "@/components/FormInput";
 import FormBelow from "@/components/FormBelow";
 import { useActionState } from "react";
 import useAppContext from "@/hooks/useAppContext";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { FormState, handleAuth } from "../actions";
 
 export default function LoginForm() {
@@ -40,7 +40,7 @@ export default function LoginForm() {
       localStorage.setItem(`name`, r.user.name);
       setToken(r.cookie || " ");
       setUser(r.user);
-      redirect(`/user/${r.user.username}`);
+      window.location.href = `/user/${r.user.username}`;
       return r;
     },
     null,

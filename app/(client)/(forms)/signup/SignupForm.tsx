@@ -14,7 +14,7 @@ import Link from "next/link";
 import useAppContext from "@/hooks/useAppContext";
 import { FormState, handleAuth } from "../actions";
 import { useActionState } from "react";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation";
 import { User } from "lucide-react";
 
 export default function SignupForm() {
@@ -54,7 +54,7 @@ export default function SignupForm() {
 
   if (r?.success) {
     setToken(r.cookie || " ");
-    redirect("/user/dash");
+    window.location.href = `/user/dash`;
   }
 
   return (

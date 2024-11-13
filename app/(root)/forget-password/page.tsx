@@ -12,29 +12,6 @@ import FormInput from "@/components/FormInput";
 import FormHero from "@/components/FormHero";
 import Link from "next/link";
 // import { emailSchema } from "@/Helper/schema";
-import { createRequest } from "@/Helper/request";
-
-async function handleReset(formData: FormData) {
-  "use server";
-
-  const email = formData.get("email");
-  console.log("Extracted email:", email);
-
-  if (typeof email !== "string") {
-    console.error("Email is not a string:", email);
-    return;
-  }
-
-  try {
-    const r = await createRequest("POST", "/auth/forget-password", {}, "", {
-      email,
-    });
-    console.log("Request sent successfully");
-    console.log("Response:", r);
-  } catch (error) {
-    console.error("Error sending request:", error);
-  }
-}
 
 export default async function ForgetPassword() {
   return (
@@ -59,7 +36,7 @@ export default async function ForgetPassword() {
             <CardDescription>One Alias Account</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="form_container" action={handleReset}>
+            <form className="form_container" action="/api/reset-password">
               <FormInput
                 name="email"
                 type="email"

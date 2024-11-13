@@ -2,12 +2,7 @@ import { Button } from "@/components/ui/button";
 
 export function GitHubButton() {
   return (
-    <form
-      action={async (f) => {
-        console.log(f);
-        window.location.href = "https://oas.20032003.xyz/api/v2/auth/github";
-      }}
-    >
+    <form action="https://oas.20032003.xyz/api/v2/auth/github">
       <Button variant="outline" className="w-full ">
         <svg
           xmlns="http://www.w3.org/2000/svg"

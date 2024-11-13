@@ -13,16 +13,6 @@ import FormHero from "@/components/FormHero";
 import Link from "next/link";
 type Params = Promise<{ token: string }>;
 
-async function handlePasswordReset(formData: FormData, token: string) {
-  "use server";
-  // Get token from URL
-  const password = formData.get("password");
-  const passwordConfirm = formData.get("passwordConfirm");
-
-  // Handle password reset with token
-  console.log({ token, password, passwordConfirm });
-}
-
 export default async function ResetPassword({ params }: { params: Params }) {
   return (
     <main className="form_wrapper">
@@ -48,12 +38,16 @@ export default async function ResetPassword({ params }: { params: Params }) {
           <CardContent>
             <form
               className="form_container"
-              action={async (formData) => {
-                "use server";
-                const { token } = await params;
-                await handlePasswordReset(formData, token);
-              }}
+              action="/api/reset-password"
+              method="post"
             >
+              <input
+                name="token"
+                id="token"
+                hidden
+                value={(await params).token}
+                readOnly
+              />
               <FormInput
                 name="password"
                 type="password"

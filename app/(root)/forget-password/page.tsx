@@ -11,12 +11,11 @@ import { Separator } from "@/components/ui/separator";
 import FormInput from "@/components/FormInput";
 import FormHero from "@/components/FormHero";
 import Link from "next/link";
-import { emailSchema } from "@/Helper/schema";
+// import { emailSchema } from "@/Helper/schema";
 import { createRequest } from "@/Helper/request";
 
 async function handleReset(formData: FormData) {
   "use server";
-  console.log("handleReset called with formData:", formData);
 
   const email = formData.get("email");
   console.log("Extracted email:", email);
@@ -26,17 +25,10 @@ async function handleReset(formData: FormData) {
     return;
   }
 
-  const formValue = emailSchema.safeParse(email);
-  console.log("Validation result:", formValue);
-
-  if (!formValue.success) {
-    console.error("Email validation failed:", formValue.error);
-    return;
-  }
-
   try {
-    console.log("Sending request to /auth/forget-password with email:", formValue.data);
-    const r = await createRequest("POST", "/auth/forget-password", { email: formValue.data });
+    const r = await createRequest("POST", "/auth/forget-password", {}, "", {
+      email,
+    });
     console.log("Request sent successfully");
     console.log("Response:", r);
   } catch (error) {

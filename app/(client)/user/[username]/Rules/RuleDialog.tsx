@@ -82,22 +82,22 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
     },
     delete: {
       title: (
-        <p className="text-destructive mb-3">
-          <AlertTriangle size={20} /> Delete Rule{" "}
-        </p>
+        <div className="flex items-center gap-2 mb-3">
+          <AlertTriangle size={20} className="text-red-400" /> Delete Rule{" "}
+        </div>
       ),
       description: (
         <div className="space-y-4">
           <div className="space-y-2">
             <p>
               You are about to permanently delete:
-              <span className="mx-2 px-3 py-1 bg-destructive/10 rounded-md font-mono text-destructive">
+              <span className="mx-2 px-3 py-1 bg-destructive/10 dark:bg-white rounded-md font-mono text-red-500 font-bold">
                 {rule.name || rule.aliasEmail}
               </span>
             </p>
 
-            <p className="text-muted-foreground">
-              <strong className="text-destructive">
+            <p className="">
+              <strong className="text-destructive text-red-500">
                 This action cannot be undone
               </strong>{" "}
               and poses significant security risks. Once deleted, this alias may
@@ -105,7 +105,7 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
               communications.
             </p>
 
-            <p className="text-sm text-muted-foreground bg-warning/10 p-3 rounded-md border border-warning/20">
+            <p className="text-sm text-muted-foreground bg-secondary p-3 rounded-md border border-transparent animate-border-glow">
               💡 Consider disabling the rule instead if you may need it in the
               future.
             </p>

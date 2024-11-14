@@ -37,7 +37,7 @@ import {
 } from "./actions";
 
 function DestinationsCard({ destinations }: { destinations: Destination[] }) {
-  const { setError, setDestinations, setLoginExpired } = useAppContext();
+  const { setError, setDestinations, setLoginExpired, user } = useAppContext();
 
   const [showDelete, setShowDelete] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -111,6 +111,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
       {showNew && (
         <DestinationDialog
           type="create"
+          userEmail={destinations.length > 0 ? "" : user?.email}
           onCancel={() => setShowNew(false)}
           cardTitle="Add New Destination"
           cardDesc="Great news! Your mail will be forwarded to this address once it's verified. You'll be able to create exciting new Rules for your selected Domain - it's that simple!"

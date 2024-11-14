@@ -82,6 +82,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
             const ruleResult = await toggleRule(rule);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
+              setShowToggle(false);
               return;
             }
             if (ruleResult.error) {

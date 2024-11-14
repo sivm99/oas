@@ -10,8 +10,8 @@ services:
     networks:
       - oas
       - npm-network
-    volumes:
-      - ./data:data
+    # volumes:
+    #   - ./data:data
 
 networks:
   oas:

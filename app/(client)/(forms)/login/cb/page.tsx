@@ -38,7 +38,10 @@ function LoginCallbackContent() {
       }
 
       setUser(u.user);
-      router.push("/user/dash");
+      if (u.newToken) {
+        setToken(u.newToken);
+      }
+      window.location.href = `/user/${u.user.username}`;
     };
 
     handleLogin();

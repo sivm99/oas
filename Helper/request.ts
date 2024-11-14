@@ -57,7 +57,6 @@ const createRequest = async (
   token?: string,
   data?: DataObject,
 ): Promise<RequestResult> => {
-  console.log("create request to api was called");
   try {
     const resolvedUrl = resolveEndpoint(endpoint, params);
     const headers: Record<string, string> = {
@@ -96,7 +95,6 @@ const createRequest = async (
       "token",
     );
 
-    console.log(cookieToken);
     return {
       data: response.data,
       error: null,

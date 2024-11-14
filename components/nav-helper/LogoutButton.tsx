@@ -51,7 +51,7 @@ export default function LogoutButton() {
               <Button
                 type="submit"
                 variant="destructive"
-                className="w-full md:w-auto"
+                // className="w-full md:w-auto"
               >
                 Logout
               </Button>
@@ -72,11 +72,26 @@ export default function LogoutButton() {
           </Dialog>
         </>
       ) : (
-        <Link href="/login">
-          <Button variant="default" className="md:w-fit w-full">
-            Login
+        <>
+          <Button
+            type="submit"
+            className="md:w-fit w-full border-2 border-transparent animate-border-glow"
+            variant="secondary"
+          >
+            <Link href="/signup" className="w-full">
+              Register
+            </Link>
           </Button>
-        </Link>
+          <Button
+            type="submit"
+            className="md:w-fit w-full border-2 border-transparent animate-border-glow"
+            variant="secondary"
+          >
+            <Link href="/login" className="w-full">
+              Login
+            </Link>
+          </Button>
+        </>
       )}
     </>
   );

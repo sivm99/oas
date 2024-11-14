@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "../mode-toggle";
@@ -7,35 +8,121 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  // SheetClose,
+  SheetFooter,
 } from "../ui/sheet";
-import LogoutButton from "./LogoutButton";
-
-export interface UserNavContentProps {
-  name?: string | null;
-}
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { db } from "@/Helper/dbService";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function UserNavContent() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const lastUsername = localStorage.getItem("lastUsername");
+      if (!lastUsername) return;
+      setName(lastUsername);
+    };
+    checkLoginStatus();
+  }, []);
+
+  const handleLogout = () => {
+    setIsOpen(false); // Close the sheet
+    localStorage.clear();
+    db.clearAll();
+    window.location.href = "/";
+  };
+
+  const handleSheetClose = () => {
+    setIsOpen(false);
+  };
+
+  const LogoutButtonContent = ({ onClose }: { onClose: () => void }) => (
+    <>
+      {name.length > 0 ? (
+        <>
+          <Link href={`/user/${name}`} onClick={onClose}>
+            <Button
+              variant="secondary"
+              className="border-2 border-transparent animate-border-glow w-full md:w-auto"
+            >
+              Dashboard
+            </Button>
+          </Link>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                type="submit"
+                variant="destructive"
+                className="w-full md:w-auto"
+              >
+                Logout
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] max-w-[90vw] mx-auto">
+              <DialogHeader>
+                <DialogTitle>Are you sure you want to logout?</DialogTitle>
+                <DialogDescription>
+                  You will need to login again to access your dashboard.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button variant="destructive" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </>
+      ) : (
+        <Button type="submit" className="md:w-fit w-full">
+          <Link href="/login" className="w-full" onClick={onClose}>
+            Login
+          </Link>
+        </Button>
+      )}
+    </>
+  );
+
   return (
     <>
-      <div className="hidden  md:flex items-center space-x-2">
+      <div className="hidden md:flex items-center space-x-2">
         <ModeToggle />
-        <LogoutButton />
+        <LogoutButtonContent onClose={() => {}} />
       </div>
       <div className="md:hidden">
-        <Sheet>
-          <SheetTrigger asChild>
+        <ModeToggle />
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger aria-label="Toggle menu" asChild>
             <Button variant="ghost">
-              <Menu className="h-6 w-6" />
+              <Menu className="h-6 w-6" aria-hidden="true" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="right" className=" sm:w-2/3 md:w-1/2 lg:w-1/3">
+          <SheetContent
+            side="right"
+            className="sm:w-2/3 md:w-1/2 lg:w-1/3"
+            role="dialog"
+            aria-label="Menu"
+          >
             <SheetHeader>
               <SheetTitle>One Alias Service</SheetTitle>
             </SheetHeader>
-            <div className="flex flex-col space-y-4 mt-4">
-              <ModeToggle />
-              <LogoutButton />
-            </div>
+            <nav className="">
+              <SheetFooter className="mt-4 flex flex-col gap-4">
+                <LogoutButtonContent onClose={handleSheetClose} />
+              </SheetFooter>
+            </nav>
           </SheetContent>
         </Sheet>
       </div>

@@ -11,6 +11,7 @@ import {
 import { Shield, Mail, ArrowRight } from "lucide-react";
 import AnimatedHero from "@/components/AnimatedHero";
 import Link from "next/link";
+import LogoutButton from "@/components/nav-helper/LogoutButton";
 
 export default async function Home() {
   return (
@@ -78,14 +79,14 @@ export default async function Home() {
             </p>
           </CardContent>
           <CardFooter>
-            <Link href="/user/dash">
+            {/* <Link href="/user/dash">
               <Button
                 variant="secondary"
                 className="border-2 border-transparent animate-border-glow"
               >
                 Dashboard
               </Button>
-            </Link>
+            </Link> */}
           </CardFooter>
         </Card>
       </section>
@@ -97,7 +98,7 @@ export default async function Home() {
           </CardHeader>
           <CardContent>
             <div className="flex justify-center gap-4  items-center">
-              <Link href="/signup">
+              {/* <Link href="/signup">
                 <Button className="bg-green-500 hover:bg-green-700">
                   Sign Up
                 </Button>
@@ -106,7 +107,8 @@ export default async function Home() {
                 <Button className="bg-blue-500 hover:bg-blue-700">
                   Sign In
                 </Button>
-              </Link>
+              </Link> */}
+              <LogoutButton />
             </div>
           </CardContent>
         </Card>

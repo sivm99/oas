@@ -36,20 +36,13 @@ const UserProfileCard = ({
   destinationCount,
 }: User) => {
   // const navigate = useNavigate();
-  const { setHint, setError, setUser, token, setLoginExpired } =
-    useAppContext();
+  const { setHint, setError, setUser, setLoginExpired } = useAppContext();
 
   const [showUpdate, setShowUpdate] = useState(false);
   const [showAvatar, setShowAvatar] = useState(false);
 
   const handleVerifyEmail = async () => {
-    if (!token) {
-      // setError("You have to Login Again for this action");
-      setLoginExpired(true);
-      return;
-    }
-
-    const verifyEmailResult = await verifyUserEmail(username, token);
+    const verifyEmailResult = await verifyUserEmail(username);
 
     if (!verifyEmailResult) {
       setError("Failed to verify email");
@@ -75,10 +68,6 @@ const UserProfileCard = ({
         <UserDialog
           type="basic"
           onAction={async (f) => {
-            if (!token) {
-              setError("You Must Be logged in for Changing Your Details");
-              return;
-            }
             const newName = f.get("newName") as string;
             const newUsername = f.get("new-username") as string;
             console.log({ newName, newUsername });
@@ -100,7 +89,6 @@ const UserProfileCard = ({
 
             const userResponse = await updateUser({
               newUsername,
-              token,
               name: newName,
               username,
             });
@@ -127,14 +115,9 @@ const UserProfileCard = ({
         <UserDialog
           type="pic"
           onAction={async (f) => {
-            if (!token) {
-              setLoginExpired(true);
-              return;
-            }
             const avatar = f.get("avatar-url") as string;
             const userResponse = await updateUser({
               avatar,
-              token,
               username,
             });
             if (userResponse.status === 401) {

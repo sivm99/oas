@@ -37,18 +37,13 @@ import {
 } from "./actions";
 
 function DestinationsCard({ destinations }: { destinations: Destination[] }) {
-  const { token, setError, setDestinations, setLoginExpired } = useAppContext();
+  const { setError, setDestinations, setLoginExpired } = useAppContext();
 
   const [showDelete, setShowDelete] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const handleVerify = async (destination: Destination) => {
-    if (!token) {
-      setLoginExpired(true);
-      return;
-    }
     const res = await verifyDestination({
       destinationID: destination.destinationID,
-      token,
     });
     if (res.status === 401) {
       setLoginExpired(true);
@@ -80,15 +75,9 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
     }
 
     try {
-      if (!token) {
-        setShowNew(false);
-        return;
-      }
-
       const destinationResult = await addDestination({
         destinationEmail,
         domain: selectedDomain,
-        token,
       });
 
       if (destinationResult.status === 401) {
@@ -142,16 +131,10 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                   setError("Password is required");
                   return;
                 }
-                if (!token) {
-                  setLoginExpired(true);
-                  setShowDelete(false);
-                  return;
-                }
 
                 const deleteResponse = await removeDestination({
                   destinationID: destination.destinationID,
                   password,
-                  token,
                 });
 
                 // if (deleteResponse.status === 401) {

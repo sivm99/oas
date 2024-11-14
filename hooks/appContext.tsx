@@ -14,8 +14,7 @@ interface AppContextState {
   setError: (error: ReactNode) => void;
   hint: ReactNode;
   setHint: (hint: ReactNode) => void;
-  token: string;
-  setToken: (token: string) => void;
+
   loginExpired: boolean;
   setLoginExpired: (value: boolean) => void;
   isLoading: boolean;
@@ -32,7 +31,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const [destinations, setDestinationsState] = useState<Destination[]>([]);
   const [error, setError] = useState<ReactNode>("");
   const [hint, setHint] = useState<ReactNode>("");
-  const [token, setTokenState] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [loginExpired, setLoginExpired] = useState(false);
 
@@ -56,10 +54,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   // Load initial data from IndexedDB
   const loadInitialData = async () => {
     try {
-      // Load token from localStorage (since it's small and needed for API calls)
-      const storedToken = localStorage.getItem("token");
-      if (storedToken) setTokenState(storedToken);
-
       // If we have a token and stored username, load the user data
       const storedUser = localStorage.getItem("lastUsername");
       if (storedUser) {
@@ -116,11 +110,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const setToken = (newToken: string) => {
-    setTokenState(newToken);
-    localStorage.setItem("token", newToken); // Keep token in localStorage for persistence
-  };
-
   const value: AppContextState = {
     user,
     setUser,
@@ -132,8 +121,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     setError,
     hint,
     setHint,
-    token,
-    setToken,
+
     isLoading,
     setIsLoading,
     loginExpired,

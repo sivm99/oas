@@ -2,15 +2,14 @@
 
 import { createRequest } from "@/Helper/request";
 import { Destination } from "@/Helper/types";
+import { cookies } from "next/headers";
 
 async function addDestination({
   destinationEmail,
   domain,
-  token,
 }: {
   destinationEmail: string;
   domain: string;
-  token: string;
 }): Promise<{
   success: boolean;
   status: number;
@@ -18,6 +17,15 @@ async function addDestination({
   newDestination?: Destination;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
     const d = await createRequest("POST", "/mail/destinations", {}, token, {
       destinationEmail: destinationEmail,
       domain: domain,
@@ -46,10 +54,8 @@ async function addDestination({
 
 async function verifyDestination({
   destinationID,
-  token,
 }: {
   destinationID: number;
-  token: string;
 }): Promise<{
   success: boolean;
   status: number;
@@ -57,6 +63,15 @@ async function verifyDestination({
   verifiedDestination?: Destination;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
     const d = await createRequest(
       "POST",
       "/mail/destinations/:destinationID/verify",
@@ -89,17 +104,24 @@ async function verifyDestination({
 async function removeDestination({
   destinationID,
   password,
-  token,
 }: {
   destinationID: number;
   password: string;
-  token: string;
 }): Promise<{
   success: boolean;
   status: number;
   error?: string;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
     const d = await createRequest(
       "DELETE",
       "/mail/destinations/:destinationID",

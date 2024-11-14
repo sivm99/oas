@@ -28,7 +28,6 @@ import { deleteRule, toggleRule, updateRule } from "./actions";
 const RuleCard = ({ rule }: { rule: Rule }) => {
   const {
     setHint,
-    token,
 
     setError,
     rules,
@@ -46,7 +45,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
           rule={rule}
           type="edit"
           onAction={async (rule) => {
-            const ruleResult = await updateRule(rule, token);
+            const ruleResult = await updateRule(rule);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               return;
@@ -80,7 +79,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
           rule={rule}
           type="toggle"
           onAction={async (rule) => {
-            const ruleResult = await toggleRule(rule, token);
+            const ruleResult = await toggleRule(rule);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               return;
@@ -116,7 +115,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
           rule={rule}
           type="delete"
           onAction={async (rule) => {
-            const ruleResult = await deleteRule(rule, token);
+            const ruleResult = await deleteRule(rule);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               return;

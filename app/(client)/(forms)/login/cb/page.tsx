@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 function LoginCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setToken, setUser, setError } = useAppContext();
+  const { setUser, setError } = useAppContext();
   const [error, setStateError] = useState("");
 
   useEffect(() => {
@@ -17,7 +17,6 @@ function LoginCallbackContent() {
       const token = searchParams.get("token");
 
       if (token) {
-        setToken(token);
         window.history.replaceState(null, "", window.location.pathname);
       }
 
@@ -28,7 +27,7 @@ function LoginCallbackContent() {
         return;
       }
 
-      const u = await fetchUser(token);
+      const u = await fetchUser();
 
       if (u.error || !u.user) {
         setStateError(u.error || "Login was unsuccessfull");
@@ -38,9 +37,6 @@ function LoginCallbackContent() {
       }
 
       setUser(u.user);
-      if (u.newToken) {
-        setToken(u.newToken);
-      }
       window.location.href = `/user/${u.user.username}`;
     };
 

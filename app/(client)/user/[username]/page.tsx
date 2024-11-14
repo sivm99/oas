@@ -1,14 +1,13 @@
 "use client";
 import useAppContext from "@/hooks/useAppContext";
 import { useActionState, useEffect } from "react";
-import { useParams } from "next/navigation";
+// import { useParams } from "next/navigation";
 
 import { fetchDestinations, fetchRules } from "@/Helper/getData";
 import { Destination, Rule } from "@/Helper/types";
 import {
   getLocalDestinations,
   getLocalRules,
-  getLocalToken,
   getLocalUser,
 } from "@/Helper/getLocalData";
 import UserField from "./User/UserField";
@@ -16,21 +15,19 @@ import RuleFields from "./Rules/RuleField";
 import DestinationField from "./Destinations/DestinationField";
 import { Separator } from "@/components/ui/separator";
 
-type FormState = {
-  success: boolean;
-  rules?: Rule[];
-  destinations?: Destination[];
-  token?: string;
-};
+// type FormState = {
+//   success: boolean;
+//   rules?: Rule[];
+//   destinations?: Destination[];
+//   token?: string;
+// };
 
 function DashBoard() {
-  const params = useParams<{ username: string }>();
+  // const params = useParams<{ username: string }>();
   const {
     user,
     setUser,
-    token,
     setRules,
-    setToken,
     rules,
     destinations,
     setDestinations,
@@ -41,32 +38,25 @@ function DashBoard() {
     success: false,
     rules,
     destinations,
-    token,
   };
-  const {} = params;
+  // const { username } = params;
 
-  const [state, fetchData] = useActionState(async (p: FormState) => {
+  const [state, fetchData] = useActionState(async () => {
     let localUser;
-    let localToken;
     let localRules;
     let localDestinations;
-    if (!user || !token || !p.token) {
+    if (!user) {
       localUser = await getLocalUser();
       if (localUser) {
         setUser(localUser);
         window.history.replaceState(null, "", `/user/${localUser.username}`);
       }
 
-      localToken = await getLocalToken();
-      if (localToken) {
-        setToken(localToken);
-      }
-
-      localRules = await getLocalRules(user?.username);
+      localRules = await getLocalRules(localUser?.username);
       if (localRules && localUser?.username === localRules[0].username) {
         setRules(localRules);
       }
-      localDestinations = await getLocalDestinations(user?.username);
+      localDestinations = await getLocalDestinations(localUser?.username);
       if (
         localDestinations &&
         localUser?.username === localDestinations[0].username
@@ -75,41 +65,32 @@ function DashBoard() {
       }
     } else {
       localUser = user;
-      localToken = token;
     }
 
-    if (!localUser || !localToken) {
+    if (!localUser) {
       setError("You Must be Logged in to access this Resource");
       return {
         success: false,
         rules: undefined,
         destinations: undefined,
-        token: undefined,
       };
     }
 
-    let newToken: string | undefined;
     let updatedRules: Rule[] | undefined;
     let updatedDestinations: Destination[] | undefined;
 
-    if (localUser.aliasCount && !localRules) {
-      const rulesResult = await fetchRules(localToken);
+    if (localUser.aliasCount > 0 && !localRules) {
+      const rulesResult = await fetchRules();
       if (!rulesResult.error && rulesResult.rules) {
         updatedRules = rulesResult.rules;
-        if (rulesResult.newToken) {
-          newToken = rulesResult.newToken;
-        }
       }
     }
 
-    if (localUser.destinationCount && !localDestinations) {
-      const destinationsResult = await fetchDestinations(localToken);
+    if (localUser.destinationCount > 0 && !localDestinations) {
+      const destinationsResult = await fetchDestinations();
 
       if (!destinationsResult.error && destinationsResult.destinations) {
         updatedDestinations = destinationsResult.destinations;
-        if (destinationsResult.newToken) {
-          newToken = destinationsResult.newToken;
-        }
       }
     }
 
@@ -119,15 +100,11 @@ function DashBoard() {
     if (updatedDestinations) {
       setDestinations(updatedDestinations);
     }
-    if (newToken) {
-      setToken(newToken);
-    }
 
     return {
       success: true,
       rules: updatedRules,
       destinations: updatedDestinations,
-      token: newToken,
     };
   }, stateInitial);
 

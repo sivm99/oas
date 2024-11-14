@@ -2,17 +2,24 @@
 
 import { createRequest } from "@/Helper/request";
 import { Rule } from "@/Helper/types";
+import { cookies } from "next/headers";
 
-async function createRule(
-  rule: Omit<Rule, "ruleId" | "active">,
-  token: string,
-): Promise<{
+async function createRule(rule: Omit<Rule, "ruleId" | "active">): Promise<{
   success: boolean;
   error?: string;
   status: number;
   newRule?: Rule;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
     const ruleResult = await createRequest(
       "POST",
       "/mail/rules",
@@ -54,15 +61,21 @@ async function createRule(
   }
 }
 
-async function updateRule(
-  rule: Rule,
-  token: string,
-): Promise<{
+async function updateRule(rule: Rule): Promise<{
   success: boolean;
   status: number;
   error?: string;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
     const ruleResult = await createRequest(
       "PATCH",
       "/mail/rules/:ruleId",
@@ -97,15 +110,21 @@ async function updateRule(
     };
   }
 }
-async function toggleRule(
-  rule: Rule,
-  token: string,
-): Promise<{
+async function toggleRule(rule: Rule): Promise<{
   success: boolean;
   status: number;
   error?: string;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
     const ruleResult = await createRequest(
       "PATCH",
       "/mail/rules/:ruleId/toggle",
@@ -140,15 +159,21 @@ async function toggleRule(
   }
 }
 
-async function deleteRule(
-  rule: Rule,
-  token: string,
-): Promise<{
+async function deleteRule(rule: Rule): Promise<{
   success: boolean;
   status: number;
   error?: string;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
     const ruleResult = await createRequest(
       "DELETE",
       "/mail/rules/:ruleId",

@@ -8,7 +8,7 @@ import { CreateRuleDialog } from "./CreateRuleDialouge";
 import { createRule } from "./actions";
 
 function NewRule() {
-  const { destinations, token, setError, setRules, rules, setLoginExpired } =
+  const { destinations, setError, setRules, rules, setLoginExpired } =
     useAppContext();
   const [showForm, setShowForm] = useState(false);
 
@@ -48,20 +48,13 @@ function NewRule() {
             const name = formData.get("rule-name") as string;
             const comment = formData.get("comment") as string;
 
-            if (!token) {
-              setLoginExpired(true);
-            }
-
-            const ruleResult = await createRule(
-              {
-                username: destinations[0].username,
-                aliasEmail: alias + domain,
-                destinationEmail,
-                name,
-                comment,
-              },
-              token,
-            );
+            const ruleResult = await createRule({
+              username: destinations[0].username,
+              aliasEmail: alias + domain,
+              destinationEmail,
+              name,
+              comment,
+            });
             if (!ruleResult.success && ruleResult.status === 401) {
               setLoginExpired(true);
               return;

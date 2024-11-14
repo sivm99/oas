@@ -1,5 +1,3 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,52 +9,11 @@ import {
 import FormInput from "@/components/FormInput";
 import FormBelow from "@/components/FormBelow";
 import Link from "next/link";
-import useAppContext from "@/hooks/useAppContext";
-import { FormState, handleAuth } from "../actions";
-import { useActionState } from "react";
+
 // import { redirect } from "next/navigation";
 import { User } from "lucide-react";
 
 export default function SignupForm() {
-  const { setUser, setError, setToken } = useAppContext();
-
-  const [r, performSignup, isPending] = useActionState(
-    async (prev: FormState | null, formData: FormData): Promise<FormState> => {
-      const r = await handleAuth(formData, true);
-      if (!r) {
-        setError("something went wrong");
-        return {
-          message: "something went wrong",
-          success: false,
-        };
-      }
-
-      if (!r.user) {
-        setError(r.message || `something went wrong`);
-        return {
-          message: "missing user data",
-          success: false,
-        };
-      }
-
-      localStorage.setItem(`name`, r.user.name);
-      localStorage.setItem("token", r.cookie || "");
-      setUser(r.user);
-      return {
-        success: true,
-        user: r.user,
-        cookie: r.cookie,
-        message: r.message,
-      };
-    },
-    null,
-  );
-
-  if (r?.success) {
-    setToken(r.cookie || " ");
-    window.location.href = `/user/dash`;
-  }
-
   return (
     <Card className="form_card_container">
       <CardHeader>
@@ -64,7 +21,7 @@ export default function SignupForm() {
         <CardDescription>Create a new One Alias Account</CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="form_container" action={performSignup}>
+        <form className="form_container" action="/api/signup" method="post">
           <FormInput
             name="name"
             type="text"
@@ -112,9 +69,7 @@ export default function SignupForm() {
             minLength={8}
             maxLength={16}
           />
-          <Button type="submit" disabled={isPending}>
-            {isPending ? "🚀🚀...🚀" : "Signup"}
-          </Button>
+          <Button type="submit">Signup</Button>
         </form>
 
         <div className="mt-4">

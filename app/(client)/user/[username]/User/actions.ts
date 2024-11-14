@@ -3,19 +3,18 @@
 import { createRequest } from "@/Helper/request";
 
 import { User } from "@/Helper/types";
+import { cookies } from "next/headers";
 
 async function updateUser({
   username,
   name,
   newUsername,
   avatar,
-  token,
 }: {
   username: string;
   name?: string;
   newUsername?: string;
   avatar?: string;
-  token: string;
 }): Promise<{
   user: User | null;
   error: string | null;
@@ -24,6 +23,17 @@ async function updateUser({
   success: boolean;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "You Must Be Logged In To Update Your Details",
+        message: "Unauthorized",
+        user: null,
+        status: 401,
+      };
+    }
     const response = await createRequest(
       "PATCH",
       "/user/:username",
@@ -77,16 +87,23 @@ async function updateUser({
     };
   }
 }
-async function verifyUserEmail(
-  username: string,
-  token: string,
-): Promise<{
+async function verifyUserEmail(username: string): Promise<{
   status: number;
   success: boolean;
   message?: string;
   error?: string;
 }> {
   try {
+    const c = await cookies();
+    const token = c.get("token")?.value;
+    if (!token) {
+      return {
+        success: false,
+        error: "You Must Be Logged In To Update Your Details",
+        message: "Unauthorized",
+        status: 401,
+      };
+    }
     const verifyEmailResult = await createRequest(
       "GET",
       `/user/:username/verify`,

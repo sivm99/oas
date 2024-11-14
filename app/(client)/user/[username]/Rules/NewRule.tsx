@@ -2,24 +2,15 @@
 
 import { Button } from "@/components/ui/button";
 
-import { getLocalToken } from "@/Helper/getLocalData";
-import { createRequest } from "@/Helper/request";
-import { Rule } from "@/Helper/types";
 import useAppContext from "@/hooks/useAppContext";
 import { useState } from "react";
 import { CreateRuleDialog } from "./CreateRuleDialouge";
+import { createRule } from "./actions";
 
 function NewRule() {
-  const { destinations, token, setToken, setError, setRules, rules } =
+  const { destinations, token, setError, setRules, rules, setLoginExpired } =
     useAppContext();
   const [showForm, setShowForm] = useState(false);
-  if (!token) {
-    getLocalToken().then((localToken) => {
-      if (localToken) {
-        setToken(localToken);
-      }
-    });
-  }
 
   return (
     <div className="w-full max-w-full  mx-auto">
@@ -57,38 +48,34 @@ function NewRule() {
             const name = formData.get("rule-name") as string;
             const comment = formData.get("comment") as string;
 
-            const localToken = await getLocalToken();
-            if (localToken) {
-              setToken(localToken);
-            }
-
             if (!token) {
-              setError("Login Expired, Please Login Again");
+              setLoginExpired(true);
             }
 
-            const ruleResult = await createRequest(
-              "POST",
-              "/mail/rules",
-              {},
-              token,
+            const ruleResult = await createRule(
               {
+                username: destinations[0].username,
                 aliasEmail: alias + domain,
                 destinationEmail,
                 name,
                 comment,
               },
+              token,
             );
-            if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
-              setError(ruleResult.error || "Rule cant Be Created");
-              setShowForm(false);
+            if (!ruleResult.success && ruleResult.status === 401) {
+              setLoginExpired(true);
               return;
             }
-            const newRule = ruleResult.data.data as Rule;
-            setRules([...rules, newRule]);
-
-            if (ruleResult.cookies) {
-              setToken(ruleResult.cookies);
+            if (
+              ruleResult.error ||
+              !ruleResult.newRule ||
+              !ruleResult.success
+            ) {
+              setError(ruleResult.error);
+              return;
             }
+            const newRule = ruleResult.newRule;
+            setRules([...rules, newRule]);
 
             setShowForm(false);
           }}

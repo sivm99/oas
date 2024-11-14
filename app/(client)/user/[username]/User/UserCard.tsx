@@ -16,7 +16,6 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { User } from "@/Helper/types";
 import useAppContext from "@/hooks/useAppContext";
-import { createRequest } from "@/Helper/request";
 import { useState } from "react";
 import { UserDialog } from "./UserDialog";
 import {
@@ -26,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { updateUser, verifyUserEmail } from "./actions";
 const UserProfileCard = ({
   name,
   username,
@@ -49,12 +49,7 @@ const UserProfileCard = ({
       return;
     }
 
-    const verifyEmailResult = await createRequest(
-      "GET",
-      `/user/:username/verify`,
-      { username },
-      token,
-    );
+    const verifyEmailResult = await verifyUserEmail(username, token);
 
     if (!verifyEmailResult) {
       setError("Failed to verify email");
@@ -64,8 +59,8 @@ const UserProfileCard = ({
       setLoginExpired(true);
       return;
     }
-    if (verifyEmailResult.status === 200 && verifyEmailResult.data) {
-      setHint(verifyEmailResult.data.message);
+    if (verifyEmailResult.status === 200 && verifyEmailResult.message) {
+      setHint(verifyEmailResult.message);
     } else if (verifyEmailResult.error) {
       setError(verifyEmailResult.error);
     } else {
@@ -103,31 +98,23 @@ const UserProfileCard = ({
               }
             }
 
-            const userResponse = await createRequest(
-              "PATCH",
-              "/user/:username",
-              { username },
+            const userResponse = await updateUser({
+              newUsername,
               token,
-              {
-                name: newName,
-                username: newUsername,
-              },
-            );
+              name: newName,
+              username,
+            });
 
             if (userResponse.status === 401) {
               setLoginExpired(true);
               return;
             }
-            if (
-              userResponse.error ||
-              !userResponse.data ||
-              !userResponse.data.data
-            ) {
+            if (userResponse.error || !userResponse.user) {
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
 
-            const updatedUser = userResponse.data.data as User;
+            const updatedUser = userResponse.user;
             setUser(updatedUser);
             setShowUpdate(false);
             return;
@@ -141,34 +128,26 @@ const UserProfileCard = ({
           type="pic"
           onAction={async (f) => {
             if (!token) {
-              // setError("You Must Be logged in for Changing Your Details");
               setLoginExpired(true);
               return;
             }
             const avatar = f.get("avatar-url") as string;
-            const userResponse = await createRequest(
-              "PATCH",
-              "/user/:username",
-              { username },
+            const userResponse = await updateUser({
+              avatar,
               token,
-              {
-                avatar,
-              },
-            );
+              username,
+            });
             if (userResponse.status === 401) {
               setLoginExpired(true);
               return;
             }
-            if (
-              userResponse.error ||
-              !userResponse.data ||
-              !userResponse.data.data
-            ) {
+            if (userResponse.error || !userResponse.user) {
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
 
-            const updatedUser = userResponse.data.data as User;
+            const updatedUser = userResponse.user;
+            setUser(updatedUser);
             setUser(updatedUser);
             setShowAvatar(false);
             return;

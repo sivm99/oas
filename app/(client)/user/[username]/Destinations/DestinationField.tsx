@@ -2,7 +2,6 @@
 import useAppContext from "@/hooks/useAppContext";
 import DestinationsCard from "./DestinationCard";
 
-import NewDestination from "./NewDestination";
 import { useEffect } from "react";
 import { getLocalDestinations } from "@/Helper/getLocalData";
 
@@ -23,7 +22,7 @@ function DestinationField() {
   return (
     <section>
       {destinations && <DestinationsCard destinations={destinations} />}
-      <NewDestination />
+      {/* <NewDestination /> */}
     </section>
   );
 }

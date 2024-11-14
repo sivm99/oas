@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Destination, ResponseObject } from "@/Helper/types";
+import { Destination } from "@/Helper/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,49 +24,47 @@ import {
   Globe,
   Mail,
   MoreVertical,
+  Plus,
   ShieldCheck,
 } from "lucide-react";
 import useAppContext from "@/hooks/useAppContext";
-import { createRequest } from "@/Helper/request";
 import { DestinationDialog } from "./DestinationDialog";
 import { db } from "@/Helper/dbService";
+import {
+  addDestination,
+  removeDestination,
+  verifyDestination,
+} from "./actions";
 
 function DestinationsCard({ destinations }: { destinations: Destination[] }) {
-  const { token, setError, setHint, setDestinations, setLoginExpired } =
-    useAppContext();
+  const { token, setError, setDestinations, setLoginExpired } = useAppContext();
 
   const [showDelete, setShowDelete] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const verifyDestination = async (destination: Destination) => {
+  const handleVerify = async (destination: Destination) => {
     if (!token) {
       setLoginExpired(true);
       return;
     }
-    const res = await createRequest(
-      "POST",
-      "/mail/destinations/:destinationID/verify",
-      { destinationID: destination.destinationID },
+    const res = await verifyDestination({
+      destinationID: destination.destinationID,
       token,
-      {},
-    );
+    });
     if (res.status === 401) {
       setLoginExpired(true);
       return;
     }
-    if (res.error || !res.data) {
+    if (res.error || !res.success || !res.verifiedDestination) {
       setError(res.error || "Failed to verify destination");
       return;
     }
 
-    const verifiedDestination = res.data as ResponseObject<Destination>;
+    const verifiedDestination = res.verifiedDestination;
 
-    if (verifiedDestination.status === "success" && verifiedDestination.data) {
-      setHint(`${verifiedDestination.message}`);
-    }
     setDestinations(
       destinations.map((d) => {
         if (d.destinationID === destination.destinationID) {
-          return verifiedDestination.data;
+          return verifiedDestination;
         }
         return d;
       }),
@@ -83,41 +81,36 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
 
     try {
       if (!token) {
-        // setError("You are not logged in");
-        setLoginExpired(true);
+        setShowNew(false);
         return;
       }
 
-      const destinationResult = await createRequest(
-        "POST",
-        "/mail/destinations",
-        {},
+      const destinationResult = await addDestination({
+        destinationEmail,
+        domain: selectedDomain,
         token,
-        { destinationEmail, domain: selectedDomain },
-      );
+      });
+
       if (destinationResult.status === 401) {
         setLoginExpired(true);
+        setShowNew(false);
         return;
       }
-      if (!destinationResult || !destinationResult.data) {
+
+      if (
+        !destinationResult ||
+        !destinationResult.success ||
+        !destinationResult.newDestination
+      ) {
         setError(destinationResult.error || "Failed to create destination");
         return;
       }
 
-      const newDestination =
-        destinationResult.data as ResponseObject<Destination>;
+      const newDestination = destinationResult.newDestination;
 
-      if (newDestination.status === "success" && newDestination.data) {
-        if (!destinations) {
-          setDestinations([newDestination.data]);
-        } else {
-          setDestinations([...destinations, newDestination.data]);
-        }
-        setHint(`${newDestination.message}`);
-        setShowNew(false);
-      } else {
-        setError(newDestination.message);
-      }
+      setDestinations([...destinations, newDestination]);
+      setShowNew(false);
+      return;
     } catch (error) {
       console.error(error);
       setError("Failed to create destination");
@@ -126,17 +119,17 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
 
   return (
     <section>
+      {showNew && (
+        <DestinationDialog
+          type="create"
+          onCancel={() => setShowNew(false)}
+          cardTitle="Add New Destination"
+          cardDesc="Great news! Your mail will be forwarded to this address once it's verified. You'll be able to create exciting new Rules for your selected Domain - it's that simple!"
+          onAction={newDestination}
+        />
+      )}
       {destinations.map((destination) => (
         <Card key={destination.destinationID} className="shadow-lg">
-          {showNew && (
-            <DestinationDialog
-              type="create"
-              onCancel={() => setShowNew(false)}
-              cardTitle="Add New Destination"
-              cardDesc="Great news! Your mail will be forwarded to this address once it's verified. You'll be able to create exciting new Rules for your selected Domain - it's that simple!"
-              onAction={newDestination}
-            />
-          )}
           {showDelete && (
             <DestinationDialog
               type="delete"
@@ -152,32 +145,27 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                 if (!token) {
                   setLoginExpired(true);
                   setShowDelete(false);
-
                   return;
                 }
 
-                const deleteResponse = await createRequest(
-                  "DELETE",
-                  "/mail/destinations/:destinationID",
-                  {
-                    destinationID: destination.destinationID,
-                  },
+                const deleteResponse = await removeDestination({
+                  destinationID: destination.destinationID,
+                  password,
                   token,
-                  {
-                    password,
-                  },
-                );
-                if (deleteResponse.status === 401) {
-                  setLoginExpired(true);
-                  return;
-                }
-                if (deleteResponse.error || deleteResponse.status !== 204) {
+                });
+
+                // if (deleteResponse.status === 401) {
+                //   setLoginExpired(true);
+                //   return;
+                // }
+                if (!deleteResponse.success) {
                   setError(
-                    deleteResponse.error || "Some Unknown Error Occurred",
+                    deleteResponse.error || "Failed to delete destination",
                   );
                   setShowDelete(false);
                   return;
                 }
+
                 await db.deleteDestinationById(
                   destination.destinationID,
                   destination.username,
@@ -242,7 +230,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  verifyDestination(destination);
+                  handleVerify(destination);
                 }}
               >
                 <ShieldCheck className="w-4 h-4 mr-2" />
@@ -252,6 +240,16 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
           </CardFooter>
         </Card>
       ))}
+      {destinations.length === 0 && (
+        <Button
+          variant="outline"
+          onClick={() => setShowNew(!showNew)}
+          className="flex items-center gap-2 border-2 border-transparent animate-border-glow w-full"
+        >
+          <Plus size={20} />
+          Add Destination
+        </Button>
+      )}
     </section>
   );
 }

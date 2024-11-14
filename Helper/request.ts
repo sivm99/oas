@@ -102,7 +102,6 @@ const createRequest = async (
       cookies: cookieToken ? await TokenHandler.encode(cookieToken) : undefined,
     };
   } catch (error) {
-    console.log(error);
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ResponseObject>;
       if (axiosError.response) {

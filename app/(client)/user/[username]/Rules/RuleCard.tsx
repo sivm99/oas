@@ -22,8 +22,8 @@ import useAppContext from "@/hooks/useAppContext";
 
 import { cn } from "@/lib/utils";
 import { RuleDialog } from "./RuleDialog";
-import { createRequest } from "@/Helper/request";
 import { db } from "@/Helper/dbService";
+import { deleteRule, toggleRule, updateRule } from "./actions";
 // Separate RuleCard Component
 const RuleCard = ({ rule }: { rule: Rule }) => {
   const {
@@ -46,18 +46,12 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
           rule={rule}
           type="edit"
           onAction={async (rule) => {
-            const ruleResult = await createRequest(
-              "PATCH",
-              "/mail/rules/:ruleId",
-              { ruleId: rule.ruleId },
-              token,
-              rule,
-            );
+            const ruleResult = await updateRule(rule, token);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               return;
             }
-            if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
+            if (ruleResult.error) {
               setError(
                 ruleResult.error ||
                   "Rule cant Be update try Again after some time",
@@ -65,15 +59,13 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
               setShowEdit(false);
               return;
             }
-
-            const updatedRule = ruleResult.data.data as Rule;
-            if (updatedRule) {
+            if (ruleResult.success) {
               setRules(
-                rules.map((rule) => {
-                  if (rule.ruleId === updatedRule.ruleId) {
-                    return updatedRule;
+                rules.map((r) => {
+                  if (r.ruleId === rule.ruleId) {
+                    return rule;
                   }
-                  return rule;
+                  return r;
                 }),
               );
             }
@@ -88,17 +80,12 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
           rule={rule}
           type="toggle"
           onAction={async (rule) => {
-            const ruleResult = await createRequest(
-              "PATCH",
-              "/mail/rules/:ruleId/toggle",
-              { ruleId: rule.ruleId },
-              token,
-            );
+            const ruleResult = await toggleRule(rule, token);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               return;
             }
-            if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
+            if (ruleResult.error) {
               setError(
                 ruleResult.error ||
                   "Rule cant Be update try Again after some time",
@@ -107,8 +94,8 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
               return;
             }
 
-            const updatedRule = ruleResult.data.data as Rule;
-            if (updatedRule) {
+            if (ruleResult.success) {
+              const updatedRule = { ...rule, active: !rule.active };
               setRules(
                 rules.map((rule) => {
                   if (rule.ruleId === updatedRule.ruleId) {
@@ -129,12 +116,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
           rule={rule}
           type="delete"
           onAction={async (rule) => {
-            const ruleResult = await createRequest(
-              "DELETE",
-              "/mail/rules/:ruleId",
-              { ruleId: rule.ruleId },
-              token,
-            );
+            const ruleResult = await deleteRule(rule, token);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               return;

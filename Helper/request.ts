@@ -96,6 +96,7 @@ const createRequest = async (
       "token",
     );
 
+    console.log(cookieToken);
     return {
       data: response.data,
       error: null,

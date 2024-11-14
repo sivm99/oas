@@ -77,15 +77,10 @@ export class TokenHandler {
       const hash = crypto
         .createHmac("sha256", this.SECRET_KEY!)
         .update(randomBytes.toString("hex") + Date.now().toString())
-        .digest("hex");
+        .digest("base64")
+        .replace(/[+/=]/g, ""); // Remove any base64 padding characters
 
-      return hash
-        .slice(0, 10)
-        .replace(/[+/=]/g, "")
-        .replace(/[0-9]/g, (char) => {
-          const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-          return letters[parseInt(char, 10) % 26];
-        });
+      return hash.slice(0, 20); // Return 20 characters of the base64 string
     } catch (error) {
       throw new Error(
         `Failed to generate random string: ${(error as Error).message}`,

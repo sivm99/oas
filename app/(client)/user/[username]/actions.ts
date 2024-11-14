@@ -8,7 +8,6 @@ import {
   isUserResponse,
 } from "@/Helper/typeFunction";
 import { Destination, Rule, User } from "@/Helper/types";
-import { getCookieFromString } from "@/hooks/useSetCookie";
 
 type FetchData = "user" | "rules" | "destinations";
 
@@ -70,9 +69,7 @@ export default async function fetchData<T extends FetchData>(
       };
     }
 
-    const newToken = getCookieFromString(r?.cookies || "", "token") || "";
-    // await createSession(newToken || " ");
-
+    const newToken = r.cookies || "";
     // Handle type-specific validation and responses
     switch (type) {
       case "user":

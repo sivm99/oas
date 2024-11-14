@@ -24,7 +24,7 @@ export type FetchDataState<T extends FetchData> = {
   success: boolean;
   message: string;
   data?: DataType<T>;
-  code?: number;
+  code: number;
   newToken?: string;
 };
 
@@ -51,12 +51,13 @@ export default async function fetchData<T extends FetchData>(
   if (type === "destinations") endpoint = "/mail/destinations" as UrlEndpoints;
 
   try {
-    const r = await createRequest("GET",endpoint, {}, token);
+    const r = await createRequest("GET", endpoint, {}, token);
 
     if (r.error || !r.data) {
       return {
         success: false,
         message: r.error || "Unknown Error Occurred",
+        code: r.status,
       };
     }
 
@@ -65,6 +66,7 @@ export default async function fetchData<T extends FetchData>(
       return {
         success: false,
         message: `Fetching ${type} failed`,
+        code: r.status,
       };
     }
 
@@ -78,6 +80,7 @@ export default async function fetchData<T extends FetchData>(
           return {
             success: false,
             message: "Invalid User Response Format",
+            code: r.status,
           };
         }
         return {
@@ -85,6 +88,7 @@ export default async function fetchData<T extends FetchData>(
           message: "User Fetched Successfully",
           data: dataResponse.data as DataType<T>,
           newToken,
+          code: r.status,
         };
 
       case "rules":
@@ -92,12 +96,14 @@ export default async function fetchData<T extends FetchData>(
           return {
             success: false,
             message: "Invalid Rules Response Format",
+            code: r.status,
           };
         }
         return {
           success: true,
           message: "Rules Fetched Successfully",
           data: dataResponse.data as DataType<T>,
+          code: r.status,
           newToken,
         };
 
@@ -106,6 +112,7 @@ export default async function fetchData<T extends FetchData>(
           return {
             success: false,
             message: "Invalid Destinations Response Format",
+            code: r.status,
           };
         }
         return {
@@ -113,18 +120,21 @@ export default async function fetchData<T extends FetchData>(
           message: "Destinations Fetched Successfully",
           data: dataResponse.data as DataType<T>,
           newToken,
+          code: r.status,
         };
     }
 
     return {
       success: false,
       message: "Unknown type",
+      code: r.status,
     };
   } catch (error) {
     return {
       success: false,
       message:
         error instanceof Error ? error.message : "Unknown Error Occurred",
+      code: 500,
     };
   }
 }

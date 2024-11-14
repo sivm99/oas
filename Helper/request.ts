@@ -7,6 +7,7 @@ import {
   ResponseObject,
 } from "@/Helper/types";
 import { getCookieFromString } from "@/hooks/useSetCookie";
+import { TokenHandler } from "@/utils/token";
 
 const BASE_URL = `${process.env.BACKEND_HOST}/api/v2`;
 
@@ -57,17 +58,29 @@ const createRequest = async (
   data?: DataObject,
 ): Promise<RequestResult> => {
   console.log("create request to api was called");
-
   try {
     const resolvedUrl = resolveEndpoint(endpoint, params);
-
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       Accept: "application/json",
     };
 
     if (token) {
-      headers.Authorization = `Bearer ${token}`;
+      // Decode token if it's encoded, otherwise encode it
+      const finalToken = (await TokenHandler.isValidEncodedToken(token))
+        ? await TokenHandler.decode(token)
+        : token;
+
+      if (!finalToken) {
+        // throw new Error("Invalid or expired token");
+        console.log("Invalid or expired token");
+        return {
+          data: null,
+          error: "Invalid or expired token",
+          status: 401,
+        };
+      }
+      headers.Authorization = `Bearer ${finalToken}`;
     }
 
     const response = await instance.request<ResponseObject>({
@@ -77,24 +90,35 @@ const createRequest = async (
       headers,
     });
 
+    // Encode token from cookies if present
+    const cookieToken = getCookieFromString(
+      response.headers["set-cookie"]?.join("; ") || "",
+      "token",
+    );
+
     return {
       data: response.data,
       error: null,
       status: response.status,
-      cookies: getCookieFromString(
-        response.headers["set-cookie"]?.join("; ") || "",
-        "token",
-      ),
+      cookies: cookieToken ? await TokenHandler.encode(cookieToken) : undefined,
     };
   } catch (error) {
+    console.log(error);
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ResponseObject>;
       if (axiosError.response) {
+        const cookieToken = getCookieFromString(
+          axiosError.response.headers["set-cookie"]?.join("; ") || "",
+          "token",
+        );
+
         return {
           data: axiosError.response.data,
           error: axiosError.response.data.message || "An error occurred",
           status: axiosError.response.status,
-          // cookies: getCookieFromString(response.headers["set-cookie"]?.join("; "), "token"),
+          cookies: cookieToken
+            ? await TokenHandler.encode(cookieToken)
+            : undefined,
         };
       }
       return {

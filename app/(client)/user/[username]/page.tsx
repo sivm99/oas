@@ -94,7 +94,6 @@ function DashBoard() {
 
     if (localUser.aliasCount && !localRules) {
       const rulesResult = await fetchRules(localToken);
-
       if (!rulesResult.error && rulesResult.rules) {
         updatedRules = rulesResult.rules;
         if (rulesResult.newToken) {

@@ -106,7 +106,7 @@ export default function UserNavContent() {
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger aria-label="Toggle menu" asChild>
             <Button variant="ghost">
-              <Menu className="h-6 w-6" aria-hidden="true" />
+              <Menu size={20} aria-hidden="true" />
             </Button>
           </SheetTrigger>
           <SheetContent

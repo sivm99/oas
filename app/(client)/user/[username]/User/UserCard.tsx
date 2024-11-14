@@ -17,8 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { User } from "@/Helper/types";
 import useAppContext from "@/hooks/useAppContext";
 import { createRequest } from "@/Helper/request";
-import { getLocalToken } from "@/Helper/getLocalData";
-import { isUserResponse } from "@/Helper/typeFunction";
 import { useState } from "react";
 import { UserDialog } from "./UserDialog";
 import {
@@ -38,21 +36,16 @@ const UserProfileCard = ({
   destinationCount,
 }: User) => {
   // const navigate = useNavigate();
-  const { setHint, setError, setUser, token, setToken } = useAppContext();
+  const { setHint, setError, setUser, token, setLoginExpired } =
+    useAppContext();
 
   const [showUpdate, setShowUpdate] = useState(false);
   const [showAvatar, setShowAvatar] = useState(false);
-  if (!token) {
-    getLocalToken().then((localToken) => {
-      if (localToken) {
-        setToken(localToken);
-      }
-    });
-  }
 
   const handleVerifyEmail = async () => {
     if (!token) {
-      setError("You have to Login Again for this action");
+      // setError("You have to Login Again for this action");
+      setLoginExpired(true);
       return;
     }
 
@@ -67,15 +60,12 @@ const UserProfileCard = ({
       setError("Failed to verify email");
       return;
     }
-
+    if (verifyEmailResult.status === 401) {
+      setLoginExpired(true);
+      return;
+    }
     if (verifyEmailResult.status === 200 && verifyEmailResult.data) {
       setHint(verifyEmailResult.data.message);
-      if (isUserResponse(verifyEmailResult.data)) {
-        setUser(verifyEmailResult.data.data);
-        if (verifyEmailResult.cookies) {
-          setToken(verifyEmailResult.cookies);
-        }
-      }
     } else if (verifyEmailResult.error) {
       setError(verifyEmailResult.error);
     } else {
@@ -124,6 +114,10 @@ const UserProfileCard = ({
               },
             );
 
+            if (userResponse.status === 401) {
+              setLoginExpired(true);
+              return;
+            }
             if (
               userResponse.error ||
               !userResponse.data ||
@@ -135,9 +129,6 @@ const UserProfileCard = ({
 
             const updatedUser = userResponse.data.data as User;
             setUser(updatedUser);
-            if (userResponse.cookies) {
-              setToken(userResponse.cookies);
-            }
             setShowUpdate(false);
             return;
           }}
@@ -150,7 +141,8 @@ const UserProfileCard = ({
           type="pic"
           onAction={async (f) => {
             if (!token) {
-              setError("You Must Be logged in for Changing Your Details");
+              // setError("You Must Be logged in for Changing Your Details");
+              setLoginExpired(true);
               return;
             }
             const avatar = f.get("avatar-url") as string;
@@ -163,7 +155,10 @@ const UserProfileCard = ({
                 avatar,
               },
             );
-
+            if (userResponse.status === 401) {
+              setLoginExpired(true);
+              return;
+            }
             if (
               userResponse.error ||
               !userResponse.data ||
@@ -175,9 +170,6 @@ const UserProfileCard = ({
 
             const updatedUser = userResponse.data.data as User;
             setUser(updatedUser);
-            if (userResponse.cookies) {
-              setToken(userResponse.cookies);
-            }
             setShowAvatar(false);
             return;
           }}

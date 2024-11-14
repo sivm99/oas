@@ -16,7 +16,10 @@ interface AppContextState {
   setHint: (hint: ReactNode) => void;
   token: string;
   setToken: (token: string) => void;
+  loginExpired: boolean;
+  setLoginExpired: (value: boolean) => void;
   isLoading: boolean;
+  setIsLoading: (value: boolean) => void;
 }
 
 export const AppContext = createContext<AppContextState | undefined>(undefined);
@@ -31,6 +34,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   const [hint, setHint] = useState<ReactNode>("");
   const [token, setTokenState] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
+  const [loginExpired, setLoginExpired] = useState(false);
 
   // Initialize IndexedDB when the provider mounts
   useEffect(() => {
@@ -131,6 +135,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     token,
     setToken,
     isLoading,
+    setIsLoading,
+    loginExpired,
+    setLoginExpired,
   };
 
   if (isLoading) {

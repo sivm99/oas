@@ -144,7 +144,7 @@ export const UserDialog = ({ onAction, onCancel, type }: UserDialogProps) => {
             <DialogDescription>
               {type === "basic"
                 ? " Enter Name or Userame or both and that will be instantly updated"
-                : "Upload PNG/JPEG/SVG"}
+                : "Upload PNG/JPEG/SVG 128KB Limit"}
             </DialogDescription>
           </DialogHeader>
           <DialogForm />
@@ -173,7 +173,7 @@ export const UserDialog = ({ onAction, onCancel, type }: UserDialogProps) => {
           <DrawerDescription>
             {type === "basic"
               ? " Enter Name or Userame or both and that will be instantly updated"
-              : "Upload PNG/JPEG/SVG"}
+              : "Upload PNG/JPEG/SVG 128KB limit"}
           </DrawerDescription>
         </DrawerHeader>
         <DialogForm className="px-4" />

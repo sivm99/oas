@@ -23,23 +23,21 @@ import useAppContext from "@/hooks/useAppContext";
 import { cn } from "@/lib/utils";
 import { RuleDialog } from "./RuleDialog";
 import { createRequest } from "@/Helper/request";
-import { getLocalToken } from "@/Helper/getLocalData";
 import { db } from "@/Helper/dbService";
 // Separate RuleCard Component
 const RuleCard = ({ rule }: { rule: Rule }) => {
-  const { setHint, token, setToken, setError, rules, setRules } =
-    useAppContext();
+  const {
+    setHint,
+    token,
+
+    setError,
+    rules,
+    setRules,
+    setLoginExpired,
+  } = useAppContext();
   const [showDelete, setShowDelete] = useState(false);
   const [showToggle, setShowToggle] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-
-  if (!token) {
-    getLocalToken().then((localToken) => {
-      if (localToken) {
-        setToken(localToken);
-      }
-    });
-  }
 
   return (
     <Card className={cn(!rule.active && "opacity-60")}>
@@ -55,7 +53,10 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
               token,
               rule,
             );
-
+            if (ruleResult.status === 401) {
+              setLoginExpired(true);
+              return;
+            }
             if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
               setError(
                 ruleResult.error ||
@@ -76,9 +77,6 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
                 }),
               );
             }
-            if (ruleResult.cookies) {
-              setToken(ruleResult.cookies);
-            }
             setShowEdit(false);
             return;
           }}
@@ -96,7 +94,10 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
               { ruleId: rule.ruleId },
               token,
             );
-
+            if (ruleResult.status === 401) {
+              setLoginExpired(true);
+              return;
+            }
             if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
               setError(
                 ruleResult.error ||
@@ -117,9 +118,6 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
                 }),
               );
             }
-            if (ruleResult.cookies) {
-              setToken(ruleResult.cookies);
-            }
             setShowToggle(false);
             return;
           }}
@@ -137,6 +135,10 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
               { ruleId: rule.ruleId },
               token,
             );
+            if (ruleResult.status === 401) {
+              setLoginExpired(true);
+              return;
+            }
             if (ruleResult.error || ruleResult.status !== 204) {
               setError(
                 ruleResult.error ||
@@ -150,9 +152,6 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
             );
             db.deleteRuleById(rule.ruleId);
 
-            if (ruleResult.cookies) {
-              setToken(ruleResult.cookies);
-            }
             setShowDelete(false);
             return;
           }}

@@ -28,25 +28,19 @@ import {
 } from "lucide-react";
 import useAppContext from "@/hooks/useAppContext";
 import { createRequest } from "@/Helper/request";
-import { getCookieFromString } from "@/hooks/useSetCookie";
-import { getLocalToken } from "@/Helper/getLocalData";
 import { DestinationDialog } from "./DestinationDialog";
 import { db } from "@/Helper/dbService";
 
 function DestinationsCard({ destinations }: { destinations: Destination[] }) {
-  const { token, setToken, setError, setHint, setDestinations } =
+  const { token, setError, setHint, setDestinations, setLoginExpired } =
     useAppContext();
 
   const [showDelete, setShowDelete] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const verifyDestination = async (destination: Destination) => {
     if (!token) {
-      const localToken = localStorage.getItem("token");
-      if (!localToken) {
-        setError("Login Expired , Please Login Again");
-        return;
-      }
-      setToken(localToken);
+      setLoginExpired(true);
+      return;
     }
     const res = await createRequest(
       "POST",
@@ -55,7 +49,10 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
       token,
       {},
     );
-
+    if (res.status === 401) {
+      setLoginExpired(true);
+      return;
+    }
     if (res.error || !res.data) {
       setError(res.error || "Failed to verify destination");
       return;
@@ -66,12 +63,6 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
     if (verifiedDestination.status === "success" && verifiedDestination.data) {
       setHint(`${verifiedDestination.message}`);
     }
-    const newToken = res.cookies
-      ? getCookieFromString(res.cookies, "token")
-      : null;
-
-    setToken(newToken || token);
-
     setDestinations(
       destinations.map((d) => {
         if (d.destinationID === destination.destinationID) {
@@ -83,10 +74,6 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
   };
 
   const newDestination = async (f: FormData) => {
-    const localToken = await getLocalToken();
-    if (localToken) {
-      setToken(localToken);
-    }
     const destinationEmail = f.get("destination-email") as string;
     const selectedDomain = f.get("destination-domain") as string;
     if (!destinationEmail || !selectedDomain) {
@@ -96,7 +83,8 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
 
     try {
       if (!token) {
-        setError("You are not logged in");
+        // setError("You are not logged in");
+        setLoginExpired(true);
         return;
       }
 
@@ -107,7 +95,10 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
         token,
         { destinationEmail, domain: selectedDomain },
       );
-
+      if (destinationResult.status === 401) {
+        setLoginExpired(true);
+        return;
+      }
       if (!destinationResult || !destinationResult.data) {
         setError(destinationResult.error || "Failed to create destination");
         return;
@@ -117,16 +108,6 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
         destinationResult.data as ResponseObject<Destination>;
 
       if (newDestination.status === "success" && newDestination.data) {
-        if (destinationResult.cookies) {
-          const newToken = getCookieFromString(
-            destinationResult.cookies,
-            "token",
-          );
-
-          if (newToken) {
-            setToken(newToken);
-          }
-        }
         if (!destinations) {
           setDestinations([newDestination.data]);
         } else {
@@ -169,8 +150,9 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                   return;
                 }
                 if (!token) {
-                  setError("You must be logged in perform this action");
+                  setLoginExpired(true);
                   setShowDelete(false);
+
                   return;
                 }
 
@@ -185,7 +167,10 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                     password,
                   },
                 );
-
+                if (deleteResponse.status === 401) {
+                  setLoginExpired(true);
+                  return;
+                }
                 if (deleteResponse.error || deleteResponse.status !== 204) {
                   setError(
                     deleteResponse.error || "Some Unknown Error Occurred",
@@ -202,13 +187,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                     (p) => destination.destinationID !== p.destinationID,
                   ),
                 );
-                // try {
-                //   await db.toggleRuleInactiveByDestinationEmail(
-                //     destination.destinationEmail,
-                //   );
-                // } catch (error) {
-                //   console.error(error);
-                // }
+
                 setShowDelete(false);
                 window.location.reload();
                 return;

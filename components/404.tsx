@@ -20,7 +20,7 @@ function NotFound() {
         404 Not Found
       </h1>
       <p className="text-2xl sm:text-3xl mb-8 text-center">
-        We don't found that resource. Sorry!
+        We don{`&apos;`}t found that resource. Sorry!
       </p>
       <Button
         onClick={() => redirect("/")}

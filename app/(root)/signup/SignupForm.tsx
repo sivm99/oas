@@ -27,19 +27,22 @@ export default async function SignupForm() {
             type="text"
             label="Full Name"
             required
+            pattern="^[^0-9]+$"
             placeholder="Your Name"
             icon={User}
             maxLength={64}
           />
           <FormInput
             name="username"
+            title="Min 4 Letters, No Spaces, Can Only Start with Alphabet"
             type="text"
             label="Username"
             required
+            pattern="^[a-zA-Z]\S*$"
             placeholder="you"
             icon={User}
             minLength={4}
-            maxLength={32}
+            maxLength={15}
           />
           <FormInput
             name="email"

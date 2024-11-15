@@ -1,9 +1,9 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useAppContext from "@/hooks/useAppContext";
-import { fetchUser } from "@/Helper/getData";
+import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
 import TelegramFlyingAnimation from "@/components/assets/FlyingTelegram";
 import {
   Card,
@@ -31,12 +31,12 @@ const LoadingAnimation = () => (
 
 function LoginCallbackContent() {
   const searchParams = useSearchParams();
-  const { setUser } = useAppContext();
+  const { setUser, setRules, setDestinations } = useAppContext();
   const [authState, setAuthState] = useState<AuthState>({
     isLoading: true,
     error: null,
   });
-
+  const router = useRouter();
   useEffect(() => {
     const handleLogin = async () => {
       console.log("Auth Use Effect is Running");
@@ -77,7 +77,19 @@ function LoginCallbackContent() {
           }
 
           setUser(userData.user);
-          window.location.href = `/user/${userData.user.username}`;
+          if (userData.user.destinationCount) {
+            const d = await fetchDestinations();
+            if (!d.error && d.destinations) {
+              setDestinations(d.destinations);
+            }
+          }
+          if (userData.user.aliasCount) {
+            const r = await fetchRules();
+            if (!r.error && r.rules) {
+              setRules(r.rules);
+            }
+          }
+          router.push(`/user/${userData.user.username}`);
           return;
         }
 
@@ -107,7 +119,7 @@ function LoginCallbackContent() {
     if (searchParams.has("success")) {
       handleLogin();
     }
-  }, [searchParams, setUser]);
+  }, [searchParams, setUser, setRules, setDestinations, router]);
 
   // Show error state
   if (authState.error) {
@@ -137,15 +149,15 @@ function ErrorCard({
   return (
     <Card className="p-4">
       {/* Large Error Icon */}
-      <div className="flex justify-center mb-8">
-        <AlertCircle className="h-24 w-24 text-destructive animate-pulse md:h-32 md:w-32" />
+      <div className="flex justify-center ">
+        <AlertCircle className="h-24 w-24 text-red-500 md:h-32 md:w-32" />
       </div>
 
-      <CardHeader className="text-center pb-2">
-        <CardTitle className="text-2xl md:text-6xl font-bold text-destructive">
+      <CardHeader className="text-center ">
+        <CardTitle className="text-2xl sm:text-7xl font-bold text-red-500">
           {provider} Error
         </CardTitle>
-        <CardDescription className="text-xl md:text-5xl mt-2">
+        <CardDescription className="text-xl md:text-5xl mt-2 text-start">
           {message}
         </CardDescription>
       </CardHeader>

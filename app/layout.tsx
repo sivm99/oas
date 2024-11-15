@@ -6,6 +6,8 @@ import { NavbarClient } from "@/components/Navbar";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
+import { AppProvider } from "@/hooks/appContext";
+import Popup from "./(client)/Popup";
 const Inter = localFont({
   src: "./fonts/Inter-Regular.ttf",
   variable: "--font-inter",
@@ -102,8 +104,12 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NavbarClient />
-          <section className="app_container">{children}</section>
+          <AppProvider>
+            <NavbarClient />
+            <section className="app_container">{children}</section>
+            <Popup />
+            <Popup error />
+          </AppProvider>
         </ThemeProvider>
       </body>
     </html>

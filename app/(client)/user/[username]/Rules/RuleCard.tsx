@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import { RuleDialog } from "./RuleDialog";
 import { db } from "@/Helper/dbService";
 import { deleteRule, toggleRule, updateRule } from "./actions";
+import { motion } from "framer-motion";
 // Separate RuleCard Component
 const RuleCard = ({ rule }: { rule: Rule }) => {
   const {
@@ -259,12 +260,28 @@ function RulesCard({ rules }: { rules: Rule[] }) {
       {rules.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="space-y-4 mt-4">
+        <motion.div
+          className="space-y-4 mt-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <SearchRules onSearch={handleSearch} />
-          {filteredRules.map((rule) => (
-            <RuleCard key={rule.ruleId} rule={rule} />
+          {filteredRules.map((rule, index) => (
+            <motion.div
+              key={rule.ruleId}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.3,
+                delay: index * 0.1,
+                ease: "easeOut",
+              }}
+            >
+              <RuleCard rule={rule} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );

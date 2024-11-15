@@ -102,50 +102,6 @@ class DatabaseService {
     });
   }
 
-  // async toggleRuleInactiveByDestinationEmail(destinationEmail: string) {
-  //   const store = this.getStore("rules", "readwrite");
-
-  //   // First, we need to create the index if it doesn't exist
-  //   if (!store.indexNames.contains("destinationEmail")) {
-  //     throw new Error("destinationEmail index does not exist");
-  //   }
-
-  //   const index = store.index("destinationEmail");
-
-  //   return new Promise<void>((resolve, reject) => {
-  //     const request = index.getAll(destinationEmail);
-
-  //     request.onerror = () => reject(request.error);
-  //     request.onsuccess = async () => {
-  //       const rules: Rule[] = request.result;
-
-  //       if (rules.length === 0) {
-  //         reject(new Error("No rules found for this destination email"));
-  //         return;
-  //       }
-
-  //       try {
-  //         // Update each rule's active status
-  //         await Promise.all(
-  //           rules.map((rule) => {
-  //             return new Promise<void>((resolveUpdate, rejectUpdate) => {
-  //               const updatedRule = { ...rule, active: !rule.active };
-  //               const updateRequest = store.put(updatedRule);
-
-  //               updateRequest.onsuccess = () => resolveUpdate();
-  //               updateRequest.onerror = () => rejectUpdate(updateRequest.error);
-  //             });
-  //           }),
-  //         );
-
-  //         resolve();
-  //       } catch (error) {
-  //         reject(error);
-  //       }
-  //     };
-  //   });
-  // }
-
   // Destinations operations
   async saveDestinations(destinations: Destination[]) {
     const store = this.getStore("destinations", "readwrite");

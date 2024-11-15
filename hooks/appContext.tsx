@@ -62,10 +62,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         if (userData) {
           setUserState(userData);
           // Load user-specific data
-          const userRules = await db.getRules(userData.username);
-          const userDestinations = await db.getDestinations(userData.username);
-          setRulesState(userRules);
-          setDestinationsState(userDestinations);
+          if (userData.destinationCount) {
+            const userDestinations = await db.getDestinations(
+              userData.username,
+            );
+            setDestinationsState(userDestinations);
+          }
+          if (userData.aliasCount) {
+            const userRules = await db.getRules(userData.username);
+            setRulesState(userRules);
+          }
         }
       }
     } catch (err) {
@@ -122,7 +128,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
     setError,
     hint,
     setHint,
-
     isLoading,
     setIsLoading,
     loginExpired,
@@ -130,7 +135,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   if (isLoading) {
-    return <TelegramFlyingAnimation />; // Or your preferred loading component
+    return (
+      <main className="dash_wrapper">
+        <section className="dash_child">
+          <TelegramFlyingAnimation />
+        </section>
+      </main>
+    ); // Or your preferred loading component
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

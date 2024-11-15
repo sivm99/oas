@@ -9,7 +9,7 @@ import {
 import FormInput from "@/components/FormInput";
 import FormBelow from "@/components/FormBelow";
 
-export default function LoginForm() {
+export default async function LoginForm() {
   return (
     <Card className="form_card_container">
       <CardHeader>

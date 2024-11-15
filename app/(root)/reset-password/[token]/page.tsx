@@ -14,6 +14,7 @@ import Link from "next/link";
 type Params = Promise<{ token: string }>;
 
 export default async function ResetPassword({ params }: { params: Params }) {
+  const token = (await params).token;
   return (
     <main className="form_wrapper">
       <FormHero
@@ -41,13 +42,7 @@ export default async function ResetPassword({ params }: { params: Params }) {
               action="/api/reset-password"
               method="post"
             >
-              <input
-                name="token"
-                id="token"
-                hidden
-                value={(await params).token}
-                readOnly
-              />
+              <input name="token" id="token" hidden value={token} readOnly />
               <FormInput
                 name="password"
                 type="password"

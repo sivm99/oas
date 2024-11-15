@@ -151,7 +151,7 @@ const UserProfileCard = ({
             {avatar ? (
               // eslint-disable-next-line @next/next/no-img-element
               <Avatar className="border-2 border-transparent animate-border-glow">
-                <AvatarImage src={avatar} className="p-[.9]" />
+                <AvatarImage src={avatar} className="p-[1.9]" />
                 <AvatarFallback>
                   {name
                     .split(" ")

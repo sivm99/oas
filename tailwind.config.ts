@@ -58,6 +58,7 @@ const config: Config = {
       },
       animation: {
         "border-glow": "borderGlow 5s ease-in-out infinite",
+        float: "float 3s ease-in-out infinite",
       },
       keyframes: {
         borderGlow: {
@@ -65,6 +66,44 @@ const config: Config = {
           "33%": { borderColor: "#7873f5" },
           "66%": { borderColor: "#42d392" },
         },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10px)" },
+        },
+        fly: {
+          "0%": {
+            transform: "translate(-50%, -50%) rotate(0deg) scale(1)",
+          },
+          "50%": {
+            transform: "translate(-50%, -50%) rotate(360deg) scale(1.5)",
+          },
+          "100%": {
+            transform: "translate(-50%, -50%) rotate(720deg) scale(1)",
+          },
+        },
+        // jumpToCenter: {
+        //   "0%": {
+        //     transform: "translate(0, 0) scale(1)",
+        //     opacity: "1",
+        //   },
+        //   "50%": {
+        //     transform:
+        //       "translate(calc(50vw - 50%), calc(50vh - 50%)) scale(1.2)",
+        //     opacity: "0.7",
+        //   },
+        //   "100%": {
+        //     transform: "translate(calc(50vw - 50%), calc(50vh - 50%)) scale(1)",
+        //     opacity: "0",
+        //   },
+        // },
+        // fadeIn: {
+        //   "0%": { opacity: "0" },
+        //   "100%": { opacity: "1" },
+        // },
+        // gradientFlow: {
+        //   "0%": { transform: "rotate(0deg)" },
+        //   "100%": { transform: "rotate(360deg)" },
+        // },
       },
     },
   },

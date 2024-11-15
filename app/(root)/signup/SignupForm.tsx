@@ -13,7 +13,7 @@ import Link from "next/link";
 // import { redirect } from "next/navigation";
 import { User } from "lucide-react";
 
-export default function SignupForm() {
+export default async function SignupForm() {
   return (
     <Card className="form_card_container">
       <CardHeader>

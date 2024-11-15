@@ -115,4 +115,22 @@ body {
     .dash_child {
         @apply rounded-lg shadow-lg p-6 w-full;
     }
+    .animate-paper-flight {
+        animation: paper-flight 4s ease-in-out infinite;
+    }
+}
+
+@keyframes paper-flight {
+    0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(50vw, -20vh) rotate(45deg);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(100vw, 100vh) rotate(90deg);
+        opacity: 0;
+    }
 }

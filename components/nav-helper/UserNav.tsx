@@ -10,6 +10,7 @@ import {
   SheetTrigger,
   // SheetClose,
   SheetFooter,
+  SheetDescription,
 } from "../ui/sheet";
 import {
   Dialog,
@@ -70,7 +71,11 @@ export default function UserNavContent() {
                 Logout
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] max-w-[90vw] mx-auto">
+            <DialogContent
+              className="sm:max-w-[425px] max-w-[90vw] mx-auto"
+              aria-label="Lougout Warning"
+              aria-describedby={undefined}
+            >
               <DialogHeader>
                 <DialogTitle>Are you sure you want to logout?</DialogTitle>
                 <DialogDescription>
@@ -117,6 +122,7 @@ export default function UserNavContent() {
           >
             <SheetHeader>
               <SheetTitle>One Alias Service</SheetTitle>
+              <SheetDescription>Hello Dear {name} </SheetDescription>
             </SheetHeader>
             <nav className="">
               <SheetFooter className="mt-4 flex flex-col gap-4">

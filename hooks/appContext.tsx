@@ -1,4 +1,5 @@
 "use client";
+import TelegramFlyingAnimation from "@/components/assets/FlyingTelegram";
 import { db } from "@/Helper/dbService";
 import { Destination, Rule, User } from "@/Helper/types";
 import { createContext, ReactNode, useState, useEffect } from "react";
@@ -129,7 +130,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or your preferred loading component
+    return <TelegramFlyingAnimation />; // Or your preferred loading component
   }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

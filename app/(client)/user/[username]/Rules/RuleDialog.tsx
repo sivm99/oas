@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -15,6 +16,7 @@ import {
   DrawerClose,
   DrawerContent,
   DrawerFooter,
+  DrawerDescription,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -207,7 +209,14 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{config.title}</DialogTitle>
-            {config.description}
+            {config.actionText == "Confirm Delete" ? (
+              <>
+                <DialogDescription>Proceed With Caution</DialogDescription>{" "}
+                {config.description}
+              </>
+            ) : (
+              <DialogDescription>{config.description}</DialogDescription>
+            )}
           </DialogHeader>
           <DialogForm />
         </DialogContent>
@@ -232,7 +241,7 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>{config.title}</DrawerTitle>
-          {config.description}
+          <DrawerDescription>{config.description}</DrawerDescription>
         </DrawerHeader>
         <DialogForm className="px-4" />
         <DrawerFooter className="pt-2">

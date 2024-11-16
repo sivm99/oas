@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import useAppContext from "@/hooks/useAppContext";
 import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
 import TelegramFlyingAnimation from "@/components/assets/FlyingTelegram";
@@ -36,7 +36,6 @@ function LoginCallbackContent() {
     isLoading: true,
     error: null,
   });
-  const router = useRouter();
   useEffect(() => {
     const handleLogin = async () => {
       console.log("Auth Use Effect is Running");
@@ -89,7 +88,7 @@ function LoginCallbackContent() {
               setRules(r.rules);
             }
           }
-          router.push(`/user/${userData.user.username}`);
+          window.location.href = `/user/${userData.user.username}`;
           return;
         }
 
@@ -119,7 +118,7 @@ function LoginCallbackContent() {
     if (searchParams.has("success")) {
       handleLogin();
     }
-  }, [searchParams, setUser, setRules, setDestinations, router]);
+  }, [searchParams, setUser, setRules, setDestinations]);
 
   // Show error state
   if (authState.error) {

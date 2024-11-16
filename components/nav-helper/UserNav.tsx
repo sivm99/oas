@@ -23,12 +23,21 @@ import {
 } from "@/components/ui/dialog";
 import { db } from "@/Helper/dbService";
 import Link from "next/link";
-import { useState } from "react";
-import useAppContext from "@/hooks/useAppContext";
+import { useEffect, useState } from "react";
 
 export default function UserNavContent() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useAppContext();
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      const lastUsername = localStorage.getItem("lastUsername");
+      if (!lastUsername) return;
+      setName(lastUsername);
+    };
+    checkLoginStatus();
+  }, []);
+
   const handleLogout = () => {
     setIsOpen(false); // Close the sheet
     localStorage.clear();
@@ -42,9 +51,9 @@ export default function UserNavContent() {
 
   const LogoutButtonContent = ({ onClose }: { onClose: () => void }) => (
     <>
-      {user?.username ? (
+      {name ? (
         <>
-          <Link href={`/user/${user.username}`} onClick={onClose}>
+          <Link href={`/user/${name}`} onClick={onClose}>
             <Button
               variant="secondary"
               className="border-2 border-transparent animate-border-glow w-full md:w-auto"
@@ -113,7 +122,7 @@ export default function UserNavContent() {
           >
             <SheetHeader>
               <SheetTitle>One Alias Service</SheetTitle>
-              <SheetDescription>Hello Dear {user?.name} </SheetDescription>
+              <SheetDescription>Hello Dear {name} </SheetDescription>
             </SheetHeader>
             <nav className="">
               <SheetFooter className="mt-4 flex flex-col gap-4">

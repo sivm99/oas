@@ -12,7 +12,10 @@ import Link from "next/link";
 
 // import { redirect } from "next/navigation";
 import { User } from "lucide-react";
-
+import { handleAuth } from "@/app/(client)/(forms)/actions";
+import { redirect } from "next/navigation";
+import { setAuthCookie } from "@/utils/authcb";
+const HOST = process.env.HOST || "http://localhost:3000";
 export default async function SignupForm() {
   return (
     <Card className="form_card_container">
@@ -21,7 +24,28 @@ export default async function SignupForm() {
         <CardDescription>Create a new One Alias Account</CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="form_container" action="/api/signup" method="post">
+        <form
+          className="form_container"
+          action={async (f) => {
+            "use server";
+            const r = await handleAuth(f, true);
+            const redirectUrl = new URL(`${HOST}/auth`);
+            if (!r || !r.user || !r.cookie) {
+              redirectUrl.searchParams.set("success", "false");
+              redirectUrl.searchParams.set(
+                "message",
+                r.message || "Unknow Error",
+              );
+              redirectUrl.searchParams.set("provider", "Signup");
+              redirect(redirectUrl.toString());
+            }
+            await setAuthCookie({ name: "token", value: r.cookie });
+            redirectUrl.searchParams.set("success", "true");
+            redirectUrl.searchParams.set("message", "Signup Successful");
+            redirectUrl.searchParams.set("provider", "Signup");
+            redirect(redirectUrl.toString());
+          }}
+        >
           <FormInput
             name="name"
             type="text"

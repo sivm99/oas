@@ -62,16 +62,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
         if (userData) {
           setUserState(userData);
           // Load user-specific data
-          if (userData.destinationCount) {
-            const userDestinations = await db.getDestinations(
-              userData.username,
-            );
-            setDestinationsState(userDestinations);
-          }
-          if (userData.aliasCount) {
-            const userRules = await db.getRules(userData.username);
-            setRulesState(userRules);
-          }
+          const userDestinations = await db.getDestinations(userData.username);
+          setDestinationsState(userDestinations);
+          const userRules = await db.getRules(userData.username);
+          setRulesState(userRules);
         }
       }
     } catch (err) {

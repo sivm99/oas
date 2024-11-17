@@ -12,6 +12,7 @@ interface RedirectParams {
 interface CookieParams {
   name: string;
   value: string;
+  username?: string;
 }
 
 // Helper function to create redirect response with parameters
@@ -35,6 +36,19 @@ export async function setAuthCookie(cookieParams: CookieParams) {
     sameSite: "strict",
     maxAge: 3600, // 1 hour
   });
+  if (cookieParams.username) {
+    cookieStore.set("lastUsername", cookieParams.username, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 7200, // 1 hour
+    });
+  }
+}
+export async function removeAuthCookie() {
+  const cookieStore = await cookies();
+  cookieStore.delete("token");
+  cookieStore.delete("lastUsername");
 }
 
 // Helper function to handle authentication errors

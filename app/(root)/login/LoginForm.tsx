@@ -35,7 +35,11 @@ export default async function LoginForm() {
               redirectUrl.searchParams.set("provider", "Login");
               redirect(redirectUrl.toString());
             }
-            await setAuthCookie({ name: "token", value: r.cookie });
+            await setAuthCookie({
+              name: "token",
+              value: r.cookie,
+              username: r.user.username,
+            });
             redirectUrl.searchParams.set("success", "true");
             redirectUrl.searchParams.set("message", "Login Successful");
             redirectUrl.searchParams.set("provider", "Login");

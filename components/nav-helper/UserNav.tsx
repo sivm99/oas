@@ -1,6 +1,5 @@
-"use client";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, AlertCircle } from "lucide-react";
 import { ModeToggle } from "../mode-toggle";
 import {
   Sheet,
@@ -8,7 +7,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  // SheetClose,
   SheetFooter,
   SheetDescription,
 } from "../ui/sheet";
@@ -21,61 +19,53 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { db } from "@/Helper/dbService";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { getLoginState } from "./action";
+import { removeAuthCookie } from "@/utils/authcb";
+import { redirect } from "next/navigation";
+const HOST = process.env.HOST || "http://localhost:3000";
 
-export default function UserNavContent() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
+export default async function UserNavContent() {
+  const { status, lastUsername } = await getLoginState();
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      const lastUsername = localStorage.getItem("lastUsername");
-      if (!lastUsername) return;
-      setName(lastUsername);
-    };
-    checkLoginStatus();
-  }, []);
+  function DashboardButton() {
+    if (status === "logged-out") {
+      return (
+        <form action="/login">
+          <Button type="submit" className="w-full md:w-auto">
+            Login
+          </Button>
+        </form>
+      );
+    }
 
-  const handleLogout = () => {
-    setIsOpen(false); // Close the sheet
-    localStorage.clear();
-    db.clearAll();
-    window.location.href = "/";
-  };
-
-  const handleSheetClose = () => {
-    setIsOpen(false);
-  };
-
-  const LogoutButtonContent = ({ onClose }: { onClose: () => void }) => (
-    <>
-      {name ? (
-        <>
-          <Link href={`/user/${name}`} onClick={onClose}>
-            <Button
-              variant="secondary"
-              className="border-2 border-transparent animate-border-glow w-full md:w-auto"
-            >
-              Dashboard
+    return (
+      <div className="flex flex-col md:flex-row  gap-2">
+        <form action={`/user/${lastUsername}`}>
+          <Button
+            variant="secondary"
+            className="border-2 border-transparent animate-border-glow w-full md:w-auto relative"
+          >
+            Dashboard
+            {status === "expired" && (
+              <AlertCircle className="w-4 h-4 ml-2 text-yellow-500" />
+            )}
+          </Button>
+        </form>
+        {status === "expired" && (
+          <form action="/login">
+            <Button type="submit" className="w-full md:w-auto">
+              Login
             </Button>
-          </Link>
+          </form>
+        )}
+        {status === "logged-in" && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button
-                type="submit"
-                variant="destructive"
-                className="w-full md:w-auto"
-              >
+              <Button variant="destructive" className="w-full md:w-auto">
                 Logout
               </Button>
             </DialogTrigger>
-            <DialogContent
-              className="sm:max-w-[425px] max-w-[90vw] mx-auto"
-              aria-label="Lougout Warning"
-              aria-describedby={undefined}
-            >
+            <DialogContent className="sm:max-w-[425px] max-w-[90vw] mx-auto">
               <DialogHeader>
                 <DialogTitle>Are you sure you want to logout?</DialogTitle>
                 <DialogDescription>
@@ -83,32 +73,35 @@ export default function UserNavContent() {
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
-                <Button variant="destructive" onClick={handleLogout}>
-                  Logout
-                </Button>
+                <form
+                  action={async () => {
+                    "use server";
+                    await removeAuthCookie();
+                    redirect(HOST);
+                  }}
+                >
+                  <Button variant="destructive" type="submit">
+                    Logout
+                  </Button>
+                </form>
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </>
-      ) : (
-        <Button type="submit" className="md:w-fit w-full">
-          <Link href="/login" className="w-full" onClick={onClose}>
-            Login
-          </Link>
-        </Button>
-      )}
-    </>
-  );
+        )}
+      </div>
+    );
+  }
 
   return (
     <>
       <div className="hidden md:flex items-center space-x-2">
         <ModeToggle />
-        <LogoutButtonContent onClose={() => {}} />
+        <DashboardButton />
       </div>
+
       <div className="md:hidden">
         <ModeToggle />
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <Sheet>
           <SheetTrigger aria-label="Toggle menu" asChild>
             <Button variant="ghost">
               <Menu size={20} aria-hidden="true" />
@@ -122,11 +115,13 @@ export default function UserNavContent() {
           >
             <SheetHeader>
               <SheetTitle>One Alias Service</SheetTitle>
-              <SheetDescription>Hello Dear {name} </SheetDescription>
+              <SheetDescription>
+                {lastUsername ? `Hello ${lastUsername}` : "Welcome"}
+              </SheetDescription>
             </SheetHeader>
-            <nav className="">
+            <nav>
               <SheetFooter className="mt-4 flex flex-col gap-4">
-                <LogoutButtonContent onClose={handleSheetClose} />
+                <DashboardButton />
               </SheetFooter>
             </nav>
           </SheetContent>

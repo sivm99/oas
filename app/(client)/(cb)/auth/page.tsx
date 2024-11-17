@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
+import { db } from "@/Helper/dbService";
 
 type AuthState = {
   isLoading: boolean;
@@ -62,6 +63,7 @@ function LoginCallbackContent() {
 
         // Handle successful authentication
         if (success === "true") {
+          db.clearAll();
           const userData = await fetchUser();
 
           if (!userData.user || userData.error) {

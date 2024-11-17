@@ -39,7 +39,11 @@ export default async function SignupForm() {
               redirectUrl.searchParams.set("provider", "Signup");
               redirect(redirectUrl.toString());
             }
-            await setAuthCookie({ name: "token", value: r.cookie });
+            await setAuthCookie({
+              name: "token",
+              value: r.cookie,
+              username: r.user.username,
+            });
             redirectUrl.searchParams.set("success", "true");
             redirectUrl.searchParams.set("message", "Signup Successful");
             redirectUrl.searchParams.set("provider", "Signup");

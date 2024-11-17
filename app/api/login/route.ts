@@ -1,5 +1,5 @@
 import { handleAuth } from "@/app/(client)/(forms)/actions";
-import { createRequest } from "@/Helper/request";
+import fetchData from "@/app/(client)/user/[username]/actions";
 import {
   createRedirectResponse,
   handleAuthError,
@@ -44,9 +44,9 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const result = await createRequest("GET", "/user", {}, token);
+    const result = await fetchData("user", token);
 
-    if (!result || result.error || !result.cookies) {
+    if (!result || !result.success || !result.data || !result.newToken) {
       return createRedirectResponse(req, {
         success: false,
         message: "Authentication failed",
@@ -54,7 +54,11 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    await setAuthCookie({ name: "token", value: result.cookies });
+    await setAuthCookie({
+      name: "token",
+      value: result.newToken,
+      username: result.data.username,
+    });
 
     return createRedirectResponse(req, {
       success: true,

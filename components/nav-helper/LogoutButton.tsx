@@ -22,11 +22,21 @@ export default async function LogoutButton() {
 
   if (status === "logged-out") {
     return (
-      <Link href="/login" className="w-full md:w-auto">
-        <Button type="submit" className="w-full">
-          Login
-        </Button>
-      </Link>
+      <div className="flex flex-col md:flex-row gap-2 w-full justify-center px-6 md:px-1">
+        <Link href="/signup" className="w-full md:w-auto">
+          <Button
+            type="submit"
+            className="w-full border-2 border-transparent animate-border-glow"
+          >
+            Register
+          </Button>
+        </Link>
+        <Link href="/login" className="w-full md:w-auto">
+          <Button type="submit" className="w-full">
+            Login
+          </Button>
+        </Link>
+      </div>
     );
   }
 

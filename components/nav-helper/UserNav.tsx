@@ -51,13 +51,7 @@ export default async function UserNavContent() {
             )}
           </Button>
         </form>
-        {status === "expired" && (
-          <form action="/login">
-            <Button type="submit" className="w-full md:w-auto">
-              Login
-            </Button>
-          </form>
-        )}
+
         {status === "logged-in" && (
           <Dialog>
             <DialogTrigger asChild>

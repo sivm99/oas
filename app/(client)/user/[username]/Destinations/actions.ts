@@ -73,7 +73,7 @@ async function verifyDestination({
       };
     }
     const d = await createRequest(
-      "POST",
+      "GET",
       "/mail/destinations/:destinationID/verify",
       { destinationID },
       token,

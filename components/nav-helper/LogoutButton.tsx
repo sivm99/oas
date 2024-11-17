@@ -26,6 +26,7 @@ export default async function LogoutButton() {
         <Link href="/signup" className="w-full md:w-auto">
           <Button
             type="submit"
+            variant="secondary"
             className="w-full border-2 border-transparent animate-border-glow"
           >
             Register

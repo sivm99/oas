@@ -61,7 +61,7 @@ async function updateUser({
         user: null,
         error: response.error || "User details could not be updated.",
         message: "Error updating user",
-        status: response.status,
+        status: response.status || 500,
         success: false,
       };
     }

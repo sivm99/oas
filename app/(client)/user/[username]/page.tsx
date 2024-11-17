@@ -1,58 +1,45 @@
-"use client";
-
 import UserField from "./User/UserField";
 import RuleFields from "./Rules/RuleField";
 import DestinationField from "./Destinations/DestinationField";
 import { Separator } from "@/components/ui/separator";
-import { motion } from "framer-motion";
+import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
+export const dynamic = "force-dynamic";
+async function DashBoard() {
+  const { user } = await fetchUser();
+  // user.aliascount and user.destinationCount
 
-function DashBoard() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-      },
-    },
-  };
+  let rules;
+  let destinations;
 
-  const childVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeOut",
-      },
-    },
-  };
+  if (user?.aliasCount) {
+    const rulesData = await fetchRules();
+    rules = rulesData.rules;
+  }
+
+  if (user?.destinationCount) {
+    const destinationsData = await fetchDestinations();
+    destinations = destinationsData.destinations;
+  }
 
   return (
     <>
-      <motion.main
-        className="dash_wrapper"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div className="dash_child" variants={childVariants}>
-          <UserField />
-        </motion.div>
-        <motion.div variants={childVariants}>
+      <main className="dash_wrapper">
+        <div className="dash_child">
+          <UserField user={user} />
+        </div>
+        <div>
           <Separator className="w-1/2" />
-        </motion.div>
-        <motion.div className="dash_child" variants={childVariants}>
-          <RuleFields />
-        </motion.div>
-        <motion.div variants={childVariants}>
+        </div>
+        <div className="dash_child">
+          <RuleFields rules={rules} destinations={destinations} />
+        </div>
+        <div>
           <Separator className="w-1/2" />
-        </motion.div>
-        <motion.div className="dash_child" variants={childVariants}>
-          <DestinationField />
-        </motion.div>
-      </motion.main>
+        </div>
+        <div className="dash_child">
+          <DestinationField destinations={destinations} user={user} />
+        </div>
+      </main>
     </>
   );
 }

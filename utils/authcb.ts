@@ -41,7 +41,7 @@ export async function setAuthCookie(cookieParams: CookieParams) {
       httpOnly: true,
       secure: true,
       sameSite: "strict",
-      maxAge: 7200, // 1 hour
+      maxAge: 3600, // 1 hour
     });
   }
 }

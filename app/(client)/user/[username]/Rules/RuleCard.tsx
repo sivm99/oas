@@ -18,23 +18,21 @@ import { Button } from "@/components/ui/button";
 import { Copy, Mail, MoreVertical, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import useAppContext from "@/hooks/useAppContext";
 
 import { cn } from "@/lib/utils";
 import { RuleDialog } from "./RuleDialog";
-import { db } from "@/Helper/dbService";
 import { deleteRule, toggleRule, updateRule } from "./actions";
 import { motion } from "framer-motion";
+import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 // Separate RuleCard Component
 const RuleCard = ({ rule }: { rule: Rule }) => {
   const {
     setHint,
 
     setError,
-    rules,
-    setRules,
+
     setLoginExpired,
-  } = useAppContext();
+  } = useSimpleAppContext();
   const [showDelete, setShowDelete] = useState(false);
   const [showToggle, setShowToggle] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -45,8 +43,8 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
         <RuleDialog
           rule={rule}
           type="edit"
-          onAction={async (rule) => {
-            const ruleResult = await updateRule(rule);
+          onAction={async (r) => {
+            const ruleResult = await updateRule(r);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               return;
@@ -60,14 +58,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
               return;
             }
             if (ruleResult.success) {
-              setRules(
-                rules.map((r) => {
-                  if (r.ruleId === rule.ruleId) {
-                    return rule;
-                  }
-                  return r;
-                }),
-              );
+              window.location.reload();
             }
             setShowEdit(false);
             return;
@@ -79,8 +70,8 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
         <RuleDialog
           rule={rule}
           type="toggle"
-          onAction={async (rule) => {
-            const ruleResult = await toggleRule(rule);
+          onAction={async (r) => {
+            const ruleResult = await toggleRule(r);
             if (ruleResult.status === 401) {
               setLoginExpired(true);
               setShowToggle(false);
@@ -96,15 +87,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
             }
 
             if (ruleResult.success) {
-              const updatedRule = { ...rule, active: !rule.active };
-              setRules(
-                rules.map((rule) => {
-                  if (rule.ruleId === updatedRule.ruleId) {
-                    return updatedRule;
-                  }
-                  return rule;
-                }),
-              );
+              window.location.reload();
             }
             setShowToggle(false);
             return;
@@ -130,10 +113,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
               setShowDelete(false);
               return;
             }
-            setRules(
-              rules.filter((prevRule) => prevRule.ruleId !== rule.ruleId),
-            );
-            db.deleteRuleById(rule.ruleId);
+            window.location.reload();
 
             setShowDelete(false);
             return;
@@ -240,7 +220,7 @@ const EmptyState = () => (
 );
 
 // Main Component
-function RulesCard({ rules }: { rules: Rule[] }) {
+function RulesCard({ rules }: { rules?: Rule[] }) {
   const [filteredRules, setFilteredRules] = useState(rules);
 
   useEffect(() => {
@@ -248,6 +228,7 @@ function RulesCard({ rules }: { rules: Rule[] }) {
     setFilteredRules(rules);
   }, [rules]);
 
+  if (!rules) return <EmptyState />;
   const handleSearch = (searchValue: string) => {
     const filtered = rules.filter((rule) =>
       rule.aliasEmail.toLowerCase().includes(searchValue.toLowerCase()),
@@ -257,32 +238,28 @@ function RulesCard({ rules }: { rules: Rule[] }) {
 
   return (
     <div className="grid gap-4">
-      {rules.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <motion.div
-          className="space-y-4 mt-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <SearchRules onSearch={handleSearch} />
-          {filteredRules.map((rule, index) => (
-            <motion.div
-              key={rule.ruleId}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.3,
-                delay: index * 0.1,
-                ease: "easeOut",
-              }}
-            >
-              <RuleCard rule={rule} />
-            </motion.div>
-          ))}
-        </motion.div>
-      )}
+      <motion.div
+        className="space-y-4 mt-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <SearchRules onSearch={handleSearch} />
+        {filteredRules?.map((rule, index) => (
+          <motion.div
+            key={rule.ruleId}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.3,
+              delay: index * 0.1,
+              ease: "easeOut",
+            }}
+          >
+            <RuleCard rule={rule} />
+          </motion.div>
+        ))}
+      </motion.div>
     </div>
   );
 }

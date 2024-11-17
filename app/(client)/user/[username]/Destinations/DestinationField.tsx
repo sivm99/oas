@@ -1,13 +1,16 @@
-"use client";
-import useAppContext from "@/hooks/useAppContext";
 import DestinationsCard from "./DestinationCard";
+import { Destination, User } from "@/Helper/types";
 
-function DestinationField() {
-  const { destinations } = useAppContext();
-
+async function DestinationField({
+  destinations,
+  user,
+}: {
+  destinations?: Destination[];
+  user?: User;
+}) {
   return (
     <section>
-      {destinations && <DestinationsCard destinations={destinations} />}
+      <DestinationsCard destinations={destinations} user={user} />
       {/* <NewDestination /> */}
     </section>
   );

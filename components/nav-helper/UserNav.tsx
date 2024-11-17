@@ -74,7 +74,11 @@ export default async function UserNavContent() {
                     redirect(HOST);
                   }}
                 >
-                  <Button variant="destructive" type="submit">
+                  <Button
+                    variant="destructive"
+                    type="submit"
+                    className="w-full md:w-auto"
+                  >
                     Logout
                   </Button>
                 </form>

@@ -1,17 +1,14 @@
-"use client";
-import useAppContext from "@/hooks/useAppContext";
 import UserProfileCard from "./UserCard";
+import { User } from "@/Helper/types";
 
-function UserField() {
-  const { user, rules, destinations } = useAppContext();
-
+async function UserField({ user }: { user?: User }) {
   return (
     <section>
       {user && (
         <UserProfileCard
           {...user}
-          aliasCount={rules.length}
-          destinationCount={destinations.length}
+          aliasCount={user.aliasCount}
+          destinationCount={user.destinationCount}
         />
       )}
     </section>

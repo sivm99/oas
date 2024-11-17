@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Destination } from "@/Helper/types";
+import { Destination, User } from "@/Helper/types";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,17 +27,22 @@ import {
   Plus,
   ShieldCheck,
 } from "lucide-react";
-import useAppContext from "@/hooks/useAppContext";
 import { DestinationDialog } from "./DestinationDialog";
-import { db } from "@/Helper/dbService";
 import {
   addDestination,
   removeDestination,
   verifyDestination,
 } from "./actions";
+import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 
-function DestinationsCard({ destinations }: { destinations: Destination[] }) {
-  const { setError, setDestinations, setLoginExpired, user } = useAppContext();
+function DestinationsCard({
+  destinations,
+  user,
+}: {
+  destinations?: Destination[];
+  user?: User;
+}) {
+  const { setError, setLoginExpired } = useSimpleAppContext();
 
   const [showDelete, setShowDelete] = useState(false);
   const [showNew, setShowNew] = useState(false);
@@ -53,17 +58,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
       setError(res.error || "Failed to verify destination");
       return;
     }
-
-    const verifiedDestination = res.verifiedDestination;
-
-    setDestinations(
-      destinations.map((d) => {
-        if (d.destinationID === destination.destinationID) {
-          return verifiedDestination;
-        }
-        return d;
-      }),
-    );
+    window.location.reload();
   };
 
   const newDestination = async (f: FormData) => {
@@ -94,10 +89,7 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
         setError(destinationResult.error || "Failed to create destination");
         return;
       }
-
-      const newDestination = destinationResult.newDestination;
-
-      setDestinations([...destinations, newDestination]);
+      window.location.reload();
       setShowNew(false);
       return;
     } catch (error) {
@@ -105,6 +97,17 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
       setError("Failed to create destination");
     }
   };
+  if (!destinations)
+    return (
+      <Button
+        variant="outline"
+        onClick={() => setShowNew(!showNew)}
+        className="flex items-center gap-2 border-2 border-transparent animate-border-glow w-full"
+      >
+        <Plus size={20} />
+        Add Destination
+      </Button>
+    );
 
   return (
     <section>
@@ -149,16 +152,6 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
                   setShowDelete(false);
                   return;
                 }
-
-                await db.deleteDestinationById(
-                  destination.destinationID,
-                  destination.username,
-                );
-                setDestinations(
-                  destinations.filter(
-                    (p) => destination.destinationID !== p.destinationID,
-                  ),
-                );
 
                 setShowDelete(false);
                 window.location.reload();
@@ -224,16 +217,6 @@ function DestinationsCard({ destinations }: { destinations: Destination[] }) {
           </CardFooter>
         </Card>
       ))}
-      {destinations.length === 0 && (
-        <Button
-          variant="outline"
-          onClick={() => setShowNew(!showNew)}
-          className="flex items-center gap-2 border-2 border-transparent animate-border-glow w-full"
-        >
-          <Plus size={20} />
-          Add Destination
-        </Button>
-      )}
     </section>
   );
 }

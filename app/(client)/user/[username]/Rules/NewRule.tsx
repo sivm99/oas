@@ -2,19 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 
-import useAppContext from "@/hooks/useAppContext";
 import { useState } from "react";
 import { CreateRuleDialog } from "./CreateRuleDialouge";
 import { createRule } from "./actions";
+import useSimpleAppContext from "@/hooks/useSimpleAppContext";
+import { Destination } from "@/Helper/types";
 
-function NewRule() {
-  const { destinations, setError, setRules, rules, setLoginExpired } =
-    useAppContext();
+function NewRule({ destinations }: { destinations: Destination[] }) {
+  const { setLoginExpired, setError } = useSimpleAppContext();
   const [showForm, setShowForm] = useState(false);
 
   return (
     <div className="w-full max-w-full  mx-auto">
-      {!showForm && destinations.length > 0 && (
+      {!showForm && destinations && (
         <Button
           variant="outline"
           onClick={() => setShowForm(true)}
@@ -67,9 +67,8 @@ function NewRule() {
               setError(ruleResult.error);
               return;
             }
-            const newRule = ruleResult.newRule;
-            setRules([...rules, newRule]);
 
+            window.location.reload();
             setShowForm(false);
           }}
           onCancel={() => setShowForm(false)}

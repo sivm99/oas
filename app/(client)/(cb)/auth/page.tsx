@@ -2,8 +2,8 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import useAppContext from "@/hooks/useAppContext";
-import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
+// import useAppContext from "@/hooks/useAppContext";
+// import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
 import TelegramFlyingAnimation from "@/components/assets/FlyingTelegram";
 import {
   Card,
@@ -15,7 +15,8 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
-import { db } from "@/Helper/dbService";
+import { fetchUser } from "@/Helper/getData";
+// import { db } from "@/Helper/dbService";
 
 type AuthState = {
   isLoading: boolean;
@@ -32,7 +33,7 @@ const LoadingAnimation = () => (
 
 function LoginCallbackContent() {
   const searchParams = useSearchParams();
-  const { setUser, setRules, setDestinations } = useAppContext();
+  // const { setUser, setRules, setDestinations } = useAppContext();
   const [authState, setAuthState] = useState<AuthState>({
     isLoading: true,
     error: null,
@@ -63,7 +64,7 @@ function LoginCallbackContent() {
 
         // Handle successful authentication
         if (success === "true") {
-          db.clearAll();
+          // db.clearAll();
           const userData = await fetchUser();
 
           if (!userData.user || userData.error) {
@@ -77,19 +78,19 @@ function LoginCallbackContent() {
             return;
           }
 
-          setUser(userData.user);
-          if (userData.user.destinationCount) {
-            const d = await fetchDestinations();
-            if (!d.error && d.destinations) {
-              setDestinations(d.destinations);
-            }
-          }
-          if (userData.user.aliasCount) {
-            const r = await fetchRules();
-            if (!r.error && r.rules) {
-              setRules(r.rules);
-            }
-          }
+          // setUser(userData.user);
+          // if (userData.user.destinationCount) {
+          //   const d = await fetchDestinations();
+          //   if (!d.error && d.destinations) {
+          //     setDestinations(d.destinations);
+          //   }
+          // }
+          // if (userData.user.aliasCount) {
+          //   const r = await fetchRules();
+          //   if (!r.error && r.rules) {
+          //     setRules(r.rules);
+          //   }
+          // }
           window.location.href = `/user/${userData.user.username}`;
           return;
         }
@@ -120,7 +121,7 @@ function LoginCallbackContent() {
     if (searchParams.has("success")) {
       handleLogin();
     }
-  }, [searchParams, setUser, setRules, setDestinations]);
+  }, [searchParams]);
 
   // Show error state
   if (authState.error) {

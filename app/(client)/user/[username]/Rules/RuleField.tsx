@@ -1,17 +1,19 @@
-"use client";
-
 // import { getLocalRules } from "@/Helper/getLocalData";
-import useAppContext from "@/hooks/useAppContext";
 // import { useEffect } from "react";
 import RulesCard from "./RuleCard";
 import NewRule from "./NewRule";
+import { Destination, Rule } from "@/Helper/types";
 
-function RuleFields() {
-  const { rules } = useAppContext();
-
+async function RuleFields({
+  rules,
+  destinations,
+}: {
+  rules?: Rule[];
+  destinations?: Destination[];
+}) {
   return (
     <section>
-      <NewRule />
+      {destinations && <NewRule destinations={destinations} />}
       <RulesCard rules={rules} />
     </section>
   );

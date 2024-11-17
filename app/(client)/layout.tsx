@@ -1,4 +1,4 @@
-import { AppProvider } from "@/hooks/appContext";
+import { SimpleAppProvider } from "@/hooks/simpleContext";
 import Popup from "./Popup";
 
 export default async function FormLayout({
@@ -8,11 +8,11 @@ export default async function FormLayout({
 }>) {
   return (
     <>
-      <AppProvider>
+      <SimpleAppProvider>
         {children}
         <Popup />
         <Popup error />
-      </AppProvider>
+      </SimpleAppProvider>
     </>
   );
 }

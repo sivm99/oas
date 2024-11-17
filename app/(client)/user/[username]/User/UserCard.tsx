@@ -1,3 +1,4 @@
+"use client";
 import {
   AtSign,
   CheckCircle,
@@ -15,7 +16,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { User } from "@/Helper/types";
-import useAppContext from "@/hooks/useAppContext";
 import { useState } from "react";
 import { UserDialog } from "./UserDialog";
 import {
@@ -26,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { updateUser, verifyUserEmail } from "./actions";
+import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 const UserProfileCard = ({
   name,
   username,
@@ -36,7 +37,7 @@ const UserProfileCard = ({
   destinationCount,
 }: User) => {
   // const navigate = useNavigate();
-  const { setHint, setError, setUser, setLoginExpired } = useAppContext();
+  const { setHint, setError, setLoginExpired } = useSimpleAppContext();
 
   const [showUpdate, setShowUpdate] = useState(false);
   const [showAvatar, setShowAvatar] = useState(false);
@@ -101,9 +102,7 @@ const UserProfileCard = ({
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
-
-            const updatedUser = userResponse.user;
-            setUser(updatedUser);
+            window.location.reload();
             setShowUpdate(false);
             return;
           }}
@@ -128,10 +127,7 @@ const UserProfileCard = ({
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
-
-            const updatedUser = userResponse.user;
-            setUser(updatedUser);
-            setUser(updatedUser);
+            window.location.reload();
             setShowAvatar(false);
             return;
           }}

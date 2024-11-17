@@ -1,6 +1,5 @@
 "use client";
 
-import useAppContext from "@/hooks/useAppContext";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, InfoIcon, LogOut } from "lucide-react";
 import { db } from "@/Helper/dbService";
 import { useRouter } from "next/navigation";
+import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 
 interface PopupProps {
   error?: boolean;
@@ -27,7 +27,7 @@ function Popup({ error = false }: PopupProps) {
     setHint,
     loginExpired,
     setLoginExpired,
-  } = useAppContext();
+  } = useSimpleAppContext();
 
   const handleClose = () => {
     if (error) {

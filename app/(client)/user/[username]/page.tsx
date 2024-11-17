@@ -3,11 +3,11 @@ import RuleFields from "./Rules/RuleField";
 import DestinationField from "./Destinations/DestinationField";
 import { Separator } from "@/components/ui/separator";
 import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
+import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 async function DashBoard() {
   const { user } = await fetchUser();
-  // user.aliascount and user.destinationCount
-
+  if (!user) redirect("/login");
   let rules;
   let destinations;
 

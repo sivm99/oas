@@ -5,13 +5,15 @@ import { Separator } from "@/components/ui/separator";
 import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
 import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
-async function DashBoard() {
-  const [{ user }, { rules }, { destinations }] = await Promise.all([
-    fetchUser(),
-    fetchRules(),
-    fetchDestinations(),
-  ]);
+
+type Params = Promise<{ username: string }>;
+async function DashBoard({ params }: { params: Params }) {
+  const [{ user }, { rules }, { destinations }, { username }] =
+    await Promise.all([fetchUser(), fetchRules(), fetchDestinations(), params]);
   if (!user) redirect("/login");
+  if (username !== user.username) {
+    redirect(`/user/${user.username}`);
+  }
 
   return (
     <>

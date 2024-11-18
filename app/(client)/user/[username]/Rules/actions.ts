@@ -2,6 +2,7 @@
 
 import { createRequest } from "@/Helper/request";
 import { Rule } from "@/Helper/types";
+// import { revalidatePath } from "next/cache";
 // import { setAuthCookie } from "@/utils/authcb";
 import { cookies } from "next/headers";
 
@@ -147,6 +148,7 @@ async function toggleRule(rule: Rule): Promise<{
         error: ruleResult.error || "Unknown Error Occurred",
       };
     }
+    // revalidatePath("/user/[username]");
     return {
       success: true,
       status: ruleResult.status,

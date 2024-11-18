@@ -2,6 +2,7 @@
 
 import { createRequest } from "@/Helper/request";
 import { Rule } from "@/Helper/types";
+// import { setAuthCookie } from "@/utils/authcb";
 import { cookies } from "next/headers";
 
 async function createRule(rule: Omit<Rule, "ruleId" | "active">): Promise<{
@@ -97,6 +98,7 @@ async function updateRule(rule: Rule): Promise<{
         error: ruleResult.error || "Unknown Error Occurred",
       };
     }
+    // await setAuthCookie()
     return {
       success: true,
       status: ruleResult.status,

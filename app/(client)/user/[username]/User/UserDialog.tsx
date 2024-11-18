@@ -60,6 +60,9 @@ export const UserDialog = ({ onAction, onCancel, type }: UserDialogProps) => {
               name="newName"
               placeholder="New Name"
               minLength={4}
+              maxLength={64}
+              title="Only Alphabets Allowed"
+              pattern="^[a-zA-Z\s]*$"
               // defaultValue={name}
               className="col-span-3"
             />
@@ -71,12 +74,12 @@ export const UserDialog = ({ onAction, onCancel, type }: UserDialogProps) => {
             <Input
               id="new-username"
               name="new-username"
-              title="4-15 characters, starting with a letter, and containing only letters, numbers, dots, underscores, or hyphens."
+              title="Starts with Alphbet, can have Alphanumerics,dots,underscores and hyphens"
+              type="text"
+              pattern="^[a-zA-Z][a-zA-Z0-9\._\-]*$"
               className="col-span-3"
               placeholder="flying-selfie"
               minLength={4}
-              // pattern="^[a-zA-Z][a-zA-Z0-9._-]*$"
-              pattern="^[a-zA-Z]\S*$"
               maxLength={15}
             />
           </div>

@@ -75,8 +75,8 @@ export const CreateRuleDialog = ({
           placeholder="space-king"
           autoComplete="off"
           required
-          pattern="^[^@\s]*$"
-          title="No spaces,@ allowed"
+          pattern="^[a-zA-Z0-9][a-zA-Z0-9_\.\-]{0,19}$"
+          title="Alphanumeric with underscores,dots and hyphens"
           maxLength={20}
         />
         <div className={cn(isDesktop ? "mt-6" : "mt-0")}>

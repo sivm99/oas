@@ -94,6 +94,7 @@ export const DestinationDialog = ({
               placeholder="Enter destination email"
               name="destination-email"
               id="destination-email"
+              pattern="^[a-zA-Z0-9][a-zA-Z0-9_\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,}$"
               defaultValue={userEmail}
               required
               label="Primary Email"

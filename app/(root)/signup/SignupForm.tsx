@@ -52,21 +52,22 @@ export default async function SignupForm() {
         >
           <FormInput
             name="name"
+            title="Only Alphabets Allowed"
             type="text"
             label="Full Name"
             required
-            pattern="^[^0-9]+$"
+            pattern="^[a-zA-Z\s]*$"
             placeholder="Your Name"
             icon={User}
             maxLength={64}
           />
           <FormInput
             name="username"
-            title="Min 4 Letters, No Spaces, Can Only Start with Alphabet"
+            title="Starts with Alphbet, can have Alphanumerics,dots,underscores and hyphens"
             type="text"
             label="Username"
             required
-            pattern="^[a-zA-Z]\S*$"
+            pattern="^[a-zA-Z][a-zA-Z0-9\._\-]*$"
             placeholder="you"
             icon={User}
             minLength={4}
@@ -77,6 +78,7 @@ export default async function SignupForm() {
             type="email"
             label="Email Address"
             required
+            pattern="^[a-zA-Z0-9][a-zA-Z0-9_\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,}$"
             placeholder="your@email.com"
             maxLength={64}
           />

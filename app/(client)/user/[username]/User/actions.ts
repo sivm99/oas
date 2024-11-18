@@ -3,6 +3,7 @@
 import { createRequest } from "@/Helper/request";
 
 import { User } from "@/Helper/types";
+import { setAuthCookie } from "@/utils/authcb";
 import { cookies } from "next/headers";
 
 async function updateUser({
@@ -67,6 +68,11 @@ async function updateUser({
     }
 
     const updatedUser = response.data.data as User;
+    await setAuthCookie({
+      name: "token",
+      value: response.cookies ? response.cookies : "",
+      username: updatedUser.username,
+    });
     return {
       user: updatedUser,
       error: null,

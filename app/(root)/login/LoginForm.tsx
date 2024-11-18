@@ -51,7 +51,7 @@ export default async function LoginForm() {
             type="email"
             label="Email Address"
             required
-            pattern="^[a-zA-Z0-9][a-zA-Z0-9_\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,}$"
+            pattern="^[a-zA-Z0-9][\w\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,}$"
             placeholder="your@email.com"
             maxLength={64}
           />

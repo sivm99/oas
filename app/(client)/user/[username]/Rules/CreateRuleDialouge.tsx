@@ -75,7 +75,7 @@ export const CreateRuleDialog = ({
           placeholder="space-king"
           autoComplete="off"
           required
-          pattern="^[a-zA-Z0-9][a-zA-Z0-9_\.\-]{0,19}$"
+          pattern="^[a-zA-Z0-9][\w\.\-]{0,19}$"
           title="Alphanumeric with underscores,dots and hyphens"
           maxLength={20}
         />

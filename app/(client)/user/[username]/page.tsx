@@ -6,20 +6,12 @@ import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
 import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 async function DashBoard() {
-  const { user } = await fetchUser();
+  const [{ user }, { rules }, { destinations }] = await Promise.all([
+    fetchUser(),
+    fetchRules(),
+    fetchDestinations(),
+  ]);
   if (!user) redirect("/login");
-  let rules;
-  let destinations;
-
-  if (user?.aliasCount) {
-    const rulesData = await fetchRules();
-    rules = rulesData.rules;
-  }
-
-  if (user?.destinationCount) {
-    const destinationsData = await fetchDestinations();
-    destinations = destinationsData.destinations;
-  }
 
   return (
     <>

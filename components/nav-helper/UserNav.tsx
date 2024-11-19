@@ -22,6 +22,7 @@ import {
 import { getLoginState } from "./action";
 import { removeAuthCookie } from "@/utils/authcb";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 const HOST = process.env.HOST || "http://localhost:3000";
 
 export default async function UserNavContent() {
@@ -40,7 +41,7 @@ export default async function UserNavContent() {
 
     return (
       <div className="flex flex-col md:flex-row  gap-2">
-        <form action={`/user/${lastUsername}`}>
+        <Link href={`/user/${lastUsername}`}>
           <Button
             variant="secondary"
             className="border-2 border-transparent animate-border-glow w-full md:w-auto relative"
@@ -50,7 +51,7 @@ export default async function UserNavContent() {
               <AlertCircle className="w-4 h-4 ml-2 text-yellow-500" />
             )}
           </Button>
-        </form>
+        </Link>
 
         {status === "logged-in" && (
           <Dialog>

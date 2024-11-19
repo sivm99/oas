@@ -31,17 +31,34 @@ export default async function UserNavContent() {
   function DashboardButton() {
     if (status === "logged-out") {
       return (
-        <form action="/login">
-          <Button type="submit" className="w-full md:w-auto">
-            Login
-          </Button>
-        </form>
+        <>
+          <form action="/login" className="md:hidden">
+            <Button type="submit" className="w-full md:w-auto">
+              Login
+            </Button>
+          </form>
+          <Link href="/login" className="hidden md:block">
+            <Button className="w-full md:w-auto">Login</Button>
+          </Link>
+        </>
       );
     }
 
     return (
       <div className="flex flex-col md:flex-row  gap-2">
-        <Link href={`/user/${lastUsername}`}>
+        <form action={`/user/${lastUsername}`} className="md:hidden">
+          <Button
+            variant="secondary"
+            className="border-2 border-transparent animate-border-glow w-full md:w-auto relative"
+            type="submit"
+          >
+            Dashboard
+            {status === "expired" && (
+              <AlertCircle className="w-4 h-4 ml-2 text-yellow-500" />
+            )}
+          </Button>
+        </form>
+        <Link href={`/user/${lastUsername}`} className="hidden md:block">
           <Button
             variant="secondary"
             className="border-2 border-transparent animate-border-glow w-full md:w-auto relative"

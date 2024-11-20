@@ -11,10 +11,11 @@ import { Separator } from "@/components/ui/separator";
 import FormInput from "@/components/FormInput";
 import FormHero from "@/components/FormHero";
 import Link from "next/link";
+import { resetPasswordAction } from "../../actions";
 type Params = Promise<{ token: string }>;
 
 export default async function ResetPassword({ params }: { params: Params }) {
-  const token = (await params).token;
+  const { token } = await params;
   return (
     <main className="form_wrapper">
       <FormHero
@@ -37,18 +38,14 @@ export default async function ResetPassword({ params }: { params: Params }) {
             <CardDescription>One Alias Account</CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              className="form_container"
-              action="/api/reset-password"
-              method="post"
-            >
+            <form className="form_container" action={resetPasswordAction}>
               <input name="token" id="token" hidden value={token} readOnly />
               <FormInput
                 name="password"
                 type="password"
                 label="Password"
                 required
-                placeholder="Create a password"
+                placeholder="New  password"
                 minLength={8}
                 maxLength={16}
               />

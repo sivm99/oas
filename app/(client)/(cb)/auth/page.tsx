@@ -2,8 +2,6 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-// import useAppContext from "@/hooks/useAppContext";
-// import { fetchDestinations, fetchRules, fetchUser } from "@/Helper/getData";
 import TelegramFlyingAnimation from "@/components/assets/FlyingTelegram";
 import {
   Card,
@@ -16,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AlertCircle } from "lucide-react";
 import { fetchUser } from "@/Helper/getData";
-// import { db } from "@/Helper/dbService";
 
 type AuthState = {
   isLoading: boolean;
@@ -78,19 +75,6 @@ function LoginCallbackContent() {
             return;
           }
 
-          // setUser(userData.user);
-          // if (userData.user.destinationCount) {
-          //   const d = await fetchDestinations();
-          //   if (!d.error && d.destinations) {
-          //     setDestinations(d.destinations);
-          //   }
-          // }
-          // if (userData.user.aliasCount) {
-          //   const r = await fetchRules();
-          //   if (!r.error && r.rules) {
-          //     setRules(r.rules);
-          //   }
-          // }
           window.location.href = `/user/${userData.user.username}`;
           return;
         }

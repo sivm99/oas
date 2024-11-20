@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import FormInput from "@/components/FormInput";
 import FormHero from "@/components/FormHero";
 import Link from "next/link";
+import { forgetPasswordAction } from "../actions";
 // import { emailSchema } from "@/Helper/schema";
 
 export default async function ForgetPassword() {
@@ -36,12 +37,13 @@ export default async function ForgetPassword() {
             <CardDescription>One Alias Account</CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="form_container" action="/api/reset-password">
+            <form className="form_container" action={forgetPasswordAction}>
               <FormInput
                 name="email"
                 type="email"
                 label="Email Address"
                 required
+                pattern="^[a-zA-Z0-9][a-zA-Z0-9_\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,6}$"
                 placeholder="your@email.com"
                 maxLength={64}
               />

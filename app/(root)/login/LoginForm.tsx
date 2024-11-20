@@ -8,10 +8,7 @@ import {
 } from "@/components/ui/card";
 import FormInput from "@/components/FormInput";
 import FormBelow from "@/components/FormBelow";
-import { handleAuth } from "@/app/(client)/(forms)/actions";
-import { redirect } from "next/navigation";
-import { setAuthCookie } from "@/utils/authcb";
-const HOST = process.env.HOST || "http://localhost:3000";
+import { loginAction } from "../actions";
 export default async function LoginForm() {
   return (
     <Card className="form_card_container">
@@ -20,38 +17,13 @@ export default async function LoginForm() {
         <CardDescription>One Alias Account</CardDescription>
       </CardHeader>
       <CardContent>
-        <form
-          className="form_container"
-          action={async (f) => {
-            "use server";
-            const redirectUrl = new URL(`${HOST}/auth`);
-            const r = await handleAuth(f);
-            if (!r || !r.user || !r.cookie) {
-              redirectUrl.searchParams.set("success", "false");
-              redirectUrl.searchParams.set(
-                "message",
-                r.message || "Unknow Error",
-              );
-              redirectUrl.searchParams.set("provider", "Login");
-              redirect(redirectUrl.toString());
-            }
-            await setAuthCookie({
-              name: "token",
-              value: r.cookie,
-              username: r.user.username,
-            });
-            redirectUrl.searchParams.set("success", "true");
-            redirectUrl.searchParams.set("message", "Login Successful");
-            redirectUrl.searchParams.set("provider", "Login");
-            redirect(redirectUrl.toString());
-          }}
-        >
+        <form className="form_container" action={loginAction}>
           <FormInput
             name="email"
             type="email"
             label="Email Address"
             required
-            pattern="^[a-zA-Z0-9][\w\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,}$"
+            pattern="^[a-zA-Z0-9][\w\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,6}$"
             placeholder="your@email.com"
             maxLength={64}
           />

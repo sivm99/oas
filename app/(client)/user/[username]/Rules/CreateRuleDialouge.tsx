@@ -130,14 +130,18 @@ export const CreateRuleDialog = ({
         </label>
         <Select
           name="destinationEmail"
-          defaultValue={destinations[0].destinationEmail}
+          defaultValue={destinations[0]?.destinationEmail}
           required
         >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select destination email" />
           </SelectTrigger>
           <SelectContent position="popper">
-            {destinations.map((dest) => (
+            {[
+              ...new Map(
+                destinations.map((dest) => [dest.destinationEmail, dest]),
+              ).values(),
+            ].map((dest) => (
               <SelectItem
                 key={dest.destinationID}
                 value={dest.destinationEmail}

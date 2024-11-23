@@ -110,7 +110,7 @@ function DestinationsCard({
     );
 
   return (
-    <section>
+    <section className="space-y-4">
       {showNew && (
         <DestinationDialog
           type="create"
@@ -122,7 +122,7 @@ function DestinationsCard({
         />
       )}
       {destinations.map((destination) => (
-        <Card key={destination.destinationID} className="shadow-lg">
+        <Card key={destination.destinationID} className="shadow-lg ">
           {showDelete && (
             <DestinationDialog
               type="delete"
@@ -195,7 +195,7 @@ function DestinationsCard({
             </DropdownMenu>
           </CardHeader>
           <CardContent>
-            <div className="space-x-2 flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Globe size={20} className="text-purple-300" />
               {destination.domain}
             </div>

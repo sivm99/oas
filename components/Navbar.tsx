@@ -3,7 +3,7 @@ import Link from "next/link";
 import "@/Style/AnimatedHero.css";
 import UserNavContent from "./nav-helper/UserNav";
 
-export function NavbarClient() {
+export default async function NavbarClient() {
   return (
     <nav className="nav_wrapper">
       <div className="app_container">

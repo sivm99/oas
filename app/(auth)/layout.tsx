@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import NavbarServer from "@/components/NavbarServer";
 
 export default async function FormLayout({
   children,
@@ -7,6 +8,7 @@ export default async function FormLayout({
 }>) {
   return (
     <>
+      <NavbarServer />
       {children}
       <Footer />
     </>

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { NavbarClient } from "@/components/Navbar";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
@@ -102,7 +101,6 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NavbarClient />
           <section className="app_container">{children}</section>
         </ThemeProvider>
       </body>

@@ -1,25 +1,24 @@
-FROM node:20-slim AS base
+# Use a slim Node.js image
+FROM node:20-slim
 
-# Stage 1: Install dependencies
-FROM base AS deps
+# Set working directory
 WORKDIR /app
+
+# Install only production dependencies
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --only=production
 
-# Stage 2: Build the application
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+# Copy the rest of the application
 COPY . .
+
+# Build the application
 RUN npm run build
 
-# Stage 3: Production server
-FROM base AS runner
-WORKDIR /app
+# Set environment to production
 ENV NODE_ENV=production
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
 
+# Expose the port the app runs on
 EXPOSE 3000
+
+# Command to run the application
 CMD ["node", "server.js"]

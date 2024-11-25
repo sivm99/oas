@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import "@/Style/Form.css";
 import PasswordInput from "./PasswordInput";
+import { cn } from "@/lib/utils";
 
 // Define allowed input types
 type InputType =
@@ -109,7 +110,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
                 minLength={minLength}
                 maxLength={maxLength}
                 pattern={pattern}
-                className={`pl-8 ${className}`}
+                className={cn("pl-8", className)}
                 // autoComplete="current-password"
                 error={!!error}
                 aria-invalid={error ? "true" : "false"}
@@ -133,19 +134,21 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
                 maxLength={maxLength}
                 pattern={pattern}
                 // autoComplete={name}
-                className={`pl-8 ${error ? "border-red-500 focus-visible:ring-red-500" : ""} ${className}`}
+                className={cn(
+                  "pl-8",
+                  // error && "border-red-500 focus-visible:ring-red-500",
+                  className,
+                )}
                 aria-invalid={error ? "true" : "false"}
                 aria-describedby={error ? `${name}-error` : undefined}
                 {...props}
               />
+              <p id={`${name}-error`} className="text-sm text-red-500 mt-1">
+                {error}
+              </p>
             </>
           )}
         </div>
-        {error && (
-          <p id={`${name}-error`} className="text-sm text-red-500 mt-1">
-            {error}
-          </p>
-        )}
       </div>
     );
   },

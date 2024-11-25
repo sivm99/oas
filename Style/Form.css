@@ -1,28 +1,46 @@
-input:invalid:not(:placeholder-shown) {
-    border: 1px solid red;
-    background-image: url(/checked_red.svg);
-    accent-color: red;
-    caret-color: red;
-}
-
-input:valid:not(:placeholder-shown) {
-    border: 1px solid green;
-    background-image: url(/checked_green.svg);
-    accent-color: green;
-    caret-color: green;
-}
-
-input:valid:not(:placeholder-shown),
-input:invalid:not(:placeholder-shown) {
+/* Base validation styles */
+input:not(:placeholder-shown) {
     background-size: 20px;
     background-repeat: no-repeat;
     background-position: calc(100% - 10px);
 }
 
-input:invalid:not(:placeholder-shown) + p {
-    color: red;
+/* Invalid state */
+input:invalid:not(:placeholder-shown) {
+    --validation-color: red;
+    border: 1px solid var(--validation-color);
+    background-image: url(/checked_red.svg);
+    accent-color: var(--validation-color);
+    caret-color: var(--validation-color);
 }
 
+/* Valid state */
+input:valid:not(:placeholder-shown) {
+    --validation-color: green;
+    border: 1px solid var(--validation-color);
+    background-image: url(/checked_green.svg);
+    accent-color: var(--validation-color);
+    caret-color: var(--validation-color);
+}
+
+/* Error message - Hidden by default */
+[id$="-error"] {
+    display: none;
+    /* @apply text-sm text-red-500 mt-1; */
+}
+
+/* Show error message only when input is invalid and not empty */
+input:invalid:not(:placeholder-shown) + [id$="-error"] {
+    display: block;
+}
+
+/* Hide error message when input becomes valid or is empty */
+input:valid + [id$="-error"],
+input:placeholder-shown + [id$="-error"] {
+    display: none;
+}
+
+/* Disable submit button on invalid */
 input:invalid ~ button[type="submit"] {
     opacity: 0.6;
     pointer-events: none;

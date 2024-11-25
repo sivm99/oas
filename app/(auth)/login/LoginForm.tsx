@@ -22,6 +22,7 @@ export default async function LoginForm() {
             name="email"
             type="email"
             label="Email Address"
+            error="Valid Email Only"
             required
             pattern="^[a-zA-Z0-9][\w\.\-]{0,40}@[a-zA-Z0-9\.\-]{1,18}\.[a-zA-Z]{2,6}$"
             placeholder="your@email.com"

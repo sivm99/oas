@@ -7,6 +7,7 @@ type RedirectParams = {
   success: boolean;
   message: string;
   provider: string;
+  rt?: string;
 };
 
 /**
@@ -15,11 +16,21 @@ type RedirectParams = {
  * @param success - Boolean indicating if the operation was successful
  * @param message - Message to display to the user
  * @param provider - Provider name (e.g., "Login", "Signup")
+ * @param resetToken - Optional reset token for password reset in case of error
  */
-export function rd({ path, success, message, provider }: RedirectParams): void {
+export function rd({
+  path,
+  success,
+  message,
+  provider,
+  rt,
+}: RedirectParams): void {
   const redirectUrl = new URL(`${HOST}/${path}`);
   redirectUrl.searchParams.set("success", success.toString());
   redirectUrl.searchParams.set("message", message);
   redirectUrl.searchParams.set("provider", provider);
+  if (rt) {
+    redirectUrl.searchParams.set("rt", rt);
+  }
   redirect(redirectUrl.toString());
 }

@@ -31,9 +31,12 @@ export default async function LoginCallback({
 
   if (success === "true") {
     const { user } = await fetchUser();
+    if (!user && provider === "cb") {
+      redirect("/auth?success=true&provider=cb");
+    }
 
     if (provider === "Social Login" && !user) {
-      redirect("/auth?success=true");
+      redirect("/auth?success=true&provider=cb");
     }
     if (user) {
       redirect(`/user/${user.username}`);

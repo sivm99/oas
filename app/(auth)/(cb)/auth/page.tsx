@@ -29,8 +29,14 @@ export default async function LoginCallback({
     provider = "Server",
   } = await searchParams;
 
-  if ((success as string) === "true") {
+  if (success === "true") {
     const { user } = await fetchUser();
+
+    if (provider === "Social Login" && !user) {
+      if (window !== undefined) {
+        window.location.reload();
+      }
+    }
     if (user) {
       redirect(`/user/${user.username}`);
     }

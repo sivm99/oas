@@ -1,4 +1,3 @@
-import { handleAuth } from "@/app/(client)/(forms)/actions";
 import fetchData from "@/app/(client)/user/[username]/actions";
 import {
   createRedirectResponse,
@@ -7,30 +6,30 @@ import {
 } from "@/utils/authcb";
 import { NextRequest } from "next/server";
 
-export async function POST(req: NextRequest) {
-  try {
-    const formData = await req.formData();
-    const result = await handleAuth(formData);
+// export async function POST(req: NextRequest) {
+//   try {
+//     const formData = await req.formData();
+//     const result = await handleAuth(formData);
 
-    if (!result || !result.user || !result.cookie) {
-      return createRedirectResponse(req, {
-        success: false,
-        message: result?.message || "Authentication failed",
-        provider: "Login",
-      });
-    }
+//     if (!result || !result.user || !result.cookie) {
+//       return createRedirectResponse(req, {
+//         success: false,
+//         message: result?.message || "Authentication failed",
+//         provider: "Login",
+//       });
+//     }
 
-    await setAuthCookie({ name: "token", value: result.cookie });
+//     await setAuthCookie({ name: "token", value: result.cookie });
 
-    return createRedirectResponse(req, {
-      success: true,
-      message: "login successful",
-      provider: "Login",
-    });
-  } catch (error) {
-    return handleAuthError(req, error);
-  }
-}
+//     return createRedirectResponse(req, {
+//       success: true,
+//       message: "login successful",
+//       provider: "Login",
+//     });
+//   } catch (error) {
+//     return handleAuthError(req, error);
+//   }
+// }
 
 export async function GET(req: NextRequest) {
   try {

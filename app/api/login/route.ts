@@ -4,7 +4,8 @@ import {
   handleAuthError,
   setAuthCookie,
 } from "@/utils/authcb";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+const HOST = process.env.HOST || "http://localhost:3000";
 
 // export async function POST(req: NextRequest) {
 //   try {
@@ -59,11 +60,8 @@ export async function GET(req: NextRequest) {
       username: result.data.username,
     });
 
-    return createRedirectResponse(req, {
-      success: true,
-      message: "login successful",
-      provider: "Social Login",
-    });
+    const redirectUrl = new URL(`${HOST}/user/${result.data.username}`);
+    return NextResponse.redirect(redirectUrl);
   } catch (error) {
     return handleAuthError(req, error, "Social Login");
   }

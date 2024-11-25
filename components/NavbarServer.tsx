@@ -55,9 +55,9 @@ async function UserNavContent() {
             Return Home
           </Button>
         </Link>
-        <Link href="/user/dash">
+        {/* <Link href="/user/dash">
           <Button className="w-full md:w-auto">Dashboard</Button>
-        </Link>
+        </Link> */}
       </div>
     );
   }

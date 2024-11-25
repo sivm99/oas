@@ -10,7 +10,7 @@ type Params = Promise<{ username: string }>;
 async function DashBoard({ params }: { params: Params }) {
   const [{ user }, { rules }, { destinations }, { username }] =
     await Promise.all([fetchUser(), fetchRules(), fetchDestinations(), params]);
-  if (!user) redirect("/login");
+  if (!user) redirect("/user/dash");
   if (username !== user.username) {
     redirect(`/user/${user.username}`);
   }

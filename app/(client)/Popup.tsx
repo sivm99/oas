@@ -82,9 +82,10 @@ function Popup({ error = false }: PopupProps) {
                 ? "Session Expired"
                 : "Notice"}
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground break-words whitespace-pre-wrap max-h-[60vh] overflow-y-auto">
+          <DialogDescription></DialogDescription>
+          <div className="text-muted-foreground break-words whitespace-pre-wrap max-h-[60vh] overflow-y-auto">
             {message}
-          </DialogDescription>
+          </div>
         </DialogHeader>
         <DialogFooter className={loginExpired ? "flex gap-2 sm:gap-0" : ""}>
           {loginExpired ? (

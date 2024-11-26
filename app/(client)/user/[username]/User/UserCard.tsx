@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { updateUser, verifyUserEmail } from "./actions";
 import useSimpleAppContext from "@/hooks/useSimpleAppContext";
+import SmallLoader from "@/components/assets/SmallLoader";
 const UserProfileCard = ({
   name,
   username,
@@ -39,25 +40,31 @@ const UserProfileCard = ({
   // const navigate = useNavigate();
   const { setHint, setError, setLoginExpired } = useSimpleAppContext();
 
+  // const [loader, setLoader] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [showAvatar, setShowAvatar] = useState(false);
 
   const handleVerifyEmail = async () => {
+    setHint(<SmallLoader />);
     const verifyEmailResult = await verifyUserEmail(username);
 
     if (!verifyEmailResult) {
+      setHint(null);
       setError("Failed to verify email");
       return;
     }
     if (verifyEmailResult.status === 401) {
+      setHint(null);
       setLoginExpired(true);
       return;
     }
     if (verifyEmailResult.status === 200 && verifyEmailResult.message) {
       setHint(verifyEmailResult.message);
     } else if (verifyEmailResult.error) {
+      setHint(null);
       setError(verifyEmailResult.error);
     } else {
+      setHint(null);
       setError("An unknown error occurred");
     }
   };

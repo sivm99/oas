@@ -99,14 +99,26 @@ function DestinationsCard({
   };
   if (!destinations)
     return (
-      <Button
-        variant="outline"
-        onClick={() => setShowNew(!showNew)}
-        className="flex items-center gap-2 border-2 border-transparent animate-border-glow w-full"
-      >
-        <Plus size={20} />
-        Add Destination
-      </Button>
+      <section className="space-y-4">
+        {showNew && (
+          <DestinationDialog
+            type="create"
+            userEmail={user?.email}
+            onCancel={() => setShowNew(false)}
+            cardTitle="Add New Destination"
+            cardDesc="Great news! Your mail will be forwarded to this address once it's verified. You'll be able to create exciting new Rules for your selected Domain - it's that simple!"
+            onAction={newDestination}
+          />
+        )}
+        <Button
+          variant="outline"
+          onClick={() => setShowNew(!showNew)}
+          className="flex items-center gap-2 border-2 border-transparent animate-border-glow w-full"
+        >
+          <Plus size={20} />
+          Add Destination
+        </Button>
+      </section>
     );
 
   return (
@@ -114,7 +126,7 @@ function DestinationsCard({
       {showNew && (
         <DestinationDialog
           type="create"
-          userEmail={destinations.length > 0 ? "" : user?.email}
+          // userEmail={destinations.length > 0 ? "" : user?.email}
           onCancel={() => setShowNew(false)}
           cardTitle="Add New Destination"
           cardDesc="Great news! Your mail will be forwarded to this address once it's verified. You'll be able to create exciting new Rules for your selected Domain - it's that simple!"

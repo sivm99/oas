@@ -1,13 +1,13 @@
 "use server";
 
+import createRequest from "@/Helper/request";
 // import { createSession } from "@/app/auth/session";
-import { createRequest, UrlEndpoints } from "@/Helper/request";
 import {
   isDestinationsResponse,
   isRulesResponse,
   isUserResponse,
 } from "@/Helper/typeFunction";
-import { Destination, Rule, User } from "@/Helper/types";
+import { Destination, Rule, UrlEndpoints, User } from "@/Helper/types";
 
 type FetchData = "user" | "rules" | "destinations";
 

@@ -1,6 +1,6 @@
 "use server";
 
-import { createRequest } from "@/Helper/request";
+import createRequest from "@/Helper/request";
 
 import { User } from "@/Helper/types";
 import { setAuthCookie } from "@/utils/authcb";

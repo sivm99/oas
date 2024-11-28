@@ -1,6 +1,6 @@
 "use server";
 
-import { createRequest } from "@/Helper/request";
+import createRequest from "@/Helper/request";
 import { Destination } from "@/Helper/types";
 import { cookies } from "next/headers";
 

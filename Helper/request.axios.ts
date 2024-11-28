@@ -1,3 +1,5 @@
+/*
+import axios, { AxiosError } from "axios";
 import {
   DataObject,
   HttpMethod,
@@ -9,6 +11,11 @@ import { getCookieFromString } from "@/hooks/useSetCookie";
 import { TokenHandler } from "@/utils/token";
 
 const BASE_URL = `${process.env.BACKEND_HOST}/api/v2`;
+
+const instance = axios.create({
+  withCredentials: true,
+  baseURL: BASE_URL,
+});
 
 const resolveEndpoint = (
   endpoint: UrlEndpoints,
@@ -30,13 +37,12 @@ const createRequest = async (
   data?: DataObject,
 ): Promise<RequestResult> => {
   try {
-    const resolvedUrl = `${BASE_URL}${resolveEndpoint(endpoint, params)}`;
+    const resolvedUrl = resolveEndpoint(endpoint, params);
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
       Accept: "application/json",
     };
 
-    // Token handling
     if (token) {
       // Decode token if it's encoded, otherwise encode it
       const finalToken = (await TokenHandler.isValidEncodedToken(token))
@@ -44,6 +50,7 @@ const createRequest = async (
         : token;
 
       if (!finalToken) {
+        // throw new Error("Invalid or expired token");
         console.log("Invalid or expired token");
         return {
           data: null,
@@ -54,56 +61,56 @@ const createRequest = async (
       headers.Authorization = `Bearer ${finalToken}`;
     }
 
-    // Prepare fetch options
-    const fetchOptions: RequestInit = {
+    const response = await instance.request<ResponseObject>({
       method,
+      url: resolvedUrl,
+      data,
       headers,
-      credentials: "include", // equivalent to withCredentials: true in Axios
-      ...(data && { body: JSON.stringify(data) }), // only add body if data exists
-    };
+    });
 
-    // Perform fetch request
-    const response = await fetch(resolvedUrl, fetchOptions);
+    // Encode token from cookies if present
+    const cookieToken = getCookieFromString(
+      response.headers["set-cookie"]?.join("; ") || "",
+      "token",
+    );
 
-    // Extract cookies from response headers
-    const cookieHeader = response.headers.get("set-cookie");
-    const cookieToken = cookieHeader
-      ? getCookieFromString(cookieHeader, "token")
-      : undefined;
-
-    // Parse response data
-    const responseData = (await response.json()) as ResponseObject;
-
-    // Check for error conditions
-    if (!response.ok || responseData.status === "fail") {
-      return {
-        data: responseData,
-        error: responseData.message || "An error occurred",
-        status: response.status,
-        cookies: cookieToken
-          ? await TokenHandler.encode(cookieToken)
-          : undefined,
-      };
-    }
-
-    // Successful response
     return {
-      data: responseData,
+      data: response.data,
       error: null,
       status: response.status,
       cookies: cookieToken ? await TokenHandler.encode(cookieToken) : undefined,
     };
   } catch (error) {
-    // Handle network errors or JSON parsing errors
-    console.error("Request error:", error);
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError<ResponseObject>;
+      if (axiosError.response) {
+        const cookieToken = getCookieFromString(
+          axiosError.response.headers["set-cookie"]?.join("; ") || "",
+          "token",
+        );
 
+        return {
+          data: axiosError.response.data,
+          error: axiosError.response.data.message || "An error occurred",
+          status: axiosError.response.status,
+          cookies: cookieToken
+            ? await TokenHandler.encode(cookieToken)
+            : undefined,
+        };
+      }
+      return {
+        data: null,
+        error: "No response received from server",
+        status: 500,
+      };
+    }
     return {
       data: null,
-      error:
-        error instanceof Error ? error.message : "An unexpected error occurred",
+      error: "An unexpected error occurred",
       status: 500,
     };
   }
 };
 
-export default createRequest;
+export { createRequest };
+*/

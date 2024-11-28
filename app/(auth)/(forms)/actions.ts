@@ -3,12 +3,12 @@
 import { setAuthCookie } from "@/utils/authcb";
 import { emailSchema } from "@/Helper/schema";
 import { rd } from "@/utils/redirect";
-import { createRequest } from "@/Helper/request";
 
 import { loginSchema, registrationSchema } from "@/Helper/schema";
 import { isUserResponse } from "@/Helper/typeFunction";
 import { User } from "@/Helper/types";
 import { log } from "console";
+import createRequest from "@/Helper/request";
 
 // Define the state and response types
 export type FormState = {

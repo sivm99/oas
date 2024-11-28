@@ -1,6 +1,6 @@
 "use server";
 
-import { createRequest } from "@/Helper/request";
+import createRequest from "@/Helper/request";
 import { Rule } from "@/Helper/types";
 // import { revalidatePath } from "next/cache";
 // import { setAuthCookie } from "@/utils/authcb";

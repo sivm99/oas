@@ -77,7 +77,6 @@ async function verifyDestination({
       "/mail/destinations/:destinationID/verify",
       { destinationID },
       token,
-      {},
     );
     if (d.error || !d.data || !d.data.data) {
       return {

@@ -76,6 +76,7 @@ const UserProfileCard = ({
         <UserDialog
           type="basic"
           onAction={async (f) => {
+            setHint(<SmallLoader />);
             const newName = f.get("newName") as string;
             const newUsername = f.get("new-username") as string;
             console.log({ newName, newUsername });
@@ -83,11 +84,13 @@ const UserProfileCard = ({
 
             if (newUsername) {
               if (newUsername.length < 4 || newUsername.length > 16) {
+                setHint(null);
                 setError("Username length must be between 4-16 characters.");
                 return;
               }
 
               if (!uRegex.test(newUsername.toLowerCase())) {
+                setHint(null);
                 setError(
                   "Username must start with a letter and can only contain letters, numbers, dots, underscores, or hyphens.",
                 );
@@ -102,10 +105,12 @@ const UserProfileCard = ({
             });
 
             if (userResponse.status === 401) {
+              setHint(null);
               setLoginExpired(true);
               return;
             }
             if (userResponse.error || !userResponse.user) {
+              setHint(null);
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
@@ -121,16 +126,19 @@ const UserProfileCard = ({
         <UserDialog
           type="pic"
           onAction={async (f) => {
+            setHint(<SmallLoader />);
             const avatar = f.get("avatar-url") as string;
             const userResponse = await updateUser({
               avatar,
               username,
             });
             if (userResponse.status === 401) {
+              setHint(null);
               setLoginExpired(true);
               return;
             }
             if (userResponse.error || !userResponse.user) {
+              setHint(null);
               setError(userResponse.error || "User Details cant be updated");
               return;
             }

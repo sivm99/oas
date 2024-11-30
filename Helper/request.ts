@@ -70,9 +70,10 @@ const createRequest = async (
     const cookieToken = cookieHeader
       ? getCookieFromString(cookieHeader, "token")
       : undefined;
-
-    // Parse response data
-    const responseData = (await response.json()) as ResponseObject;
+    let responseData = {} as ResponseObject;
+    if (response.status !== 204) {
+      responseData = (await response.json()) as ResponseObject;
+    }
 
     // Check for error conditions
     if (!response.ok || responseData.status === "fail") {

@@ -8,7 +8,13 @@ import { createRule } from "./actions";
 import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 import { Destination } from "@/Helper/types";
 
-function NewRule({ destinations }: { destinations: Destination[] }) {
+function NewRule({
+  destinations,
+  aliasCount,
+}: {
+  destinations: Destination[];
+  aliasCount: number;
+}) {
   const { setLoginExpired, setError } = useSimpleAppContext();
   const [showForm, setShowForm] = useState(false);
 
@@ -41,6 +47,7 @@ function NewRule({ destinations }: { destinations: Destination[] }) {
       {showForm && (
         <CreateRuleDialog
           destinations={destinations}
+          c={aliasCount + 1}
           onAction={async (formData) => {
             const alias = formData.get("alias") as string;
             const domain = formData.get("domain") as string;

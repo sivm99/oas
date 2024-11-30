@@ -7,13 +7,17 @@ import { Destination, Rule } from "@/Helper/types";
 async function RuleFields({
   rules,
   destinations,
+  aliasCount,
 }: {
+  aliasCount: number;
   rules?: Rule[];
   destinations?: Destination[];
 }) {
   return (
     <section>
-      {destinations && <NewRule destinations={destinations} />}
+      {destinations && (
+        <NewRule destinations={destinations} aliasCount={aliasCount} />
+      )}
       <RulesCard rules={rules} />
     </section>
   );

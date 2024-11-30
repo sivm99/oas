@@ -67,7 +67,13 @@ const RulesSection = async () => {
   const { rules } = await fetchRules();
   const { destinations } = await fetchDestinations();
 
-  return <RuleFields rules={rules} destinations={destinations} />;
+  return (
+    <RuleFields
+      rules={rules}
+      destinations={destinations}
+      aliasCount={rules?.length || 0}
+    />
+  );
 };
 
 const DestinationSection = async () => {

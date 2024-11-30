@@ -37,9 +37,11 @@ interface UserDialogProps {
   destinations: Destination[];
   onAction: (f: FormData) => void;
   onCancel?: () => void;
+  c: number;
 }
 
 export const CreateRuleDialog = ({
+  c,
   onAction,
   onCancel,
   destinations,
@@ -105,6 +107,7 @@ export const CreateRuleDialog = ({
           id="rule-name"
           name="rule-name"
           label="Rule Name (Optional)"
+          defaultValue={`Rule - ${c}`}
           maxLength={50}
           placeholder="My adobe scan Id"
         />

@@ -366,6 +366,7 @@ function RulesCard({ rules }: { rules?: Rule[] }) {
   return (
     <div className="grid gap-4">
       <motion.div
+        className="space-y-4 mt-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}

@@ -1,7 +1,7 @@
 interface FormHeroProps {
   heading: string;
   para: string;
-  caption: string | JSX.Element;
+  caption: string | React.ReactElement;
 }
 
 function FormHero({ heading, para, caption }: FormHeroProps) {

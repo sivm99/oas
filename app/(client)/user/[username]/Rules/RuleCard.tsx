@@ -31,9 +31,9 @@ import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { RuleDialog } from "./RuleDialog";
 import { deleteRule, toggleRule, updateRule } from "./actions";
-import { motion } from "framer-motion";
 import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 import SmallLoader from "@/components/assets/SmallLoader";
+import { motion } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
 // Separate RuleCard Component
 const RuleCard = ({ rule }: { rule: Rule }) => {
@@ -366,7 +366,7 @@ function RulesCard({ rules }: { rules?: Rule[] }) {
   return (
     <div className="grid gap-4">
       <motion.div
-        // className="space-y-4 mt-2"
+        className="space-y-4 mt-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}

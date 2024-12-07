@@ -1,7 +1,8 @@
+import { fetchUser } from "@/Helper/getData";
 import UserProfileCard from "./UserCard";
-import { User } from "@/Helper/types";
 
-async function UserField({ user }: { user?: User }) {
+async function UserField() {
+  const { user } = await fetchUser();
   return (
     <section>
       {user && (

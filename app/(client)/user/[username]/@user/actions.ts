@@ -35,17 +35,17 @@ async function updateUser({
         status: 401,
       };
     }
-    const response = await createRequest(
-      "PATCH",
-      "/user/:username",
-      { username },
+    const response = await createRequest({
+      method: "PATCH",
+      endpoint: "/user/:username",
+      params: { username },
       token,
-      {
+      data: {
         name,
         username: newUsername,
         avatar,
       },
-    );
+    });
 
     if (response.status === 401) {
       return {
@@ -110,12 +110,11 @@ async function verifyUserEmail(username: string): Promise<{
         status: 401,
       };
     }
-    const verifyEmailResult = await createRequest(
-      "GET",
-      `/user/:username/verify`,
-      { username },
+    const verifyEmailResult = await createRequest({
+      endpoint: `/user/:username/verify`,
+      params: { username },
       token,
-    );
+    });
 
     if (!verifyEmailResult) {
       return { status: 500, success: false, error: "Failed to verify email" };

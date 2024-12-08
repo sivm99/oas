@@ -50,7 +50,7 @@ export default async function fetchData<T extends FetchData>(
   if (type === "destinations") endpoint = "/mail/destinations" as UrlEndpoints;
 
   try {
-    const r = await createRequest("GET", endpoint, {}, token);
+    const r = await createRequest({ endpoint, token });
 
     if (r.error || !r.data) {
       return {

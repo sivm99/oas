@@ -45,13 +45,11 @@ async function handleAuth(
 
   try {
     const endpoint = isNew ? "/auth/signup" : "/auth/login";
-    const authResult = await createRequest(
-      "POST",
+    const authResult = await createRequest({
+      method: "POST",
       endpoint,
-      {},
-      "",
-      formValues.data,
-    );
+      data: formValues.data,
+    });
 
     if (authResult.error || !authResult.data) {
       log(authResult.error || "Unknown error occurred");
@@ -163,8 +161,12 @@ async function forgetPasswordAction(f: FormData) {
       provider: "Forget Password",
     });
   // try {
-  const r = await createRequest("POST", "/auth/forget-password", {}, "", {
-    email: formValue.data,
+  const r = await createRequest({
+    method: "POST",
+    endpoint: "/auth/forget-password",
+    data: {
+      email: formValue.data,
+    },
   });
 
   if (r.error || r.status !== 200) {
@@ -215,13 +217,12 @@ async function resetPasswordAction(f: FormData) {
     password: formObject.password,
     passwordConfirm: formObject.passwordConfirm,
   };
-  const r = await createRequest(
-    "POST",
-    "/auth/reset-password/:token",
-    { token: validatedData.token },
-    "",
-    validatedData,
-  );
+  const r = await createRequest({
+    method: "POST",
+    endpoint: "/auth/reset-password/:token",
+    params: { token: validatedData.token },
+    data: validatedData,
+  });
   if (r.error || r.status !== 200) {
     rd({
       path: "fp/cb",

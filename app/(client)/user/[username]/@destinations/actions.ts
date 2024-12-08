@@ -26,9 +26,14 @@ async function addDestination({
         status: 401,
       };
     }
-    const d = await createRequest("POST", "/mail/destinations", {}, token, {
-      destinationEmail: destinationEmail,
-      domain: domain,
+    const d = await createRequest({
+      method: "POST",
+      endpoint: "/mail/destinations",
+      token,
+      data: {
+        destinationEmail,
+        domain,
+      },
     });
     if (d.error || !d.data || !d.data.data) {
       return {
@@ -72,12 +77,11 @@ async function verifyDestination({
         status: 401,
       };
     }
-    const d = await createRequest(
-      "GET",
-      "/mail/destinations/:destinationID/verify",
-      { destinationID },
+    const d = await createRequest({
+      endpoint: "/mail/destinations/:destinationID/verify",
       token,
-    );
+      params: { destinationID },
+    });
     if (d.error || !d.data || !d.data.data) {
       return {
         success: false,
@@ -121,13 +125,13 @@ async function removeDestination({
         status: 401,
       };
     }
-    const d = await createRequest(
-      "DELETE",
-      "/mail/destinations/:destinationID",
-      { destinationID },
+    const d = await createRequest({
+      method: "DELETE",
+      endpoint: "/mail/destinations/:destinationID",
       token,
-      { password },
-    );
+      params: { destinationID },
+      data: { password },
+    });
     if (d.error) {
       return {
         success: false,

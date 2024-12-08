@@ -22,13 +22,19 @@ const resolveEndpoint = (
   });
 };
 
-const createRequest = async (
-  method: HttpMethod,
-  endpoint: UrlEndpoints,
-  params: Record<string, string | number> = {},
-  token?: string,
-  data?: DataObject,
-): Promise<RequestResult> => {
+const createRequest = async ({
+  method = "GET" as HttpMethod,
+  endpoint,
+  params = {},
+  token,
+  data,
+}: {
+  method?: HttpMethod;
+  endpoint: UrlEndpoints;
+  params?: Record<string, string | number>;
+  token?: string;
+  data?: DataObject;
+}): Promise<RequestResult> => {
   try {
     const resolvedUrl = `${BASE_URL}${resolveEndpoint(endpoint, params)}`;
     const headers: Record<string, string> = {

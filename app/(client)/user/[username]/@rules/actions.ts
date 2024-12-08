@@ -22,13 +22,12 @@ async function createRule(rule: Omit<Rule, "ruleId" | "active">): Promise<{
         status: 401,
       };
     }
-    const ruleResult = await createRequest(
-      "POST",
-      "/mail/rules",
-      {},
+    const ruleResult = await createRequest({
+      method: "POST",
+      endpoint: "/mail/rules",
       token,
-      rule,
-    );
+      data: rule,
+    });
 
     if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
       return {
@@ -78,13 +77,13 @@ async function updateRule(rule: Rule): Promise<{
         status: 401,
       };
     }
-    const ruleResult = await createRequest(
-      "PATCH",
-      "/mail/rules/:ruleId",
-      { ruleId: rule.ruleId },
+    const ruleResult = await createRequest({
+      method: "PATCH",
+      endpoint: "/mail/rules/:ruleId",
+      params: { ruleId: rule.ruleId },
       token,
-      rule,
-    );
+      data: rule,
+    });
     if (ruleResult.status === 401) {
       return {
         status: ruleResult.status,
@@ -128,12 +127,12 @@ async function toggleRule(rule: Rule): Promise<{
         status: 401,
       };
     }
-    const ruleResult = await createRequest(
-      "PATCH",
-      "/mail/rules/:ruleId/toggle",
-      { ruleId: rule.ruleId },
+    const ruleResult = await createRequest({
+      method: "PATCH",
+      endpoint: "/mail/rules/:ruleId/toggle",
+      params: { ruleId: rule.ruleId },
       token,
-    );
+    });
     if (ruleResult.status === 401) {
       return {
         status: ruleResult.status,
@@ -178,12 +177,12 @@ async function deleteRule(rule: Rule): Promise<{
         status: 401,
       };
     }
-    const ruleResult = await createRequest(
-      "DELETE",
-      "/mail/rules/:ruleId",
-      { ruleId: rule.ruleId },
+    const ruleResult = await createRequest({
+      method: "DELETE",
+      endpoint: "/mail/rules/:ruleId",
+      params: { ruleId: rule.ruleId },
       token,
-    );
+    });
     if (ruleResult.status === 401) {
       return {
         status: ruleResult.status,

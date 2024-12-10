@@ -2,31 +2,6 @@ stages:
   - build
   - deploy
 
-variables:
-  TSFILE: "tailscale_1.28.0_amd64.tgz"
-
-before_script:
-  # Install required dependencies
-  - apt-get update -qq && apt-get install -y iptables wget curl
-
-  # Install Node.js and npm
-  - curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
-  - apt-get install -y nodejs
-
-  # Install Tailscale
-  - cd /usr/local/bin
-  - wget https://pkgs.tailscale.com/stable/${TSFILE} -P /tmp
-  - tar xzf /tmp/${TSFILE} --strip-components=1
-  - rm /tmp/${TSFILE}
-
-  # Configure and start Tailscale
-  - mkdir -p /var/run/tailscale
-  - update-alternatives --set iptables /usr/sbin/iptables-legacy
-  - tailscaled --state="mem:" &
-  - sleep 3 # Give tailscaled time to start
-  - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)"
-  - tailscale status
-
 build:
   stage: build
   script:
@@ -39,11 +14,24 @@ build:
   artifacts:
     paths:
       - .next/ # Save build artifacts
-    expire_in: 4 days # Keep artifacts for a week
+    expire_in: 1 week # Keep artifacts for a week
     when: always # Save artifacts even if the build fails
 
 deploy:
   stage: deploy
+  before_script:
+    # Install Tailscale only for deploy stage
+    - apt-get update -qq && apt-get install -y iptables wget
+    - cd /usr/local/bin
+    - wget https://pkgs.tailscale.com/stable/${TSFILE} -P /tmp
+    - tar xzf /tmp/${TSFILE} --strip-components=1
+    - rm /tmp/${TSFILE}
+    - mkdir -p /var/run/tailscale
+    - update-alternatives --set iptables /usr/sbin/iptables-legacy
+    - tailscaled --state="mem:" &
+    - sleep 3 # Give tailscaled time to start
+    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)"
+    - tailscale status
   script: |
     echo "Login to machine was successful"
     ssh -o "StrictHostKeyChecking no" ubuntu@sora "

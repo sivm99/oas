@@ -1,37 +1,29 @@
 stages:
-  - build
   - deploy
 
-build:
-  stage: build
-  script:
-    - cd $CI_PROJECT_DIR
-    - npm ci # Clean install of dependencies
-    - npm run lint # Run ESLint
-    - npm run build # Build the project
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-  artifacts:
-    paths:
-      - .next/ # Save build artifacts
-    expire_in: 1 week # Keep artifacts for a week
-    when: always # Save artifacts even if the build fails
+variables:
+  TSFILE: "tailscale_1.28.0_amd64.tgz"
+
+before_script:
+  # Install required dependencies
+  - apt-get update -qq && apt-get install -y iptables wget
+
+  # Install Tailscale
+  - cd /usr/local/bin
+  - wget https://pkgs.tailscale.com/stable/${TSFILE} -P /tmp
+  - tar xzf /tmp/${TSFILE} --strip-components=1
+  - rm /tmp/${TSFILE}
+
+  # Configure and start Tailscale
+  - mkdir -p /var/run/tailscale
+  - update-alternatives --set iptables /usr/sbin/iptables-legacy
+  - tailscaled --state="mem:" &
+  - sleep 3 # Give tailscaled time to start
+  - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)"
+  - tailscale status
 
 deploy:
   stage: deploy
-  before_script:
-    # Install Tailscale only for deploy stage
-    - apt-get update -qq && apt-get install -y iptables wget
-    - cd /usr/local/bin
-    - wget https://pkgs.tailscale.com/stable/${TSFILE} -P /tmp
-    - tar xzf /tmp/${TSFILE} --strip-components=1
-    - rm /tmp/${TSFILE}
-    - mkdir -p /var/run/tailscale
-    - update-alternatives --set iptables /usr/sbin/iptables-legacy
-    - tailscaled --state="mem:" &
-    - sleep 3 # Give tailscaled time to start
-    - tailscale up --authkey=${TAILSCALE_AUTHKEY} --hostname="gitlab-$(cat /etc/hostname)"
-    - tailscale status
   script: |
     echo "Login to machine was successful"
     ssh -o "StrictHostKeyChecking no" ubuntu@sora "
@@ -39,4 +31,3 @@ deploy:
     "
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
-      when: on_success # Only deploy if previous stages succeed

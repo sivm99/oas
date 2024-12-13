@@ -7,6 +7,7 @@ import { CreateRuleDialog } from "./CreateRuleDialouge";
 import { createRule } from "./actions";
 import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 import { Destination } from "@/Helper/types";
+import { useRouter } from "next/navigation";
 
 function NewRule({
   destinations,
@@ -17,6 +18,7 @@ function NewRule({
 }) {
   const { setLoginExpired, setError } = useSimpleAppContext();
   const [showForm, setShowForm] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="w-full max-w-full  mx-auto">
@@ -75,7 +77,7 @@ function NewRule({
               return;
             }
 
-            window.location.reload();
+            router.refresh();
             setShowForm(false);
           }}
           onCancel={() => setShowForm(false)}

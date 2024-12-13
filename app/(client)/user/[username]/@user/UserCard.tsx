@@ -28,6 +28,7 @@ import {
 import { updateUser, verifyUserEmail } from "./actions";
 import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 import SmallLoader from "@/components/assets/SmallLoader";
+import { useRouter } from "next/navigation";
 const UserProfileCard = ({
   name,
   username,
@@ -43,6 +44,7 @@ const UserProfileCard = ({
   // const [loader, setLoader] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [showAvatar, setShowAvatar] = useState(false);
+  const router = useRouter();
 
   const handleVerifyEmail = async () => {
     setHint(<SmallLoader />);
@@ -114,7 +116,7 @@ const UserProfileCard = ({
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
-            window.location.reload();
+            router.refresh();
             setShowUpdate(false);
             return;
           }}
@@ -142,7 +144,7 @@ const UserProfileCard = ({
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
-            window.location.reload();
+            router.refresh();
             setShowAvatar(false);
             return;
           }}

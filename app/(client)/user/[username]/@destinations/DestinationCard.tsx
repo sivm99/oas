@@ -35,6 +35,7 @@ import {
 } from "./actions";
 import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 import SmallLoader from "@/components/assets/SmallLoader";
+import { useRouter } from "next/navigation";
 
 function DestinationsCard({
   destinations,
@@ -47,22 +48,24 @@ function DestinationsCard({
 
   const [showDelete, setShowDelete] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const router = useRouter();
+
   const handleVerify = async (destination: Destination) => {
-    setHint(<SmallLoader />)
+    setHint(<SmallLoader />);
     const res = await verifyDestination({
       destinationID: destination.destinationID,
     });
     if (res.status === 401) {
-      setHint(null)
+      setHint(null);
       setLoginExpired(true);
       return;
     }
     if (res.error || !res.success || !res.verifiedDestination) {
-      setHint(null)
+      setHint(null);
       setError(res.error || "Failed to verify destination");
       return;
     }
-    window.location.reload();
+    router.refresh();
   };
 
   const newDestination = async (f: FormData) => {
@@ -74,14 +77,14 @@ function DestinationsCard({
     }
 
     try {
-      setHint(<SmallLoader />)
+      setHint(<SmallLoader />);
       const destinationResult = await addDestination({
         destinationEmail,
         domain: selectedDomain,
       });
 
       if (destinationResult.status === 401) {
-        setHint(null)
+        setHint(null);
         setLoginExpired(true);
         setShowNew(false);
         return;
@@ -92,11 +95,11 @@ function DestinationsCard({
         !destinationResult.success ||
         !destinationResult.newDestination
       ) {
-        setHint(null)
+        setHint(null);
         setError(destinationResult.error || "Failed to create destination");
         return;
       }
-      window.location.reload();
+      router.refresh();
       setShowNew(false);
       return;
     } catch (error) {
@@ -154,7 +157,7 @@ function DestinationsCard({
                   setError("Password is required");
                   return;
                 }
-                setHint(<SmallLoader />)
+                setHint(<SmallLoader />);
                 const deleteResponse = await removeDestination({
                   destinationID: destination.destinationID,
                   password,
@@ -165,7 +168,7 @@ function DestinationsCard({
                 //   return;
                 // }
                 if (!deleteResponse.success) {
-                  setHint(null)
+                  setHint(null);
                   setError(
                     deleteResponse.error || "Failed to delete destination",
                   );
@@ -174,7 +177,7 @@ function DestinationsCard({
                 }
 
                 setShowDelete(false);
-                window.location.reload();
+                router.refresh();
                 return;
               }}
             />

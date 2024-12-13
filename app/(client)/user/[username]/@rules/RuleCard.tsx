@@ -37,6 +37,7 @@ import { motion } from "motion/react";
 import { useRouter, useSearchParams } from "next/navigation";
 // Separate RuleCard Component
 const RuleCard = ({ rule }: { rule: Rule }) => {
+  const router = useRouter();
   const { setHint, setError, setLoginExpired } = useSimpleAppContext();
   const [showDelete, setShowDelete] = useState(false);
   const [showToggle, setShowToggle] = useState(false);
@@ -59,7 +60,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
     }
     if (ruleResult.success) {
       setHint(null);
-      window.location.reload();
+      router.refresh();
     }
     setHint(null);
     setShowEdit(false);
@@ -86,7 +87,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
 
     if (ruleResult.success) {
       setHint(null);
-      window.location.reload();
+      router.refresh();
     }
     setHint(null);
     setShowToggle(false);
@@ -110,8 +111,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
       return;
     }
     setHint(null);
-    window.location.reload();
-
+    router.refresh();
     setShowDelete(false);
     return;
   };

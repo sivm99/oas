@@ -116,6 +116,7 @@ const UserProfileCard = ({
               setError(userResponse.error || "User Details cant be updated");
               return;
             }
+            setHint(null);
             router.refresh();
             setShowUpdate(false);
             return;

@@ -99,11 +99,13 @@ function DestinationsCard({
         setError(destinationResult.error || "Failed to create destination");
         return;
       }
+      setHint(null);
       router.refresh();
       setShowNew(false);
       return;
     } catch (error) {
       console.error(error);
+      setHint(null);
       setError("Failed to create destination");
     }
   };
@@ -177,6 +179,7 @@ function DestinationsCard({
                 }
 
                 setShowDelete(false);
+                setHint(null);
                 router.refresh();
                 return;
               }}

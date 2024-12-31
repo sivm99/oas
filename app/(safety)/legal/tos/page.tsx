@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Trash2 } from "lucide-react";
+import { FileText, Mail, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 function TermsOfService() {
@@ -48,7 +48,15 @@ function TermsOfService() {
         </Link>
       </div>
 
-      <h2 className="text-xl font-semibold mt-6 mb-2">4. Governing Law</h2>
+      <h2 className="text-xl font-semibold mt-6 mb-2">4. Refund Policy</h2>
+      <p>
+        Refund shall be processed according to the refund policy of our website
+        read abou the refund policy here <Link href="/legal/refund">
+          <Button>
+            <span className="font-bold text-2xl">₹</span>Refund Policy</Button>
+        </Link>
+      </p>
+      <h2 className="text-xl font-semibold mt-6 mb-2">5. Governing Law</h2>
       <p>
         These terms shall be governed by and construed in accordance with the
         laws of India, without regard to its conflict of law principles. Any
@@ -57,7 +65,7 @@ function TermsOfService() {
       </p>
 
       <h2 className="text-xl font-semibold mt-6 mb-2">
-        5. Modifications to Terms
+        6. Modifications to Terms
       </h2>
       <p>
         We reserve the right to modify these Terms of Service at any time. Any
@@ -65,6 +73,13 @@ function TermsOfService() {
         service constitutes acceptance of such modifications.
       </p>
 
+      <h2 className="text-xl font-semibold mt-6 mb-2">7. Contact Us</h2>
+      <p>
+        If you have any questions regarding our Product , Privacy Policy , Refund Policy and/or ToS please reach us <Link href="/contact">
+          <Button className="mr-2">
+            <span className="font-bold text-2xl"><Mail size={20} /></span>Contact page </Button>
+        </Link>
+      </p>
       <Separator className="my-4" />
       <p className="text-center text-gray-500 mt-6">
         Last updated: October 2024

@@ -39,7 +39,7 @@ const UserProfileCard = ({
   destinationCount,
 }: User) => {
   // const navigate = useNavigate();
-  const { setHint, setError, setLoginExpired } = useSimpleAppContext();
+  const { setHint, setError, setLoginExpired, } = useSimpleAppContext();
 
   // const [loader, setLoader] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);

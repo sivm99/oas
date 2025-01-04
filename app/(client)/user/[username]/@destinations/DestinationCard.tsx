@@ -69,6 +69,7 @@ function DestinationsCard({
   };
 
   const newDestination = async (f: FormData) => {
+    setHint(<SmallLoader />);
     const destinationEmail = f.get("destination-email") as string;
     const selectedDomain = f.get("destination-domain") as string;
     if (!destinationEmail || !selectedDomain) {
@@ -77,7 +78,6 @@ function DestinationsCard({
     }
 
     try {
-      setHint(<SmallLoader />);
       const destinationResult = await addDestination({
         destinationEmail,
         domain: selectedDomain,

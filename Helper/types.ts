@@ -6,6 +6,7 @@ type User = {
   aliasCount: number;
   destinationCount: number;
   avatar?: string;
+  plan?: "free" | "star" | "galaxy"
 };
 
 type Rule = {

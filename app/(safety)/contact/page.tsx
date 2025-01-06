@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Facebook } from "lucide-react";
+import { Mail, Facebook, Phone } from "lucide-react";
 
 function ContactUs() {
   return (
@@ -14,6 +14,7 @@ function ContactUs() {
         </p>
 
         <div className="grid gap-6 md:grid-cols-2">
+          <h1>Managed By Shivam Shukla</h1>
           <Card>
             <CardContent className="flex items-center p-6 space-x-4">
               <Mail className="h-8 w-8 text-blue-500" />
@@ -39,6 +40,17 @@ function ContactUs() {
                 >
                   1 Alias Service
                 </a>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="flex items-center p-6 space-x-4">
+              <Phone className="h-8 w-8 text-blue-600" />
+              <div>
+                <h3 className="font-semibold mb-2">Contact</h3>
+
+                +91 0182456351
+
               </div>
             </CardContent>
           </Card>

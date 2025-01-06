@@ -45,7 +45,7 @@ export default async function UserNavContent() {
     }
 
     return (
-      <div className="flex flex-col md:flex-row  gap-2">
+      <div className="flex flex-col md:flex-row gap-2">
         <form action={`/user/${lastUsername}`} className="md:hidden">
           <Button
             variant="secondary"
@@ -111,7 +111,15 @@ export default async function UserNavContent() {
   return (
     <>
       <div className="hidden md:flex items-center space-x-2">
+        {/* Dark Theme Toggle */}
         <ModeToggle />
+        {/* Pricing Button */}
+        <Link href="/pricing">
+          <Button variant="outline" className="w-full md:w-auto">
+            Pricing
+          </Button>
+        </Link>
+        {/* Dashboard/Login Button */}
         <DashboardButton />
       </div>
 
@@ -137,6 +145,12 @@ export default async function UserNavContent() {
             </SheetHeader>
             <nav>
               <SheetFooter className="mt-4 flex flex-col gap-4">
+                {/* Pricing Button in Mobile Menu */}
+                <Link href="/pricing">
+                  <Button variant="outline" className="w-full">
+                    Pricing
+                  </Button>
+                </Link>
                 <DashboardButton />
               </SheetFooter>
             </nav>

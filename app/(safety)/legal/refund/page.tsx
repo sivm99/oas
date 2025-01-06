@@ -31,6 +31,10 @@ function RefundPolicy() {
                 <span className="font-semibold mr-2">•</span>
                 <span>No questions asked - we process all valid refund requests</span>
               </li>
+              <li className="flex items-start">
+                <span className="font-semibold mr-2">•</span>
+                <span>Refunds will be processed and credited back to the original payment method with in 5-7 business days.</span>
+              </li>
             </ul>
           </CardContent>
         </Card>

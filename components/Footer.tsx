@@ -15,8 +15,7 @@ function Footer() {
           </Link>
           .
         </p>
-        <p>&copy; 2024 One Alias Service. All rights reserved.</p>
-
+        <p>&copy; 2025 One Alias Service. All rights reserved.</p>
       </div>
     </footer>
   );

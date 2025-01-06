@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Facebook, Phone } from "lucide-react";
+import { Mail, Facebook, Phone, User, Building } from "lucide-react";
 
 function ContactUs() {
   return (
@@ -9,18 +9,36 @@ function ContactUs() {
       <Separator className="my-4" />
 
       <div className="max-w-2xl mx-auto space-y-8">
-        <p className="text-lg text-center">
-          We're here to help! Reach out to us through any of the following channels:
-        </p>
+        <div className="text-center">
+          <h2 className="text-xl font-semibold">Managed By Shivam Shukla</h2>
+          {/* <p className="text-gray-600">Founder & CEO, 1 Alias Service</p> */}
+        </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <h1>Managed By Shivam Shukla</h1>
           <Card>
             <CardContent className="flex items-center p-6 space-x-4">
-              <Mail className="h-8 w-8 text-blue-500" />
+              <User className="h-8 w-8 text-blue-500" />
               <div>
-                <h3 className="font-semibold mb-2">Email Support</h3>
-                <a href="mailto:support@1as.in" className="text-blue-500 hover:underline">
+                <h3 className="font-semibold mb-2">Personal Email</h3>
+                <a
+                  href="mailto:shivam@1as.in"
+                  className="text-blue-500 hover:underline"
+                >
+                  shivam@1as.in
+                </a>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="flex items-center p-6 space-x-4">
+              <Building className="h-8 w-8 text-blue-500" />
+              <div>
+                <h3 className="font-semibold mb-2">Company Support</h3>
+                <a
+                  href="mailto:support@1as.in"
+                  className="text-blue-500 hover:underline"
+                >
                   support@1as.in
                 </a>
               </div>
@@ -43,22 +61,27 @@ function ContactUs() {
               </div>
             </CardContent>
           </Card>
+
           <Card>
             <CardContent className="flex items-center p-6 space-x-4">
               <Phone className="h-8 w-8 text-blue-600" />
               <div>
                 <h3 className="font-semibold mb-2">Contact</h3>
-
-                +91 0182456351
-
+                <p>+91 182 429 1351</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <p className="text-center text-gray-600 mt-8">
-          We typically respond to all inquiries within 24 hours during business days.
-        </p>
+        <div className="text-center space-y-4">
+          <p className="text-gray-600">
+            We typically respond to all inquiries within 24 hours during
+            business days.
+          </p>
+          <p className="text-sm text-gray-500">
+            1 Alias Service - Your Trusted Partner in Digital Solutions
+          </p>
+        </div>
       </div>
     </main>
   );

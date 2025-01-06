@@ -16,6 +16,17 @@ function Footer() {
           .
         </p>
         <p>&copy; 2025 One Alias Service. All rights reserved.</p>
+        <p className="mt-2">
+          <span className="text-primary">
+            Managed by Shivam Shukla |{" "}
+            <Link
+              href="/contact"
+              className="text-blue-500 hover:underline animate-pulse"
+            >
+              Contact Us
+            </Link>
+          </span>
+        </p>
       </div>
     </footer>
   );

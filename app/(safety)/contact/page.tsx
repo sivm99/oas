@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { Mail, Facebook, Phone, User, Building } from "lucide-react";
+import { Facebook, Phone, User, Building } from "lucide-react";
 
 function ContactUs() {
   return (
@@ -51,7 +51,7 @@ function ContactUs() {
               <div>
                 <h3 className="font-semibold mb-2">Facebook</h3>
                 <a
-                  href="https://facebook.com/1aliasservice"
+                  href="https://www.facebook.com/profile.php?id=61571418251117"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"

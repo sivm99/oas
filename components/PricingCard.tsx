@@ -1,20 +1,27 @@
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Check, X } from 'lucide-react'
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Check, X } from "lucide-react";
 
 type PricingCardProps = {
-  title: string
-  price: string
-  currency: string
-  features: string[]
-  unavailableFeatures: string[]
-  buttonText: string
-  buttonVariant: 'default' | 'outline'
-  popular?: boolean
-  onSelect: (title: string, price: string, currency: string) => void
-}
+  title: string;
+  price: string;
+  currency: string;
+  features: string[];
+  unavailableFeatures: string[];
+  buttonText: string;
+  buttonVariant: "default" | "outline";
+  popular?: boolean;
+  plan: string;
+};
 
-export default function PricingCard({
+export default async function PricingCard({
   title,
   price,
   currency,
@@ -23,13 +30,19 @@ export default function PricingCard({
   buttonText,
   buttonVariant,
   popular = false,
-  onSelect
+  plan,
 }: PricingCardProps) {
   return (
-    <Card className={`flex flex-col ${popular ? 'border-primary shadow-lg' : ''}`}>
+    <Card
+      className={`flex flex-col ${popular ? "border-primary shadow-lg" : ""}`}
+    >
       <CardHeader>
         <CardTitle className="text-2xl">{title}</CardTitle>
-        {popular && <CardDescription className="text-primary font-semibold">Most Popular</CardDescription>}
+        {popular && (
+          <CardDescription className="text-primary font-semibold">
+            Most Popular
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent className="flex-grow">
         <div className="text-4xl font-bold mb-4">
@@ -56,16 +69,12 @@ export default function PricingCard({
         )}
       </CardContent>
       <CardFooter>
-        <Button
-          className="w-full"
-          variant={buttonVariant}
-          onClick={() => onSelect(title, price, currency)}
-        >
-          {buttonText}
+        <Button className="w-full" variant={buttonVariant} asChild>
+          <a href={price === "0" ? "/signup" : `/pricing?plan=${plan}`}>
+            {buttonText}
+          </a>
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
-
-

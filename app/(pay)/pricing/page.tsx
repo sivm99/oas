@@ -1,22 +1,37 @@
-"use client";
-
-import { useState } from "react";
 import PricingCard from "@/components/PricingCard";
 import { Button } from "@/components/ui/button";
-import PaymentModal from "@/components/PaymentModel";
+import PaymentModal from "./PaymentModel";
 import { Separator } from "@/components/ui/separator";
 import AnimatedHero from "@/components/AnimatedHero";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function PricingPage() {
-  const router = useRouter();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedPlan, setSelectedPlan] = useState({ title: "", price: "", currency: "" });
+const PLANS = {
+  star: {
+    title: "Star",
+    price: "49",
+    currency: "INR",
+  },
+  galaxy: {
+    title: "Galaxy",
+    price: "79",
+    currency: "INR",
+  },
+};
 
-  const handlePlanSelection = (title: string, price: string, currency: string) => {
-    setSelectedPlan({ title, price, currency });
-    setModalOpen(true);
-  };
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function PricingPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
+  const params = await Promise.resolve(searchParams);
+  const { plan } = params;
+  const selectedPlan =
+    plan && typeof plan === "string"
+      ? PLANS[plan.toLowerCase() as keyof typeof PLANS]
+      : null;
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
   return (
     <main className="form_wrapper">
       <div className="opacity-100">
@@ -45,13 +60,12 @@ export default function PricingPage() {
           ]}
           buttonText="Get Started"
           buttonVariant="outline"
-          onSelect={() => {
-            router.push('/signup')
-          }}
+          plan="free"
         />
         <PricingCard
+          plan="star"
           title="Star ⭐️ 🌟"
-          price="50"
+          price="49"
           currency="INR"
           features={[
             "1 Destination Address",
@@ -68,11 +82,11 @@ export default function PricingPage() {
           buttonText="Subscribe"
           buttonVariant="default"
           popular
-          onSelect={handlePlanSelection}
         />
         <PricingCard
+          plan="galaxy"
           title="Galaxy 🌌 🌌"
-          price="80"
+          price="79"
           currency="INR"
           features={[
             "2 Destination Addresses",
@@ -85,28 +99,26 @@ export default function PricingPage() {
           unavailableFeatures={[]}
           buttonText="Subscribe"
           buttonVariant="default"
-          onSelect={handlePlanSelection}
         />
       </div>
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-4">Not sure which plan is right for you?</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Not sure which plan is right for you?
+        </h2>
         <p className="text-gray-600 mb-6">
           Contact our sales team for a personalized recommendation
         </p>
-        <Button
-          variant="outline"
-          onClick={() => console.log("Contact sales clicked")}
-        >
-          Contact Sales
-        </Button>
+        <Link href="/contact">
+          <Button variant="outline">Contact Sales</Button>
+        </Link>
       </div>
-      <PaymentModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        plan={selectedPlan.title}
-        price={selectedPlan.price}
-        currency={selectedPlan.currency}
-      />
+      {selectedPlan && (
+        <PaymentModal
+          plan={selectedPlan.title}
+          price={selectedPlan.price}
+          currency={selectedPlan.currency}
+        />
+      )}
     </main>
   );
 }

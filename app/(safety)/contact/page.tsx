@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { Facebook, Phone, User, Building } from "lucide-react";
+import { Facebook, Phone, User, Building, MapPin } from "lucide-react";
 
 function ContactUs() {
   return (
@@ -68,6 +68,20 @@ function ContactUs() {
               <div>
                 <h3 className="font-semibold mb-2">Contact</h3>
                 <p>+91 182 429 1351</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="flex items-center p-6 space-x-4">
+              <MapPin className="h-8 w-8 text-blue-600" />
+              <div>
+                <h3 className="font-semibold mb-2">Address</h3>
+                <address className="text-gray-600 not-italic">
+                  Mehli Gate, Phagwara,
+                  <br />
+                  Punjab, India 144401
+                </address>
               </div>
             </CardContent>
           </Card>

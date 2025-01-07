@@ -146,20 +146,12 @@ function PrivacyPolicy() {
       <p className="mb-4">
         If you have any questions or concerns about this Privacy Policy, or if
         you wish to exercise your rights regarding your personal information,
-        please contact us at:
+        please{" "}
+        <Link href="/contact" className="text-blue-500">
+          Contact
+        </Link>
       </p>
-      <address className="mb-4">
-        One Alias Service
-        <br />
-        Phagwara, Punjab, India
-        <br />
-        <a href="mailto:support@1as.in" className="text-blue-500">
-          support@1as.in
-        </a>
-      </address>
-      <h2>
-        Managed By Shivam Shukla <Link href="/contact"> contact</Link>
-      </h2>
+
       <div className="flex w-fit gap-2 m-2">
         <Link href="/">
           <Button>

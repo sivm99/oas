@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Check, X } from "lucide-react";
+import Link from "next/link";
 
 type PricingCardProps = {
   title: string;
@@ -69,11 +70,18 @@ export default async function PricingCard({
         )}
       </CardContent>
       <CardFooter>
-        <Button className="w-full" variant={buttonVariant} asChild>
-          <a href={price === "0" ? "/signup" : `/pricing?plan=${plan}`}>
-            {buttonText}
-          </a>
-        </Button>
+        {price === "0" ? (
+          <Button className="w-full" variant={buttonVariant} asChild>
+            <Link href="/signup">{buttonText}</Link>
+          </Button>
+        ) : (
+          <form action="/pricing" className="w-full">
+            <input type="hidden" name="plan" value={plan} />
+            <Button className="w-full" variant={buttonVariant} type="submit">
+              {buttonText}
+            </Button>
+          </form>
+        )}
       </CardFooter>
     </Card>
   );

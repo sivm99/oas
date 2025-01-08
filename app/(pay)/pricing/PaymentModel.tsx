@@ -1,91 +1,129 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+"use client";
+import React, { useActionState, useEffect, useState } from "react";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import Image from "next/image";
 
-interface PaymentModalProps {
-  plan: string;
-  price: string;
-  currency: string;
-}
+import paymentAction from "./actions";
+import {
+  MobileInput,
+  PaymentDetails,
+  PaymentDetailsProps,
+  PaymentMethods,
+} from "./paymentModelHelper";
+import { Loader2 } from "lucide-react";
 
-export default async function PaymentModal({
-  plan,
-  price,
-  currency,
-}: PaymentModalProps) {
+// Main Payment Modal Component
+const PaymentModal = ({ plan, price, currency }: PaymentDetailsProps) => {
+  const [selectedMethod, setSelectedMethod] = useState("phonepe");
+  const [paymentData, formAction, isPending] = useActionState(
+    paymentAction,
+    null,
+  );
+
+  // Submit the PayU form if we got PayU data back
+  useEffect(() => {
+    if (paymentData?.payuData) {
+      const form = document.getElementById("payuForm") as HTMLFormElement;
+      if (form) form.submit();
+    }
+  }, [paymentData]);
+
   return (
     <Dialog defaultOpen={true}>
       <DialogContent className="p-4 md:p-6 mx-auto w-full max-w-md md:max-w-lg m-2 rounded-lg">
-        <DialogHeader className="mb-4 md:mb-6">
-          <DialogTitle className="text-xl md:text-2xl font-semibold">
-            Subscribe to {plan}
-          </DialogTitle>
-          <DialogDescription className="text-sm md:text-base text-muted-foreground mt-2">
-            Choose your payment method to complete the subscription.
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          action={async (f: FormData) => {
-            "use server";
-            console.log(f);
-          }}
-          className="flex flex-col gap-6"
-        >
-          <p className="text-lg md:text-xl font-medium">
-            Total: {currency} {price}/month
-          </p>
-          <RadioGroup
-            defaultValue="phonepe"
-            className="grid grid-cols-1 md:grid-cols-2 gap-3"
+        <form action={formAction} className="grid grid-rows-auto gap-6">
+          <PaymentDetails plan={plan} price={price} currency={currency} />
+          <input type="hidden" name="plan" value={plan} />
+          <input type="hidden" name="amount" value={price} />
+          <input type="hidden" name="paymentMethod" value={selectedMethod} />
+
+          <div className="grid grid-cols-1 gap-4">
+            <MobileInput />
+          </div>
+
+          <PaymentMethods
+            selectedMethod={selectedMethod}
+            onMethodChange={setSelectedMethod}
+          />
+
+          <Button
+            disabled={isPending}
+            type="submit"
+            className="w-full text-base md:text-lg py-6"
           >
-            <Label
-              htmlFor="phonepe"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:border-primary transition-colors cursor-pointer"
-            >
-              <RadioGroupItem value="phonepe" id="phonepe" />
-              <div className="flex items-center gap-3">
-                <Image
-                  src="https://static.20032003.xyz/1as/phonepe-icon.svg"
-                  alt="Phonepe Logo"
-                  className="w-8 h-8 md:w-10 md:h-10"
-                  width={40}
-                  height={40}
-                />
-                <span className="text-base md:text-lg font-medium">
-                  PhonePe
-                </span>
-              </div>
-            </Label>
-            <Label
-              htmlFor="payu"
-              className="flex items-center gap-3 p-4 border rounded-lg hover:border-primary transition-colors cursor-pointer"
-            >
-              <RadioGroupItem value="payu" id="payu" />
-              <div className="flex items-center gap-3">
-                <Image
-                  src="https://static.20032003.xyz/1as/payu/payu-logo-green.svg"
-                  alt="PayU Logo"
-                  className="w-8 h-8 md:w-10 md:h-10 dark:bg-white"
-                  width={40}
-                  height={40}
-                />
-                <span className="text-base md:text-lg font-medium">PayU</span>
-              </div>
-            </Label>
-          </RadioGroup>
-          <Button type="submit" className="w-full text-base md:text-lg py-6">
-            Pay Now
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              "Pay Now"
+            )}
           </Button>
+
+          {paymentData?.error && (
+            <p className="text-red-500 text-sm">{paymentData.error}</p>
+          )}
         </form>
+
+        {paymentData?.payuData && (
+          <form
+            id="payuForm"
+            action="https://test.payu.in/_payment"
+            method="post"
+            className="hidden"
+          >
+            <input type="hidden" name="key" value={paymentData.payuData.key} />
+            <input
+              type="hidden"
+              name="txnid"
+              value={paymentData.payuData.txnid}
+            />
+            <input
+              type="hidden"
+              name="amount"
+              value={paymentData.payuData.amount}
+            />
+            <input
+              type="hidden"
+              name="productinfo"
+              value={paymentData.payuData.productinfo}
+            />
+            <input
+              type="hidden"
+              name="firstname"
+              value={paymentData.payuData.firstname}
+            />
+            <input
+              type="hidden"
+              name="email"
+              value={paymentData.payuData.email}
+            />
+            <input
+              type="hidden"
+              name="phone"
+              value={paymentData.payuData.phone}
+            />
+            <input
+              type="hidden"
+              name="surl"
+              value={paymentData.payuData.surl}
+            />
+            <input
+              type="hidden"
+              name="furl"
+              value={paymentData.payuData.furl}
+            />
+            <input
+              type="hidden"
+              name="hash"
+              value={paymentData.payuData.hash}
+            />
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
-}
+};
+
+export default PaymentModal;

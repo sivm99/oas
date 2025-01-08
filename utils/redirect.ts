@@ -9,7 +9,6 @@ type RedirectParams = {
   provider: string;
   rt?: string;
 };
-
 /**
  * Helper function to handle redirects with search parameters
  * @param path - The path to redirect to (e.g., "auth")
@@ -33,4 +32,12 @@ export function rd({
     redirectUrl.searchParams.set("rt", rt);
   }
   redirect(redirectUrl.toString());
+}
+
+/**
+ * Simple redirect function that forwards to provided URL
+ * @param url - The URL to redirect to
+ */
+export function rd2(url: string): void {
+  redirect(url);
 }

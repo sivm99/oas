@@ -118,6 +118,7 @@ async function loginAction(f: FormData) {
     name: "token",
     value: r.cookie,
     username: r.user.username,
+    plan: r.user.plan || "free",
   });
   rd({
     path: "auth",

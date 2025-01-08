@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, AlertCircle } from "lucide-react";
 import { ModeToggle } from "../mode-toggle";
@@ -25,8 +26,39 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 const HOST = process.env.HOST || "http://localhost:3000";
 
+const StarBadge = () => (
+  <div className="relative inline-flex items-center justify-center">
+    <div className="absolute animate-pulse w-6 h-6 bg-yellow-300 rounded-full opacity-25"></div>
+    <svg
+      viewBox="0 0 24 24"
+      className="w-6 h-6 text-yellow-400 relative z-10 animate-pulse"
+      fill="currentColor"
+    >
+      <path d="M12 2l2.4 7.4h7.6l-6 4.6 2.3 7.2-6.3-4.8-6.3 4.8 2.3-7.2-6-4.6h7.6z" />
+    </svg>
+    <div className="absolute w-8 h-8 bg-yellow-400 rounded-full filter blur-xl opacity-30 animate-pulse"></div>
+  </div>
+);
+
+const GalaxyBadge = () => (
+  <div className="relative inline-flex items-center justify-center">
+    <div className="absolute w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 animate-spin-slow opacity-40 blur-md"></div>
+    <div className="relative w-6 h-6">
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 rounded-full animate-pulse"></div>
+      <div className="absolute inset-1 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full animate-ping opacity-50"></div>
+    </div>
+  </div>
+);
+
+const PlanBadge = ({ plan }: { plan: "free" | "star" | "galaxy" }) => {
+  if (plan === "free") return;
+  if (plan === "star") return <StarBadge />;
+  if (plan === "galaxy") return <GalaxyBadge />;
+  return null;
+};
+
 export default async function UserNavContent() {
-  const { status, lastUsername } = await getLoginState();
+  const { status, lastUsername, plan } = await getLoginState();
 
   function DashboardButton() {
     if (status === "logged-out") {
@@ -69,7 +101,6 @@ export default async function UserNavContent() {
             )}
           </Button>
         </Link>
-
         {status === "logged-in" && (
           <Dialog>
             <DialogTrigger asChild>
@@ -111,18 +142,17 @@ export default async function UserNavContent() {
   return (
     <>
       <div className="hidden md:flex items-center space-x-2">
-        {/* Dark Theme Toggle */}
+        {status === "logged-in" && <PlanBadge plan={plan || "free"} />}
         <ModeToggle />
-        {/* Pricing Button */}
-        <Link href="/pricing">
-          <Button variant="outline" className="w-full md:w-auto">
-            Pricing
-          </Button>
-        </Link>
-        {/* Dashboard/Login Button */}
+        {(!plan || plan === "free") && (
+          <Link href="/pricing">
+            <Button variant="outline" className="w-full md:w-auto">
+              Pricing
+            </Button>
+          </Link>
+        )}
         <DashboardButton />
       </div>
-
       <div className="md:hidden">
         <ModeToggle />
         <Sheet>
@@ -141,16 +171,18 @@ export default async function UserNavContent() {
               <SheetTitle>One Alias Service</SheetTitle>
               <SheetDescription>
                 {lastUsername ? `Hello ${lastUsername}` : "Welcome"}
+                {status === "logged-in" && <PlanBadge plan={plan || "free"} />}
               </SheetDescription>
             </SheetHeader>
             <nav>
               <SheetFooter className="mt-4 flex flex-col gap-4">
-                {/* Pricing Button in Mobile Menu */}
-                <Link href="/pricing">
-                  <Button variant="outline" className="w-full">
-                    Pricing
-                  </Button>
-                </Link>
+                {(!plan || plan === "free") && (
+                  <Link href="/pricing">
+                    <Button variant="outline" className="w-full">
+                      Pricing
+                    </Button>
+                  </Link>
+                )}
                 <DashboardButton />
               </SheetFooter>
             </nav>

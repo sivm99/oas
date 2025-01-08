@@ -6,7 +6,7 @@ type User = {
   aliasCount: number;
   destinationCount: number;
   avatar?: string;
-  plan?: "free" | "star" | "galaxy"
+  plan?: "free" | "star" | "galaxy";
 };
 
 type Rule = {
@@ -49,6 +49,8 @@ type UrlEndpoints =
   | "/mail/rules"
   | "/mail/rules/:ruleId"
   | "/mail/rules/:ruleId/toggle"
+  | "/premium/star"
+  | "/premium/galaxy"
   | "/user"
   | "/user/:username"
   | "/user/:username/logout"

@@ -66,8 +66,8 @@ export default async function paymentAction(
         firstname: name,
         email,
         phone: mobile,
-        surl: `${process.env.HOST}/fp/cb?success=true`,
-        furl: `${process.env.HOST}/fp/cb?success=false`,
+        surl: `${process.env.HOST}/pay/cb?success=true&message=PaymentSuccessful&txnid=${txnid}&plan=${plan}&mobile=${mobile}&provider=PayU&subid=`,
+        furl: `${process.env.HOST}/pay/cb?success=false&message=PaymentFailed&txnid=${txnid}&plan=${plan}&mobile=${mobile}&provider=PayU&subid=`,
         hash,
       },
     };

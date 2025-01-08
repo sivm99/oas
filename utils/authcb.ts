@@ -13,6 +13,7 @@ interface CookieParams {
   name: string;
   value: string;
   username?: string;
+  plan?: "free" | "star" | "galaxy";
 }
 
 // Helper function to create redirect response with parameters
@@ -38,6 +39,14 @@ export async function setAuthCookie(cookieParams: CookieParams) {
   });
   if (cookieParams.username) {
     cookieStore.set("lastUsername", cookieParams.username, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
+      maxAge: 3600, // 1 hour
+    });
+  }
+  if (cookieParams.plan) {
+    cookieStore.set("plan", cookieParams.plan, {
       httpOnly: true,
       secure: true,
       sameSite: "strict",

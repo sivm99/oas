@@ -10,16 +10,8 @@ import {
   handlePhonePeResponse,
   PaymentConfig,
 } from "@/utils/payHelper";
-import {
-  buildPayUUrl,
-  generatePayUHash,
-  getPayUConfig,
-  PayUHashParams,
-  PayURequestParams,
-  validateMobile,
-} from "@/utils/payuHelper";
+import { generatePayUHash } from "@/utils/payuHelper";
 import { rd } from "@/utils/redirect";
-import { redirect } from "next/navigation";
 import { ActionState } from "./paymentModelHelper";
 
 export default async function paymentAction(
@@ -36,7 +28,7 @@ export default async function paymentAction(
     // For PayU
     const userData = await fetchUser();
     if (!userData?.user) {
-      return { error: "User authentication failed" };
+      return { error: "User must be logged in to proceed" };
     }
 
     const mobile = formData.get("mobile") as string;
@@ -135,75 +127,3 @@ async function phonePeAction(formData: FormData) {
     throw error; // Or handle the error appropriately based on your needs
   }
 }
-
-async function payuAction(formData: FormData) {
-  try {
-    // Fetch user and validate
-    const userData = await fetchUser();
-    if (!userData?.user) {
-      return redirect(
-        `/fp/cb?success=false&message=${encodeURIComponent("User authentication failed")}&provider=PayU+Payment`,
-      );
-    }
-
-    // Get mobile number and validate
-    const mobile = formData.get("mobile") as string;
-    if (!mobile || !validateMobile(mobile)) {
-      return redirect(
-        `/fp/cb?success=false&message=${encodeURIComponent("Invalid mobile number")}&provider=PayU+Payment`,
-      );
-    }
-
-    // Get user details
-    const { name, email } = userData.user;
-    if (!name || !email) {
-      return redirect(
-        `/fp/cb?success=false&message=${encodeURIComponent("Invalid user details")}&provider=PayU+Payment`,
-      );
-    }
-
-    // Get config
-    const config = getPayUConfig();
-
-    // Generate transaction ID
-    const txnid = generateTransactionId("PU");
-
-    // Prepare hash parameters
-    const hashParams: PayUHashParams = {
-      key: config.merchantKey,
-      txnid,
-      amount: "79.00",
-      productinfo: "Galaxy Plan",
-      firstname: name,
-      email,
-      salt: config.saltKey,
-    };
-
-    // Generate hash
-    const hash = generatePayUHash(hashParams);
-
-    // Prepare request parameters
-    const requestParams: PayURequestParams = {
-      ...hashParams,
-      phone: mobile,
-      surl: `${config.appHost}/fp/cb?success=true`,
-      furl: `${config.appHost}/fp/cb?success=false`,
-      hash,
-    };
-
-    // Build and return URL
-    const paymentUrl = buildPayUUrl(requestParams, config.host);
-
-    // Log for debugging
-    console.log("PayU Payment URL:", paymentUrl);
-
-    return redirect(paymentUrl);
-  } catch (error) {
-    console.error("PayU payment error:", error);
-    return redirect(
-      `/fp/cb?success=false&message=${encodeURIComponent("Payment initialization failed")}&provider=PayU+Payment`,
-    );
-  }
-}
-
-export { phonePeAction, payuAction };

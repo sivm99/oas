@@ -14,7 +14,7 @@ import { Loader2 } from "lucide-react";
 
 // Main Payment Modal Component
 const PaymentModal = ({ plan, price, currency }: PaymentDetailsProps) => {
-  const [selectedMethod, setSelectedMethod] = useState("phonepe");
+  const [selectedMethod, setSelectedMethod] = useState("payu");
   const [paymentData, formAction, isPending] = useActionState(
     paymentAction,
     null,

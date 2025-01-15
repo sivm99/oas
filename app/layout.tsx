@@ -83,7 +83,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`font-sans ${Inter.variable} ${InterItalic.variable} antialiased`}
+        className={`font-sans ${Inter.className} ${InterItalic.variable} antialiased`}
         suppressHydrationWarning
       >
         <NextSSRPlugin

@@ -158,7 +158,7 @@ function SuccessCard({
             className="w-full sm:w-auto min-w-[140px]"
             asChild
           >
-            <Link href="/dashboard">Go to Dashboard</Link>
+            <Link href="/user/cb">Go to Dashboard</Link>
           </Button>
         </div>
       </CardContent>

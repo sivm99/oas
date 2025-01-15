@@ -1,13 +1,14 @@
 const Logo = ({
   size = "medium",
 }: {
-  size?: "small" | "medium" | "big" | "extralarge";
+  size?: "small" | "medium" | "big" | "extralarge" | "fullpage";
 }) => {
   const sizes = {
     small: 24,
     medium: 48,
     big: 64,
     extralarge: 96,
+    fullpage: 512,
   };
 
   const dimension = sizes[size];

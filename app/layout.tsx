@@ -37,41 +37,7 @@ export const metadata: Metadata = {
   // manifest: "/manifest.json",
   applicationName: "One Alias Service",
   openGraph: {
-    images: ["https://n.1as.in/api/og?a=root"],
-  },
-  icons: {
-    icon: [
-      {
-        url: "/icons8-mail-ios-17-filled-16.png",
-        sizes: "16x16",
-        type: "image/png",
-      },
-      {
-        url: "/icons8-mail-ios-17-filled-32.png",
-        sizes: "32x32",
-        type: "image/png",
-      },
-      {
-        url: "/icons8-mail-ios-17-filled-96.png",
-        sizes: "96x96",
-        type: "image/png",
-      },
-    ],
-    apple: [
-      {
-        url: "/icons8-mail-ios-17-filled-120.png",
-        sizes: "120x120",
-        type: "image/png",
-      },
-      {
-        url: "/icons8-mail-ios-17-filled-152.png",
-        sizes: "152x152",
-        type: "image/png",
-      },
-    ],
-    // microsoft: [
-    //   { url: '/icons8-mail-ios-17-filled-310.png', sizes: '310x310', type: 'image/png' }
-    // ]
+    images: ["https://1as.in/api/og?a=root"],
   },
 };
 

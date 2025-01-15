@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "email protection",
   ],
   openGraph: {
-    images: ["https://n.1as.in/api/og?a=login"],
+    images: ["https://1as.in/api/og?a=login"],
   },
 };
 

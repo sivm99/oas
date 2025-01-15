@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { Facebook, Phone, User, Building, MapPin } from "lucide-react";
+import { Phone, User, Building } from "lucide-react";
 
 function ContactUs() {
   return (
@@ -47,7 +47,20 @@ function ContactUs() {
 
           <Card>
             <CardContent className="flex items-center p-6 space-x-4">
-              <Facebook className="h-8 w-8 text-blue-600" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="45"
+                height="45"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-blue-600"
+              >
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+              </svg>
               <div>
                 <h3 className="font-semibold mb-2">Facebook</h3>
                 <a
@@ -72,19 +85,19 @@ function ContactUs() {
             </CardContent>
           </Card>
 
-          <Card>
+          {/* <Card>
             <CardContent className="flex items-center p-6 space-x-4">
               <MapPin className="h-8 w-8 text-blue-600" />
               <div>
                 <h3 className="font-semibold mb-2">Address</h3>
                 <address className="text-gray-600 not-italic">
-                  Mehli Gate, Phagwara,
+                  Phagwara,
                   <br />
                   Punjab, India 144401
                 </address>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         <div className="text-center space-y-4">

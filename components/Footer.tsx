@@ -16,7 +16,7 @@ function Footer() {
           .
         </p>
         <p>&copy; 2025 One Alias Service. All rights reserved.</p>
-        <p className="mt-2">
+        {/* <p className="mt-2">
           <span className="text-primary">
             Managed by Shivam Shukla |{" "}
             <Link
@@ -26,7 +26,7 @@ function Footer() {
               Contact Us
             </Link>
           </span>
-        </p>
+        </p> */}
       </div>
     </footer>
   );

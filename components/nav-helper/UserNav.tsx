@@ -144,13 +144,13 @@ export default async function UserNavContent() {
       <div className="hidden md:flex items-center space-x-2">
         {status === "logged-in" && <PlanBadge plan={plan || "free"} />}
         <ModeToggle />
-        {(!plan || plan === "free") && (
+        {/* (!plan || plan === "free") && (
           <Link href="/pricing">
             <Button variant="outline" className="w-full md:w-auto">
               Pricing
             </Button>
           </Link>
-        )}
+        )*/}
         <DashboardButton />
       </div>
       <div className="md:hidden">
@@ -176,13 +176,13 @@ export default async function UserNavContent() {
             </SheetHeader>
             <nav>
               <SheetFooter className="mt-4 flex flex-col gap-4">
-                {(!plan || plan === "free") && (
+                {/*(!plan || plan === "free") && (
                   <Link href="/pricing">
                     <Button variant="outline" className="w-full">
                       Pricing
                     </Button>
                   </Link>
-                )}
+                )*/}
                 <DashboardButton />
               </SheetFooter>
             </nav>

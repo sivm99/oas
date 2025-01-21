@@ -133,7 +133,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`font-sans ${Inter.className} ${InterItalic.variable} antialiased`}
+        className={`${Inter.className} ${InterItalic.variable} antialiased`}
         suppressHydrationWarning
       >
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />

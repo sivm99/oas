@@ -65,6 +65,7 @@ function DestinationsCard({
       setError(res.error || "Failed to verify destination");
       return;
     }
+    setHint("Destination was verified successfully");
     router.refresh();
   };
 

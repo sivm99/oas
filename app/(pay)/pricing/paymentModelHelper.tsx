@@ -8,8 +8,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 // Types
+export type PaymentOptions = "phonepe" | "payu";
 export type PaymentMethod = {
-  id: string;
+  id: PaymentOptions;
   name: string;
   logoUrl: string;
   logoClassName?: string;
@@ -21,8 +22,8 @@ export type PaymentMethodProps = {
 };
 
 export type PaymentMethodsProps = {
-  selectedMethod: string;
-  onMethodChange: (value: string) => void;
+  selectedMethod: PaymentOptions;
+  onMethodChange: (value: PaymentOptions) => void;
 };
 
 export type PaymentDetailsProps = {

@@ -89,7 +89,7 @@ const createSubscriptionPayload = (
   amount: 7900,
   frequency: "MONTHLY",
   recurringCount: 12,
-  mobileNumber: "9465321229", // Consider making this dynamic
+  mobileNumber: "9465321229",
 });
 
 const createPaymentPayload = (config: PaymentConfig, username: string) => ({

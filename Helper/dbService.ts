@@ -1,6 +1,5 @@
 import { Destination, Rule, User } from "./types";
 
-// dbService.ts
 class DatabaseService {
   private dbName = "rulesDB";
   private version = 1;

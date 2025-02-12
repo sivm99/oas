@@ -13,7 +13,6 @@ import AnimatedHero from "@/components/AnimatedHero";
 import Link from "next/link";
 import LogoutButton from "@/components/nav-helper/LogoutButton";
 import NavbarClient from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 export default async function Home() {
   return (
@@ -118,7 +117,6 @@ export default async function Home() {
             </CardContent>
           </Card>
         </section>
-        <Footer />
       </main>
     </>
   );

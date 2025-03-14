@@ -9,8 +9,8 @@ export class PaymentHandler {
   private static readonly PAYMENT_PROVIDERS = ["phonepe", "payu"] as const;
   private static readonly PAYMENT_STATUS = [
     "failed",
-    "success",
     "pending",
+    "success",
   ] as const;
   private static db: Database | null = null;
 

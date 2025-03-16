@@ -27,7 +27,13 @@ type Destination = {
   verified: boolean;
 };
 
-type ResponseObject<T = User | Rule | Rule[] | Destination | Destination[]> = {
+type PremiumTypes = {
+  plan: User["plan"];
+  months: 1 | 3 | 6 | 12;
+};
+type ResponseObject<
+  T = User | Rule | Rule[] | Destination | Destination[] | string,
+> = {
   status: "success" | "fail" | "error";
   message: string;
   data: T;
@@ -49,8 +55,7 @@ type UrlEndpoints =
   | "/mail/rules"
   | "/mail/rules/:ruleId"
   | "/mail/rules/:ruleId/toggle"
-  | "/premium/star"
-  | "/premium/galaxy"
+  | "/premium/init"
   | "/user"
   | "/user/:username"
   | "/user/:username/logout"
@@ -70,6 +75,8 @@ type DataObject = {
   domain?: string;
   comment?: string;
   avatar?: string;
+  plan?: PremiumTypes["plan"];
+  months?: PremiumTypes["months"];
 };
 
 type RequestResult = {
@@ -88,4 +95,5 @@ export type {
   DataObject,
   RequestResult,
   UrlEndpoints,
+  PremiumTypes,
 };

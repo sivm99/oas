@@ -1,13 +1,11 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
-
 import { useState } from "react";
 import { CreateRuleDialog } from "./CreateRuleDialouge";
 import { createRule } from "./actions";
 import useSimpleAppContext from "@/hooks/useSimpleAppContext";
 import { Destination } from "@/Helper/types";
 import { useRouter } from "next/navigation";
+import { GlowButton } from "@/components/ui/glow-button";
 
 function NewRule({
   destinations,
@@ -23,27 +21,14 @@ function NewRule({
   return (
     <div className="w-full max-w-full  mx-auto">
       {!showForm && destinations && (
-        <Button
+        <GlowButton
           variant="outline"
+          // glowVariant="premium"
           onClick={() => setShowForm(true)}
-          className="flex w-full items-center gap-2 border-transparent animate-border-glow border-2"
+          className="flex w-full items-center gap-2 "
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-4 h-4"
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
           Create New Rule
-        </Button>
+        </GlowButton>
       )}
 
       {showForm && (

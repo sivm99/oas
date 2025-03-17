@@ -10,6 +10,7 @@ export default async function paymentAction(
   prevState: unknown,
   formData: FormData,
 ) {
+  let paymentUrl;
   try {
     const userData = await fetchUser();
 
@@ -24,15 +25,16 @@ export default async function paymentAction(
     if (!plan || !month) {
       return { error: "All fields are required" };
     }
-    const paymentUrl = await rechargeCreditAndSubscribe(
+    paymentUrl = await rechargeCreditAndSubscribe(
       plan,
       Number(month) as PremiumTypes["months"],
       userData.newToken,
     );
     if (!paymentUrl) return { error: "some error occured" };
-    redirect(paymentUrl);
   } catch (error) {
     console.error("Payment action error:", error);
     return { error: "Payment initialization failed. Please try again." };
   }
+  // nextjs redirect function should be called outside of the try catch it will throw and error alawys
+  return redirect(paymentUrl);
 }

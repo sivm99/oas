@@ -22,6 +22,7 @@ export async function fetchUser(): Promise<{
   return {
     user: response.data,
     code: response.code,
+    newToken: response.newToken,
   };
 }
 

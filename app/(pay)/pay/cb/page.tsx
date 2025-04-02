@@ -8,23 +8,21 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import paymentCheckAndSubscribe from "./actions";
+import { PremiumTypes } from "@/Helper/types";
 
 type PaymentState = {
   error: {
     message: string;
     txnid: string;
     plan: string;
-    mobile: string;
-    provider: string;
-    subid: string;
+    months: string;
   } | null;
   success: {
     message: string;
     txnid: string;
     plan: string;
-    mobile: string;
-    provider: string;
-    subid: string;
+    months: string;
   } | null;
 };
 
@@ -45,12 +43,10 @@ const createPaymentState = (
   message: string,
   txnid: string,
   plan: string,
-  mobile: string,
-  provider: string,
-  subid: string,
+  months: string,
 ): PaymentState => {
   const isSuccess = success === "true";
-  const stateData = { message, txnid, plan, mobile, provider, subid };
+  const stateData = { message, txnid, plan, months };
 
   return {
     success: isSuccess ? stateData : null,
@@ -68,19 +64,15 @@ export default async function PaymentCallback({
     message = "Payment Processing Failed",
     txnid = "",
     plan = "",
-    mobile = "",
-    provider = "",
-    subid = "",
+    months = "",
   } = await searchParams;
-
+  await paymentCheckAndSubscribe(txnid as string, plan as PremiumTypes["plan"]);
   const paymentState = createPaymentState(
     success as string,
     message as string,
     txnid as string,
     plan as string,
-    mobile as string,
-    provider as string,
-    subid as string,
+    months as string,
   );
 
   if (paymentState.success) {
@@ -90,9 +82,7 @@ export default async function PaymentCallback({
           message={paymentState.success.message}
           txnid={paymentState.success.txnid}
           plan={paymentState.success.plan}
-          mobile={paymentState.success.mobile}
-          provider={paymentState.success.provider}
-          subid={paymentState.success.subid}
+          months={paymentState.success.months}
         />
       </CardWrapper>
     );
@@ -105,9 +95,7 @@ export default async function PaymentCallback({
           message={paymentState.error.message}
           txnid={paymentState.error.txnid}
           plan={paymentState.error.plan}
-          mobile={paymentState.error.mobile}
-          provider={paymentState.error.provider}
-          subid={paymentState.error.subid}
+          months={paymentState.error.months}
         />
       </CardWrapper>
     );
@@ -118,16 +106,12 @@ function SuccessCard({
   message,
   txnid,
   plan,
-  mobile,
-  provider,
-  subid,
+  months,
 }: {
   message: string;
   txnid: string;
   plan: string;
-  mobile: string;
-  provider: string;
-  subid: string;
+  months: string;
 }) {
   return (
     <Card className="p-4">
@@ -148,9 +132,7 @@ function SuccessCard({
         <div className="flex flex-col gap-2 mt-4 text-lg">
           <p>Transaction ID: {txnid}</p>
           <p>Plan: {plan}</p>
-          <p>Mobile: {mobile}</p>
-          <p>Provider: {provider}</p>
-          <p>Sub ID: {subid}</p>
+          <p>Months: {months}</p>
         </div>
         <div className="flex justify-center mt-6">
           <Button
@@ -170,16 +152,12 @@ function ErrorCard({
   message,
   txnid,
   plan,
-  mobile,
-  provider,
-  subid,
+  months,
 }: {
   message: string;
   txnid: string;
   plan: string;
-  mobile: string;
-  provider: string;
-  subid: string;
+  months: string;
 }) {
   return (
     <Card className="p-4">
@@ -200,9 +178,7 @@ function ErrorCard({
         <div className="flex flex-col gap-2 mt-4 text-lg">
           {txnid && <p>Transaction ID: {txnid}</p>}
           <p>Plan: {plan}</p>
-          <p>Mobile: {mobile}</p>
-          <p>Provider: {provider}</p>
-          <p>Sub ID: {subid}</p>
+          <p>Months: {months}</p>
         </div>
         <div className="flex justify-center mt-6">
           <Button

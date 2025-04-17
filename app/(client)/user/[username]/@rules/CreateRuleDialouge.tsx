@@ -92,7 +92,7 @@ export const CreateRuleDialog = ({
             </SelectTrigger>
             <SelectContent position="popper">
               {destinations.map((dest) => (
-                <SelectItem key={dest.destinationID} value={`@${dest.domain}`}>
+                <SelectItem key={dest.destinationId} value={`@${dest.domain}`}>
                   @{dest.domain}
                 </SelectItem>
               ))}
@@ -146,7 +146,7 @@ export const CreateRuleDialog = ({
               ).values(),
             ].map((dest) => (
               <SelectItem
-                key={dest.destinationID}
+                key={dest.destinationId}
                 value={dest.destinationEmail}
               >
                 {dest.destinationEmail}

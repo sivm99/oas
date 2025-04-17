@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Helper regex patterns
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+// const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9._-]*$/;
 const ALIAS_SLUG_REGEX = /^[a-zA-Z0-9.+\-]+$/;
 
@@ -17,7 +17,6 @@ export const emailSchema = z
   .trim()
   .min(1, "Email is required")
   .email("Invalid email format")
-  .regex(EMAIL_REGEX, "Invalid email format")
   .toLowerCase();
 
 const usernameSchema = z

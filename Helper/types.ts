@@ -2,7 +2,7 @@ type User = {
   username: string;
   name: string;
   email: string;
-  emailVerified: boolean;
+  isEmailVerified: boolean;
   aliasCount: number;
   destinationCount: number;
   avatar?: string;
@@ -14,17 +14,17 @@ type Rule = {
   username: string;
   aliasEmail: string;
   destinationEmail: string;
-  active: boolean;
+  isActive: boolean;
   name?: string;
   comment?: string;
 };
 
 type Destination = {
-  destinationID: number;
+  destinationId: number;
   username: string;
   destinationEmail: string;
   domain: string;
-  verified: boolean;
+  isVerified: boolean;
 };
 
 type PremiumTypes = {

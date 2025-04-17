@@ -12,7 +12,7 @@ function isUserResponse(
     "username" in response.data &&
     "name" in response.data &&
     "email" in response.data &&
-    "emailVerified" in response.data &&
+    "isEmailVerified" in response.data &&
     "aliasCount" in response.data &&
     "destinationCount" in response.data
   );
@@ -34,7 +34,7 @@ function isRulesResponse(
         "username" in rule &&
         "aliasEmail" in rule &&
         "destinationEmail" in rule &&
-        "active" in rule,
+        "isActive" in rule,
     )
   );
 }
@@ -51,11 +51,11 @@ function isDestinationsResponse(
       (destination) =>
         typeof destination === "object" &&
         destination !== null &&
-        "destinationID" in destination &&
+        "destinationId" in destination &&
         "username" in destination &&
         "destinationEmail" in destination &&
         "domain" in destination &&
-        "verified" in destination,
+        "isVerified" in destination,
     )
   );
 }

@@ -53,7 +53,7 @@ function DestinationsCard({
   const handleVerify = async (destination: Destination) => {
     setHint(<SmallLoader />);
     const res = await verifyDestination({
-      destinationID: destination.destinationID,
+      destinationID: destination.destinationId,
     });
     if (res.status === 401) {
       setHint(null);
@@ -147,7 +147,7 @@ function DestinationsCard({
         />
       )}
       {destinations.map((destination) => (
-        <Card key={destination.destinationID} className="shadow-lg ">
+        <Card key={destination.destinationId} className="shadow-lg ">
           {showDelete && (
             <DestinationDialog
               type="delete"
@@ -162,7 +162,7 @@ function DestinationsCard({
                 }
                 setHint(<SmallLoader />);
                 const deleteResponse = await removeDestination({
-                  destinationID: destination.destinationID,
+                  destinationID: destination.destinationId,
                   password,
                 });
 
@@ -195,7 +195,7 @@ function DestinationsCard({
                   {destination.destinationEmail}
                 </span>
               </div>
-              {destination.verified && (
+              {destination.isVerified && (
                 <CheckCircle2 className="w-5 h-5 text-green-500" />
               )}
             </CardTitle>
@@ -229,7 +229,7 @@ function DestinationsCard({
           </CardContent>
 
           <CardFooter className="flex justify-between">
-            {!destination.verified && (
+            {!destination.isVerified && (
               <Button
                 variant="outline"
                 size="sm"

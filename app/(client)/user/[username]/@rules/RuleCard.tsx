@@ -117,7 +117,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
   };
 
   return (
-    <Card className={cn(!rule.active && "opacity-60")}>
+    <Card className={cn(!rule.isActive && "opacity-60")}>
       {showEdit && (
         <RuleDialog
           rule={rule}
@@ -174,7 +174,7 @@ const RuleCard = ({ rule }: { rule: Rule }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onSelect={() => setShowToggle(!showToggle)}>
-                {rule.active ? "Disable Rule" : "Enable Rule"}
+                {rule.isActive ? "Disable Rule" : "Enable Rule"}
               </DropdownMenuItem>
               <DropdownMenuItem onSelect={() => setShowEdit(!showEdit)}>
                 Edit Rule
@@ -214,16 +214,16 @@ const COLUMN_LABELS: Record<SortKey, string> = {
   name: "Name",
   aliasEmail: "Alias",
   destinationEmail: "Destination",
-  active: "Active",
+  isActive: "Active",
 };
 // Define sorting order to show active first
 type SortKey = keyof Pick<
   Rule,
-  "name" | "aliasEmail" | "destinationEmail" | "active"
+  "name" | "aliasEmail" | "destinationEmail" | "isActive"
 >;
 
 // Default constants
-const DEFAULT_SORT_KEY: SortKey = "active";
+const DEFAULT_SORT_KEY: SortKey = "isActive";
 const DEFAULT_SORT_DIR: "asc" | "desc" = "desc";
 const DEFAULT_PAGE = 1;
 const RULES_PER_PAGE = 5;
@@ -289,14 +289,14 @@ function RulesCard({ rules }: { rules?: Rule[] }) {
     // Then sort
     return [...filtered].sort((a, b) => {
       // Special handling for active status to show true first
-      if (sortKey === "active") {
-        if (a.active === b.active) return 0;
+      if (sortKey === "isActive") {
+        if (a.isActive === b.isActive) return 0;
         // When descending, active (true) comes first
         if (sortDir === "desc") {
-          return a.active ? -1 : 1;
+          return a.isActive ? -1 : 1;
         }
         // When ascending, inactive (false) comes first
-        return a.active ? 1 : -1;
+        return a.isActive ? 1 : -1;
       }
 
       // Handle other types of sorting

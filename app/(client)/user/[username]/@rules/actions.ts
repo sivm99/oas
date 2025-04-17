@@ -6,11 +6,10 @@ import { Rule } from "@/Helper/types";
 // import { setAuthCookie } from "@/utils/authcb";
 import { cookies } from "next/headers";
 
-async function createRule(rule: Omit<Rule, "ruleId" | "active">): Promise<{
+async function createRule(rule: Omit<Rule, "ruleId" | "isActive">): Promise<{
   success: boolean;
   error?: string;
   status: number;
-  newRule?: Rule;
 }> {
   try {
     const c = await cookies();
@@ -29,7 +28,7 @@ async function createRule(rule: Omit<Rule, "ruleId" | "active">): Promise<{
       data: rule,
     });
 
-    if (ruleResult.error || !ruleResult.data || !ruleResult.data.data) {
+    if (ruleResult.error || !ruleResult.data) {
       return {
         success: false,
         error: ruleResult.error || "Unknown Error Occurred",
@@ -37,12 +36,9 @@ async function createRule(rule: Omit<Rule, "ruleId" | "active">): Promise<{
       };
     }
 
-    const newRule = ruleResult.data.data as Rule;
-
     if (ruleResult.status === 201) {
       return {
         success: true,
-        newRule,
         status: ruleResult.status,
       };
     }

@@ -122,11 +122,11 @@ export const RuleDialog: React.FC<RuleDialogProps> = ({
       fields: [],
     },
     toggle: {
-      title: rule.active ? "Disable Rule" : "Enable Rule",
-      description: rule.active
+      title: rule.isActive ? "Disable Rule" : "Enable Rule",
+      description: rule.isActive
         ? `All emails to ${rule.aliasEmail} will be rejected automatically.`
         : `All emails sent to ${rule.aliasEmail} will start forwarding to ${rule.destinationEmail}`,
-      actionText: rule.active ? "Disable Rule" : "Enable Rule",
+      actionText: rule.isActive ? "Disable Rule" : "Enable Rule",
       fields: [],
     },
   };

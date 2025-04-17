@@ -33,13 +33,13 @@ const UserProfileCard = ({
   name,
   username,
   email,
-  emailVerified,
+  isEmailVerified,
   avatar,
   aliasCount,
   destinationCount,
 }: User) => {
   // const navigate = useNavigate();
-  const { setHint, setError, setLoginExpired, } = useSimpleAppContext();
+  const { setHint, setError, setLoginExpired } = useSimpleAppContext();
 
   // const [loader, setLoader] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
@@ -235,7 +235,7 @@ const UserProfileCard = ({
               </p>
             </div>
             <div className="flex items-center gap-2">
-              {emailVerified ? (
+              {isEmailVerified ? (
                 <Badge
                   variant="secondary"
                   className="flex items-center gap-1 border-green-500"

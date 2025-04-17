@@ -53,11 +53,7 @@ function NewRule({
               setLoginExpired(true);
               return;
             }
-            if (
-              ruleResult.error ||
-              !ruleResult.newRule ||
-              !ruleResult.success
-            ) {
+            if (ruleResult.error || !ruleResult.success) {
               setError(ruleResult.error);
               return;
             }

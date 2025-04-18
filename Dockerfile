@@ -1,17 +1,17 @@
-FROM node:20-slim AS base
+FROM oven/bun:1.2-alpine AS base
 
 # Stage 1: Install dependencies
 FROM base AS deps
 WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+COPY package.json bun.lock ./
+RUN bun i
 
 # Stage 2: Build the application
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN bun run build
 
 # Stage 3: Production server
 FROM base AS runner
@@ -22,4 +22,4 @@ COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["bun", "server.js"]

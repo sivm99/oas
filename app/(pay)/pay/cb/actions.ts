@@ -22,7 +22,7 @@ export default async function paymentCheckAndSubscribe(
       txnId,
     },
   });
-  console.log(subscribeRequest);
+  // console.log(subscribeRequest);
   if (
     !subscribeRequest ||
     !subscribeRequest.data ||

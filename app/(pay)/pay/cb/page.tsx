@@ -66,7 +66,10 @@ export default async function PaymentCallback({
     plan = "",
     months = "",
   } = await searchParams;
-  await paymentCheckAndSubscribe(txnid as string, plan as PremiumTypes["plan"]);
+  const suc = await paymentCheckAndSubscribe(
+    txnid as string,
+    plan as PremiumTypes["plan"],
+  );
   const paymentState = createPaymentState(
     success as string,
     message as string,
@@ -75,7 +78,7 @@ export default async function PaymentCallback({
     months as string,
   );
 
-  if (paymentState.success) {
+  if (suc && paymentState.success) {
     return (
       <CardWrapper>
         <SuccessCard

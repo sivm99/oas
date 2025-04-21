@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: oas-next
+    container_name: bun-oas-next
     environment:
       - NODE_ENV=PRODUCTION
     restart: unless-stopped

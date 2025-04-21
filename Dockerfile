@@ -1,10 +1,10 @@
-FROM oven/bun:1.2-alpine AS base
+FROM oven/bun:slim AS base
 
 # Stage 1: Install dependencies
 FROM base AS deps
 WORKDIR /app
 COPY package.json bun.lock ./
-RUN bun i
+RUN bun install --production
 
 # Stage 2: Build the application
 FROM base AS builder

@@ -4,7 +4,7 @@ FROM oven/bun:slim AS base
 FROM base AS deps
 WORKDIR /app
 COPY package.json bun.lock ./
-RUN bun install --production
+RUN bun i
 
 # Stage 2: Build the application
 FROM base AS builder

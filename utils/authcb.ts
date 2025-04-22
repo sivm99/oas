@@ -1,3 +1,4 @@
+import { User } from "@/Helper/types";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 const HOST = process.env.HOST || "http://localhost:3000";
@@ -13,7 +14,7 @@ interface CookieParams {
   name: string;
   value: string;
   username?: string;
-  plan?: "free" | "star" | "galaxy";
+  plan?: User["plan"];
 }
 
 // Helper function to create redirect response with parameters

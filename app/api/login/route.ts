@@ -1,4 +1,6 @@
 import fetchData from "@/app/(client)/user/[username]/actions";
+import createRequest from "@/Helper/request";
+import { User } from "@/Helper/types";
 import {
   createRedirectResponse,
   handleAuthError,
@@ -54,10 +56,22 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // here we want to set the premium plan as well so we will make one more call
+    let plan = "free" as User["plan"];
+    if (result.data.isPremium) {
+      const res = await createRequest({
+        endpoint: "/user/plan",
+        token: result.newToken,
+      });
+      if (!res || !res.data || !res.data.data) return;
+      const u = res.data.data as User;
+      plan = u.plan;
+    }
     await setAuthCookie({
       name: "token",
       value: result.newToken,
       username: result.data.username,
+      plan,
     });
 
     const redirectUrl = new URL(`${HOST}/user/${result.data.username}`);

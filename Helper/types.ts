@@ -7,6 +7,7 @@ type User = {
   destinationCount: number;
   avatar?: string;
   plan?: "free" | "star" | "galaxy";
+  isPremium?: boolean;
 };
 
 type Rule = {
@@ -73,6 +74,7 @@ type UrlEndpoints =
   | "/premium/init"
   | "/premium/subscribe"
   | "/user"
+  | "/user/plan"
   | "/user/:username"
   | "/user/:username/logout"
   | "/user/:username/update-password"

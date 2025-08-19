@@ -15,7 +15,6 @@
     "@types/react": "19.1.10",
     "@types/react-dom": "19.1.7"
   },
-  "packageManager": "bun@1.2.0",
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-alert-dialog": "^1.1.2",
